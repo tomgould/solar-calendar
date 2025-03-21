@@ -84,7 +84,7 @@ function convertToCustomCalendar($gregorianDateStr, $equinoxDates)
     $dayInMonth = ($daysSinceStart % $daysPerMonth) + 1;
 
     $monthNames = [
-        "March", "April", "May", "June", "Quintilis", "Sextilis",
+        "March", "April", "May", "June", "July", "August",
         "September", "October", "November", "December", "January", "February", "Sol"
     ];
 

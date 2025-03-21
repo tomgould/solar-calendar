@@ -110,8 +110,8 @@
       monthDiv.appendChild(calendar);
       container.appendChild(monthDiv);
 
-      // Insert Solstice Day after Sextilis in leap years
-      if (monthName === "Sextilis" && isLeapYear(year)) {
+      // Insert Solstice Day after August in leap years
+      if (monthName === "August" && isLeapYear(year)) {
         const solstice = document.createElement("div");
         solstice.classList.add("month");
         solstice.innerHTML = `<h2>Solstice Day</h2><div class="calendar"><div class="day">Outside time</div></div>`;

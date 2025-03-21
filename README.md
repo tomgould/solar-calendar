@@ -24,7 +24,7 @@ You can view the calenders here:
 - 🗓️ Each month starts on a **Monday**
 - 🌱 **Year begins** on the first Monday **on or after the Spring Equinox**
 - ☀️ **Equinox Day**: the actual Spring Equinox, outside the month/week system
-- 🔁 **Solstice Day**: leap correction day, inserted after Sextilis during leap years
+- 🔁 **Solstice Day**: leap correction day, inserted after August during leap years
 - ✅ No drift: tracks Earth’s orbit precisely
 
 ---
