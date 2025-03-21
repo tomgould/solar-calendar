@@ -6,7 +6,7 @@ This project displays a 13-month **Solar Calendar** (starting with 2025), overla
 
 There is also a full **Gregorian calendar** (starting with 2025), overlaying each day with its corresponding **Solar Calendar** date.
 
-This project merges the **Gregorian calendar** years with the **Solar calendar** dates.
+This project merges the **Gregorian calendar** years with the **Solar calendar** days.
 
 ## 🌍 View the Calendars Online
 
