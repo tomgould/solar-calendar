@@ -2,7 +2,9 @@
 
 A reimagined calendar system that aligns each year with the **Spring Equinox**, maintains perfect 4-week months, and introduces **Equinox Day** and **Solstice Day** to stay synced with Earth's orbit.
 
-This project displays a full **Gregorian calendar** (starting with 2025), overlaying each day with its corresponding **Solar Calendar** date.
+This project displays a 13 month **Solar Calendar** (starting with 2025), overlaying each day with its corresponding **Gregorian Calendar** date.
+
+There is also a full **Gregorian calendar** (starting with 2025), overlaying each day with its corresponding **Solar Calendar** date.
 
 ---
 
