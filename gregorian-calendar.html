@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gregorian Calendar with Solar Calendar Dates (2025)</title>
+  <title>Gregorian Calendar with Solar Calendar Dates</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -42,10 +42,18 @@
       color: #666;
       margin-top: 4px;
     }
+    .controls {
+      text-align: center;
+      margin-bottom: 1em;
+    }
   </style>
 </head>
 <body>
-<h1>Gregorian Calendar with Solar Calendar Dates (2025)</h1>
+<h1>Gregorian Calendar with Solar Calendar Dates</h1>
+<div class="controls">
+  <label for="year-select">Select Year: </label>
+  <input type="number" id="year-select" value="2025" min="1" max="9999" />
+</div>
 <div id="calendar-container"></div>
 
 <script>
@@ -73,7 +81,6 @@
     let solarYear = date.getFullYear();
     let solarYearStart = getFirstMonday(getSpringEquinox(solarYear));
 
-    // Loop backward if date is before this solar year start
     while (date < solarYearStart) {
       solarYear--;
       solarYearStart = getFirstMonday(getSpringEquinox(solarYear));
@@ -81,12 +88,10 @@
 
     const diffDays = Math.floor((date - solarYearStart) / msPerDay);
 
-    // Equinox Day
     if (diffDays === 364) {
       return { year: solarYear, month: "Equinox Day", day: null };
     }
 
-    // Solstice Day (leap correction)
     if (isLeapYear(solarYear) && diffDays === 168) {
       return { year: solarYear, month: "Solstice Day", day: null };
     }
@@ -106,7 +111,12 @@
     };
   }
 
+  function clearCalendar() {
+    document.getElementById("calendar-container").innerHTML = "";
+  }
+
   function buildGregorianCalendar(year) {
+    clearCalendar();
     const container = document.getElementById("calendar-container");
 
     for (let month = 0; month < 12; month++) {
@@ -158,6 +168,14 @@
     }
   }
 
+  document.getElementById("year-select").addEventListener("change", () => {
+    const year = parseInt(document.getElementById("year-select").value, 10);
+    if (!isNaN(year)) {
+      buildGregorianCalendar(year);
+    }
+  });
+
+  // Initial render
   buildGregorianCalendar(2025);
 </script>
 </body>

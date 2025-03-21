@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Solar Calendar with Gregorian Calendar dates 2025</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Solar Calendar with Gregorian Calendar Dates</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -45,14 +45,22 @@
   </style>
 </head>
 <body>
-<h1>Solar Calendar with Gregorian Calendar dates 2025</h1>
+<h1>Solar Calendar with Gregorian Calendar Dates</h1>
+<div style="text-align:center;">
+  <label for="year-select">Select Year: </label>
+  <input type="number" id="year-select" value="2025" min="1" max="9999" />
+</div>
 <div id="calendar-container"></div>
 
 <script>
   const customMonths = ["March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January", "February", "Sol"];
   const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-  const equinoxDate = new Date("2025-03-20");
+  function getSpringEquinox(year) {
+    if (year < 1583) return new Date(year, 2, 21); // Julian approximation
+    if (year >= 2044 && (year - 2044) % 4 === 0) return new Date(year, 2, 19); // rare early equinox
+    return new Date(year, 2, 20); // March 20 default
+  }
 
   function getFirstMonday(date) {
     const day = date.getDay();
@@ -64,20 +72,26 @@
     return (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0));
   }
 
-  function buildCalendar(year) {
+  function clearCalendar() {
+    const container = document.getElementById("calendar-container");
+    container.innerHTML = "";
+  }
 
-    // Equinox Day
+  function buildCalendar(year) {
+    clearCalendar();
+
+    const container = document.getElementById("calendar-container");
+    const equinoxDate = getSpringEquinox(year);
+    const startDate = getFirstMonday(equinoxDate);
+    let currentDate = new Date(startDate);
+
+    // Display Equinox Day
     const equinox = document.createElement("div");
     equinox.classList.add("month");
     equinox.innerHTML = `<h2>Equinox Day</h2><div class="calendar"><div class="day">${equinoxDate.toISOString().split('T')[0]}</div></div>`;
-    
-    const container = document.getElementById("calendar-container");
     container.appendChild(equinox);
 
-    const startDate = getFirstMonday(equinoxDate);
-    let currentDate = new Date(startDate);
-    let monthIndex = 0;
-
+    // Build each month
     for (let m = 0; m < 13; m++) {
       const monthName = customMonths[m];
       const monthDiv = document.createElement("div");
@@ -126,9 +140,17 @@
         container.appendChild(solstice);
       }
     }
-
   }
 
+  // Listen for year selection
+  document.getElementById("year-select").addEventListener("change", () => {
+    const year = parseInt(document.getElementById("year-select").value, 10);
+    if (!isNaN(year)) {
+      buildCalendar(year);
+    }
+  });
+
+  // Build default year on load
   buildCalendar(2025);
 </script>
 </body>
