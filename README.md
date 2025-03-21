@@ -6,6 +6,16 @@ This project displays a 13 month **Solar Calendar** (starting with 2025), overla
 
 There is also a full **Gregorian calendar** (starting with 2025), overlaying each day with its corresponding **Solar Calendar** date.
 
+This project merges the **Gregorian calendar** years with the **Solar calendar** dates.
+
+If you are not technically inclined, you can view the calenders here:
+
+[Solar calendar](https://github.com/tomgould/solar-calendar/blob/main/Solar-Calendar.pdf)
+
+[Gregorian calendar](https://github.com/tomgould/solar-calendar/blob/main/Gregorian-Calendar.pdf)
+
+
+
 ---
 
 ## 🔭 What is the Solar Calendar?
