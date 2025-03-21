@@ -8,7 +8,7 @@ There is also a full **Gregorian calendar** (starting with 2025), overlaying eac
 
 This project merges the **Gregorian calendar** years with the **Solar calendar** dates.
 
-If you are not technically inclined, you can view the calenders here:
+You can view the calenders here:
 
 [Solar calendar](https://github.com/tomgould/solar-calendar/blob/main/Solar-Calendar.pdf)
 
