@@ -65,7 +65,15 @@
   }
 
   function buildCalendar(year) {
+
+    // Equinox Day
+    const equinox = document.createElement("div");
+    equinox.classList.add("month");
+    equinox.innerHTML = `<h2>Equinox Day</h2><div class="calendar"><div class="day">${equinoxDate.toISOString().split('T')[0]}</div></div>`;
+    
     const container = document.getElementById("calendar-container");
+    container.appendChild(equinox);
+
     const startDate = getFirstMonday(equinoxDate);
     let currentDate = new Date(startDate);
     let monthIndex = 0;
@@ -119,11 +127,6 @@
       }
     }
 
-    // Equinox Day
-    const equinox = document.createElement("div");
-    equinox.classList.add("month");
-    equinox.innerHTML = `<h2>Equinox Day</h2><div class="calendar"><div class="day">${equinoxDate.toISOString().split('T')[0]}</div></div>`;
-    container.appendChild(equinox);
   }
 
   buildCalendar(2025);
