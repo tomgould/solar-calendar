@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solar Calendar with Gregorian Calendar dates 2025</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: #ccc;
+      margin: 1em auto;
+      max-width: 900px;
+    }
+    .day, .header {
+      background: white;
+      padding: 10px;
+      text-align: center;
+    }
+    .header {
+      background: #e0e0e0;
+      font-weight: bold;
+    }
+    .month {
+      margin-bottom: 2em;
+    }
+    .date {
+      font-size: 0.8em;
+      color: #666;
+    }
+    .custom-date {
+      font-size: 0.9em;
+      font-weight: bold;
+      margin-top: 0.3em;
+    }
+  </style>
+</head>
+<body>
+<h1>Solar Calendar with Gregorian Calendar dates 2025</h1>
+<div id="calendar-container"></div>
+
+<script>
+  const customMonths = ["March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January", "February", "Sol"];
+  const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+  const equinoxDate = new Date("2025-03-20");
+
+  function getFirstMonday(date) {
+    const day = date.getDay();
+    const offset = (day === 1) ? 0 : (8 - day) % 7;
+    return new Date(date.getTime() + offset * 86400000);
+  }
+
+  function isLeapYear(year) {
+    return (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0));
+  }
+
+  function buildCalendar(year) {
+    const container = document.getElementById("calendar-container");
+    const startDate = getFirstMonday(equinoxDate);
+    let currentDate = new Date(startDate);
+    let monthIndex = 0;
+
+    for (let m = 0; m < 13; m++) {
+      const monthName = customMonths[m];
+      const monthDiv = document.createElement("div");
+      monthDiv.classList.add("month");
+
+      const title = document.createElement("h2");
+      title.textContent = `${monthName}`;
+      monthDiv.appendChild(title);
+
+      const calendar = document.createElement("div");
+      calendar.classList.add("calendar");
+
+      weekdays.forEach(day => {
+        const header = document.createElement("div");
+        header.classList.add("header");
+        header.textContent = day;
+        calendar.appendChild(header);
+      });
+
+      for (let week = 0; week < 4; week++) {
+        for (let day = 0; day < 7; day++) {
+          const cell = document.createElement("div");
+          cell.classList.add("day");
+
+          const gregDate = currentDate.toISOString().split('T')[0];
+          const customDay = week * 7 + day + 1;
+
+          cell.innerHTML = `
+              <div class="date">${gregDate}</div>
+              <div class="custom-date">${monthName} ${customDay}</div>
+            `;
+
+          calendar.appendChild(cell);
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+      }
+
+      monthDiv.appendChild(calendar);
+      container.appendChild(monthDiv);
+
+      // Insert Solstice Day after Sextilis in leap years
+      if (monthName === "Sextilis" && isLeapYear(year)) {
+        const solstice = document.createElement("div");
+        solstice.classList.add("month");
+        solstice.innerHTML = `<h2>Solstice Day</h2><div class="calendar"><div class="day">Outside time</div></div>`;
+        container.appendChild(solstice);
+      }
+    }
+
+    // Equinox Day
+    const equinox = document.createElement("div");
+    equinox.classList.add("month");
+    equinox.innerHTML = `<h2>Equinox Day</h2><div class="calendar"><div class="day">${equinoxDate.toISOString().split('T')[0]}</div></div>`;
+    container.appendChild(equinox);
+  }
+
+  buildCalendar(2025);
+</script>
+</body>
+</html>
