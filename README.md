@@ -6,14 +6,6 @@ This project displays a full **Gregorian calendar** (starting with 2025), overla
 
 ---
 
-## 🌍 Live Project
-
-[🔗 View on GitHub](https://github.com/tomgould/solar-calendar)
-
-(Optional: Add a GitHub Pages link here if published)
-
----
-
 ## 🔭 What is the Solar Calendar?
 
 - 📅 **13 months** of **28 days** (364 days total)
@@ -35,11 +27,6 @@ This project displays a full **Gregorian calendar** (starting with 2025), overla
 - Clean, responsive HTML/CSS grid layout
 - Efficient, recursion-free JavaScript logic
 
----
-
-## 📸 Preview
-
-*(Optional: Add a screenshot here)*
 
 ---
 
