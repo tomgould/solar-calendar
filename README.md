@@ -2,17 +2,25 @@
 
 A reimagined calendar system that aligns each year with the **Spring Equinox**, maintains perfect 4-week months, and introduces **Equinox Day** and **Solstice Day** to stay synced with Earth's orbit.
 
-This project displays a 13 month **Solar Calendar** (starting with 2025), overlaying each day with its corresponding **Gregorian Calendar** date.
+This project displays a 13-month **Solar Calendar** (starting with 2025), overlaying each day with its corresponding **Gregorian Calendar** date.
 
 There is also a full **Gregorian calendar** (starting with 2025), overlaying each day with its corresponding **Solar Calendar** date.
 
 This project merges the **Gregorian calendar** years with the **Solar calendar** dates.
 
-You can view the calenders here:
+## 🌍 View the Calendars Online
 
-[Solar calendar](https://tomgould.github.io/solar-calendar/solar-calendar.html){:target="_blank"}
+You can view the calendars here:
 
-[Gregorian calendar](https://tomgould.github.io/solar-calendar/gregorian-calendar.html){:target="_blank"}
+- [**Solar Calendar**](https://tomgould.github.io/solar-calendar/solar-calendar.html){:target="_blank"}
+- [**Gregorian Calendar with Solar Dates**](https://tomgould.github.io/solar-calendar/gregorian-calendar.html){:target="_blank"}
+
+---
+
+## 🔄 GitHub Repository & Pages Site
+
+- **GitHub Repository**: [https://github.com/tomgould/solar-calendar](https://github.com/tomgould/solar-calendar)
+- **Live GitHub Pages Site**: [https://tomgould.github.io/solar-calendar/](https://tomgould.github.io/solar-calendar/)
 
 ---
 
@@ -36,7 +44,6 @@ You can view the calenders here:
 - Equinox Day marking
 - Clean, responsive HTML/CSS grid layout
 - Efficient, recursion-free JavaScript logic
-
 
 ---
 
