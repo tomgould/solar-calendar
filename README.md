@@ -10,11 +10,9 @@ This project merges the **Gregorian calendar** years with the **Solar calendar**
 
 You can view the calenders here:
 
-[Solar calendar](https://github.com/tomgould/solar-calendar/blob/main/Solar-Calendar.pdf)
+[Solar calendar](https://tomgould.github.io/solar-calendar/solar-calendar.html){:target="_blank"}
 
-[Gregorian calendar](https://github.com/tomgould/solar-calendar/blob/main/Gregorian-Calendar.pdf)
-
-
+[Gregorian calendar](https://tomgould.github.io/solar-calendar/gregorian-calendar.html){:target="_blank"}
 
 ---
 
