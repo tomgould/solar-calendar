@@ -62,9 +62,20 @@ This project is licensed under the [GNU General Public License v3.0](https://www
 ## 🚀 Getting Started
 
 1. Clone the repo:
-
-   ``` 
-       git clone https://github.com/tomgould/solar-calendar.git 
-       cd solar-calendar
+   ```bash
+   git clone https://github.com/tomgould/solar-calendar.git
+   cd solar-calendar
    ```
-   
+
+2. Open `solar-calendar.html` or `gregorian-calendar.html` in your browser — no build tools required!
+
+---
+
+## 🙋 Questions?
+
+Open an [issue](https://github.com/tomgould/solar-calendar/issues) and we’ll get back to you!
+
+---
+
+Thanks again!  
+– Tom ☀️
