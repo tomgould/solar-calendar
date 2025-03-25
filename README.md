@@ -1,12 +1,20 @@
 # ☀️ Solar Calendar
 
-A reimagined calendar system that aligns each year with the **Spring Equinox**, maintains perfect 4-week months, and introduces **Equinox Day** and **Solstice Day** to stay synced with Earth's orbit.
+The Solar Calendar is a fresh, easy-to-follow calendar system that stays naturally in sync with the Earth's orbit around the sun.
 
-This project displays a 13-month **Solar Calendar** (starting with 2025), overlaying each day with its corresponding **Gregorian Calendar** date.
+Instead of uneven months, it gives us **13 months of 28 days** — each with exactly 4 full weeks. The year always begins with the **Spring Equinox** (when day and night are equal), and it uses two special days to stay perfectly aligned:
 
-There is also a full **Gregorian calendar** (starting with 2025), overlaying each day with its corresponding **Solar Calendar** date.
+- **Equinox Day** — the real astronomical start of the year
+- **Solstice Day** — a leap correction day added after August during leap years
 
-This project merges the **Gregorian calendar** years with the **Solar calendar** days.
+🌍 Best of all: this system makes **daylight savings time unnecessary**. The calendar flows with nature, not against it.
+
+This project shows:
+
+- A full **Solar Calendar** (starting with 2025) with each day matched to the standard Gregorian date
+- A full **Gregorian Calendar** with each day mapped to its Solar Calendar equivalent
+
+It's an experiment in **re-thinking how we measure time** — to make it simpler, fairer, and more human.
 
 ## 🌍 View the Calendars Online
 
@@ -26,12 +34,15 @@ You can view the calendars here:
 
 ## 🔭 What is the Solar Calendar?
 
-- 📅 **13 months** of **28 days** (364 days total)
-- 🗓️ Each month starts on a **Monday**
-- 🌱 **Year begins** on the first Monday **on or after the Spring Equinox**
-- ☀️ **Equinox Day**: the actual Spring Equinox, outside the month/week system
-- 🔁 **Solstice Day**: leap correction day, inserted after August during leap years
-- ✅ No drift: tracks Earth’s orbit precisely
+- 📅 **13 months**, each with exactly **28 days** — no short or long months
+- 🗓️ Every month **starts on a Monday** — easy to plan, easy to remember
+- 🌱 The year begins on the **first Monday on or after the Spring Equinox**
+- ☀️ **Equinox Day** marks the real astronomical start of the year — outside of months and weeks
+- 🔁 **Solstice Day** is added after August in leap years to keep the calendar perfectly synced
+- 🕰️ **No more daylight savings time** — the calendar flows with the sun naturally
+- ✅ No drifting, no guesswork — it's aligned with the Earth's actual orbit
+
+
 
 ---
 
