@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,6 +43,12 @@
       font-weight: bold;
       margin-top: 0.3em;
     }
+    .today {
+      outline: 3px solid #007BFF;
+      outline-offset: -3px;
+      border-radius: 4px;
+      background-color: #e9f5ff;
+    }
   </style>
 </head>
 <body>
@@ -55,11 +62,12 @@
 <script>
   const customMonths = ["March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January", "February", "Sol"];
   const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const todayStr = "2025-03-25";
 
   function getSpringEquinox(year) {
-    if (year < 1583) return new Date(year, 2, 21); // Julian approximation
-    if (year >= 2044 && (year - 2044) % 4 === 0) return new Date(year, 2, 19); // rare early equinox
-    return new Date(year, 2, 20); // March 20 default
+    if (year < 1583) return new Date(year, 2, 21);
+    if (year >= 2044 && (year - 2044) % 4 === 0) return new Date(year, 2, 19);
+    return new Date(year, 2, 20);
   }
 
   function getFirstMonday(date) {
@@ -73,25 +81,21 @@
   }
 
   function clearCalendar() {
-    const container = document.getElementById("calendar-container");
-    container.innerHTML = "";
+    document.getElementById("calendar-container").innerHTML = "";
   }
 
   function buildCalendar(year) {
     clearCalendar();
-
     const container = document.getElementById("calendar-container");
     const equinoxDate = getSpringEquinox(year);
     const startDate = getFirstMonday(equinoxDate);
     let currentDate = new Date(startDate);
 
-    // Display Equinox Day
     const equinox = document.createElement("div");
     equinox.classList.add("month");
     equinox.innerHTML = `<h2>Equinox Day</h2><div class="calendar"><div class="day">${equinoxDate.toISOString().split('T')[0]}</div></div>`;
     container.appendChild(equinox);
 
-    // Build each month
     for (let m = 0; m < 13; m++) {
       const monthName = customMonths[m];
       const monthDiv = document.createElement("div");
@@ -119,11 +123,12 @@
           const gregDate = currentDate.toISOString().split('T')[0];
           const customDay = week * 7 + day + 1;
 
-          cell.innerHTML = `
-              <div class="date">${gregDate}</div>
-              <div class="custom-date">${monthName} ${customDay}</div>
-            `;
+          if (gregDate === todayStr && year === new Date().getFullYear()) {
+            cell.classList.add("today");
+            setTimeout(() => cell.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+          }
 
+          cell.innerHTML = `<div class="date">${gregDate}</div><div class="custom-date">${monthName} ${customDay}</div>`;
           calendar.appendChild(cell);
           currentDate.setDate(currentDate.getDate() + 1);
         }
@@ -132,7 +137,6 @@
       monthDiv.appendChild(calendar);
       container.appendChild(monthDiv);
 
-      // Insert Solstice Day after August in leap years
       if (monthName === "August" && isLeapYear(year)) {
         const solstice = document.createElement("div");
         solstice.classList.add("month");
@@ -142,7 +146,6 @@
     }
   }
 
-  // Listen for year selection
   document.getElementById("year-select").addEventListener("change", () => {
     const year = parseInt(document.getElementById("year-select").value, 10);
     if (!isNaN(year)) {
@@ -150,7 +153,6 @@
     }
   });
 
-  // Build default year on load
   buildCalendar(2025);
 </script>
 </body>
