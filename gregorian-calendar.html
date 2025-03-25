@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,6 +47,12 @@
       text-align: center;
       margin-bottom: 1em;
     }
+    .today {
+      outline: 3px solid #007BFF;
+      outline-offset: -3px;
+      border-radius: 4px;
+      background-color: #e9f5ff;
+    }
   </style>
 </head>
 <body>
@@ -60,6 +67,8 @@
   const customMonths = ["March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January", "February", "Sol"];
   const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const msPerDay = 86400000;
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
 
   function getSpringEquinox(year) {
     if (year < 1583) return new Date(year, 2, 21);
@@ -80,35 +89,22 @@
   function getSolarDate(date) {
     let solarYear = date.getFullYear();
     let solarYearStart = getFirstMonday(getSpringEquinox(solarYear));
-
     while (date < solarYearStart) {
       solarYear--;
       solarYearStart = getFirstMonday(getSpringEquinox(solarYear));
     }
 
     const diffDays = Math.floor((date - solarYearStart) / msPerDay);
-
-    if (diffDays === 364) {
-      return { year: solarYear, month: "Equinox Day", day: null };
-    }
-
-    if (isLeapYear(solarYear) && diffDays === 168) {
-      return { year: solarYear, month: "Solstice Day", day: null };
-    }
+    if (diffDays === 364) return { year: solarYear, month: "Equinox Day", day: null };
+    if (isLeapYear(solarYear) && diffDays === 168) return { year: solarYear, month: "Solstice Day", day: null };
 
     let adjustedDay = diffDays;
-    if (isLeapYear(solarYear) && diffDays > 168) {
-      adjustedDay--;
-    }
+    if (isLeapYear(solarYear) && diffDays > 168) adjustedDay--;
 
     const monthIndex = Math.floor(adjustedDay / 28);
     const day = (adjustedDay % 28) + 1;
 
-    return {
-      year: solarYear,
-      month: customMonths[monthIndex],
-      day
-    };
+    return { year: solarYear, month: customMonths[monthIndex], day };
   }
 
   function clearCalendar() {
@@ -153,13 +149,15 @@
         cell.classList.add("day");
 
         const gregDate = new Date(year, month, day);
+        const dateStr = gregDate.toISOString().split('T')[0];
         const solar = getSolarDate(gregDate);
 
-        cell.innerHTML = `
-            <div class="date">${day}</div>
-            <div class="custom-date">${solar.month}${solar.day ? ' ' + solar.day : ''} (${solar.year})</div>
-          `;
+        if (dateStr === todayStr && year === today.getFullYear()) {
+          cell.classList.add("today");
+          setTimeout(() => cell.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+        }
 
+        cell.innerHTML = `<div class="date">${day}</div><div class="custom-date">${solar.month}${solar.day ? ' ' + solar.day : ''} (${solar.year})</div>`;
         grid.appendChild(cell);
       }
 
@@ -175,7 +173,6 @@
     }
   });
 
-  // Initial render
   buildGregorianCalendar(2025);
 </script>
 </body>
