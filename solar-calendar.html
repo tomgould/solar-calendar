@@ -62,7 +62,8 @@
 <script>
   const customMonths = ["March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January", "February", "Sol"];
   const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-  const todayStr = "2025-03-25";
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
 
   function getSpringEquinox(year) {
     if (year < 1583) return new Date(year, 2, 21);
