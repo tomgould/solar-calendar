@@ -47,10 +47,24 @@ You can view the calendars here:
 
 ---
 
+## 🙌 Contributing
+
+We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING.md) to get started.
+
+---
+
+## 📄 License
+
+This project is licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
+
+---
+
 ## 🚀 Getting Started
 
 1. Clone the repo:
 
-   ```bash
-   git clone https://github.com/tomgould/solar-calendar.git
-   cd solar-calendar
+   ``` 
+       git clone https://github.com/tomgould/solar-calendar.git 
+       cd solar-calendar
+   ```
+   
