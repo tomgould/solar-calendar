@@ -7,7 +7,9 @@ Instead of uneven months, it gives us **13 months of 28 days** — each with exa
 - **Equinox Day** — the real astronomical start of the year
 - **Solstice Day** — a leap correction day added after August during leap years
 
-🌍 Best of all: this system makes **daylight savings time unnecessary**. The calendar flows with nature, not against it.
+🌍 Best of all:
+- It **removes the need for daylight savings time**
+- It **fixes the old calendar naming problem** — now **September, October, November, and December** are once again the **7th, 8th, 9th, and 10th months** — as their names suggest
 
 This project shows:
 
@@ -40,8 +42,12 @@ You can view the calendars here:
 - ☀️ **Equinox Day** marks the real astronomical start of the year — outside of months and weeks
 - 🔁 **Solstice Day** is added after August in leap years to keep the calendar perfectly synced
 - 🕰️ **No more daylight savings time** — the calendar flows with the sun naturally
+- 🧠 **Names finally make sense again**:
+   - **September** is month 7
+   - **October** is month 8
+   - **November** is month 9
+   - **December** is month 10
 - ✅ No drifting, no guesswork — it's aligned with the Earth's actual orbit
-
 
 
 ---
