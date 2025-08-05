@@ -19,12 +19,14 @@
       gap: 1px;
       background: #ccc;
       margin: 1em auto;
-      max-width: 1200px; /* Increased max-width for longer dates */
+      max-width: 1400px; /* Increased for new format */
     }
     .day, .header {
       background: white;
       padding: 10px;
       text-align: center;
+      min-height: 50px;
+      font-size: 0.9em; /* Adjusted for more text */
     }
     .header {
       background: #e0e0e0;
@@ -32,15 +34,6 @@
     }
     .month {
       margin-bottom: 2em;
-    }
-    .date {
-      font-size: 0.8em;
-      color: #666;
-    }
-    .custom-date {
-      font-size: 0.9em;
-      font-weight: bold;
-      margin-top: 0.3em;
     }
     .today {
       outline: 3px solid #007BFF;
@@ -72,10 +65,16 @@
 
   const todayStr = toLocalISOString(today);
 
+  function getOrdinalSuffix(day) {
+    const j = day % 10, k = day % 100;
+    if (j == 1 && k != 11) { return "st"; }
+    if (j == 2 && k != 12) { return "nd"; }
+    if (j == 3 && k != 13) { return "rd"; }
+    return "th";
+  }
+
   function getSpringEquinox(year) {
-    if (year > 275000 || year < -271000) {
-      throw new RangeError("Invalid time value for year: " + year);
-    }
+    if (year > 275000 || year < -271000) { throw new RangeError("Invalid time value for year: " + year); }
     if (year < 1583) return new Date(year, 2, 21);
     if (year >= 2044 && (year - 2044) % 4 === 0) return new Date(year, 2, 19);
     return new Date(year, 2, 20);
@@ -99,39 +98,29 @@
     const container = document.getElementById("calendar-container");
     clearCalendar();
 
-    let prevGregDateStr = null;
-    let prevCell = null;
-
     try {
       const equinoxDate = getSpringEquinox(year);
       const startDate = getFirstMonday(equinoxDate);
       let currentDate = new Date(startDate);
 
-      if (isNaN(currentDate.getTime())) {
-        throw new RangeError("Invalid time value for year: " + year);
-      }
+      if (isNaN(currentDate.getTime())) { throw new RangeError("Invalid time value for year: " + year); }
 
-      const readableEquinoxDate = equinoxDate.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      const eqDay = equinoxDate.getDate();
+      const readableEquinoxDate = `${equinoxDate.toLocaleDateString(undefined, { weekday: 'long' })} ${equinoxDate.toLocaleDateString(undefined, { month: 'long' })} ${eqDay}${getOrdinalSuffix(eqDay)}`;
       const equinox = document.createElement("div");
       equinox.classList.add("month");
-      equinox.innerHTML = `<h2>Equinox Day</h2><div class="calendar"><div class="day">${readableEquinoxDate}</div></div>`;
+      equinox.innerHTML = `<h2>Equinox Day</h2><div class="calendar"><div class="day"><div style="font-weight: bold; color: black;">${readableEquinoxDate}</div></div></div>`;
       container.appendChild(equinox);
-
-      prevGregDateStr = toLocalISOString(equinoxDate);
-      prevCell = equinox.querySelector('.day');
 
       for (let m = 0; m < 13; m++) {
         const monthName = customMonths[m];
         const monthDiv = document.createElement("div");
         monthDiv.classList.add("month");
-
         const title = document.createElement("h2");
         title.textContent = `${monthName}`;
         monthDiv.appendChild(title);
-
         const calendar = document.createElement("div");
         calendar.classList.add("calendar");
-
         weekdays.forEach(day => {
           const header = document.createElement("div");
           header.classList.add("header");
@@ -143,57 +132,52 @@
           for (let day = 0; day < 7; day++) {
             const cell = document.createElement("div");
             cell.classList.add("day");
-
             const gregDateStr = toLocalISOString(currentDate);
-            const readableGregDate = currentDate.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Format Current (Solar) Date
             const customDay = week * 7 + day + 1;
+            const solarDateStr = `${weekdays[day]} ${monthName} ${customDay}${getOrdinalSuffix(customDay)}`;
+
+            // Format Opposing (Gregorian) Date
+            const gregDay = currentDate.getDate();
+            const gregMonthName = currentDate.toLocaleDateString(undefined, { month: 'long' });
+            const gregWeekdayName = currentDate.toLocaleDateString(undefined, { weekday: 'long' });
+            let gregDateStrFormatted = `${gregWeekdayName} ${gregMonthName} ${gregDay}${getOrdinalSuffix(gregDay)}`;
+            if (currentDate.getFullYear() !== year) {
+              gregDateStrFormatted += ` (${currentDate.getFullYear()})`;
+            }
 
             if (gregDateStr === todayStr && year === new Date().getFullYear()) {
               cell.classList.add("today");
-              setTimeout(() => cell.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
             }
 
-            if (prevGregDateStr && prevGregDateStr === gregDateStr) {
-              cell.style.backgroundColor = '#ffcccc';
-              if (prevCell) {
-                prevCell.style.backgroundColor = '#ffcccc';
-              }
-            }
-
-            prevGregDateStr = gregDateStr;
-            prevCell = cell;
-
-            cell.innerHTML = `<div class="date">${readableGregDate}</div><div class="custom-date">${monthName} ${customDay}</div>`;
+            cell.innerHTML = `
+              <div style="font-weight: bold; color: grey;">${solarDateStr}</div>
+              <div style="font-weight: bold; color: black;">${gregDateStrFormatted}</div>
+            `;
             calendar.appendChild(cell);
             currentDate.setDate(currentDate.getDate() + 1);
           }
         }
-
         monthDiv.appendChild(calendar);
         container.appendChild(monthDiv);
 
         if (monthName === "August" && isLeapYear(year)) {
           const solstice = document.createElement("div");
           solstice.classList.add("month");
-          solstice.innerHTML = `<h2>Solstice Day</h2><div class="calendar"><div class="day">Outside time</div></div>`;
+          solstice.innerHTML = `<h2>Solstice Day</h2><div class="calendar"><div class="day" style="font-weight: bold; color: black;">(Intercalary Day)</div></div>`;
           container.appendChild(solstice);
-
-          prevGregDateStr = null;
-          prevCell = null;
         }
       }
     } catch (error) {
-      // Error handling code remains the same
+      // Error handling
     }
   }
 
   document.getElementById("year-select").addEventListener("change", () => {
     const year = parseInt(document.getElementById("year-select").value, 10);
-    if (!isNaN(year)) {
-      buildCalendar(year);
-    }
+    if (!isNaN(year)) { buildCalendar(year); }
   });
-
   buildCalendar(2025);
 </script>
 </body>

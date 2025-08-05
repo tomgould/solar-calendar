@@ -19,13 +19,14 @@
       gap: 1px;
       background: #ccc;
       margin: 1em auto;
-      max-width: 900px;
+      max-width: 1400px; /* Increased for new format */
     }
     .day, .header {
       background: white;
       padding: 10px;
       text-align: center;
-      min-height: 70px;
+      min-height: 50px;
+      font-size: 0.9em; /* Adjusted for more text */
     }
     .header {
       background: #e0e0e0;
@@ -33,18 +34,6 @@
     }
     .month {
       margin-bottom: 2em;
-    }
-    .date {
-      font-weight: bold;
-    }
-    .custom-date {
-      font-size: 0.8em;
-      color: #666;
-      margin-top: 4px;
-    }
-    .controls {
-      text-align: center;
-      margin-bottom: 1em;
     }
     .today {
       outline: 3px solid #007BFF;
@@ -64,7 +53,7 @@
 
 <script>
   const customMonths = ["March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January", "February", "Sol"];
-  const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const solarWeekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   const msPerDay = 86400000;
   const today = new Date();
@@ -78,58 +67,50 @@
 
   const todayStr = toLocalISOString(today);
 
+  function getOrdinalSuffix(day) {
+    const j = day % 10, k = day % 100;
+    if (j == 1 && k != 11) { return "st"; }
+    if (j == 2 && k != 12) { return "nd"; }
+    if (j == 3 && k != 13) { return "rd"; }
+    return "th";
+  }
+
+  // --- Functions getSpringEquinox, getFirstMonday, isLeapYear, getSolarDate, clearCalendar remain the same ---
   function getSpringEquinox(year) {
-    if (year > 275000 || year < -271000) {
-      throw new RangeError("Invalid time value for year: " + year);
-    }
+    if (year > 275000 || year < -271000) { throw new RangeError("Invalid time value for year: " + year); }
     if (year < 1583) return new Date(year, 2, 21);
     if (year >= 2044 && (year - 2044) % 4 === 0) return new Date(year, 2, 19);
     return new Date(year, 2, 20);
   }
-
   function getFirstMonday(date) {
     const day = date.getDay();
     const offset = (day === 1) ? 0 : (8 - day) % 7;
     return new Date(date.getTime() + offset * msPerDay);
   }
-
   function isLeapYear(year) {
     return (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0));
   }
-
   function getSolarDate(date) {
     let solarYear = date.getFullYear();
-
     let equinoxForYear = getSpringEquinox(solarYear);
     if (date < equinoxForYear) {
       solarYear--;
       equinoxForYear = getSpringEquinox(solarYear);
     }
-
     let solarYearStart = getFirstMonday(equinoxForYear);
-
     if (date < solarYearStart) {
       const prevEquinox = getSpringEquinox(solarYear - 1);
       solarYearStart = getFirstMonday(prevEquinox);
     }
-
     const diffDays = Math.round((date - solarYearStart) / msPerDay);
-
-    if (toLocalISOString(date) === toLocalISOString(equinoxForYear)) {
-      return { year: solarYear, month: "Equinox Day", day: null };
-    }
-
-    if (isLeapYear(solarYear) && diffDays === 168) return { year: solarYear, month: "Solstice Day", day: null };
-
+    if (toLocalISOString(date) === toLocalISOString(equinoxForYear)) { return { year: solarYear, month: "Equinox Day", day: null }; }
+    if (isLeapYear(solarYear) && diffDays === 168) { return { year: solarYear, month: "Solstice Day", day: null }; }
     let adjustedDay = diffDays;
     if (isLeapYear(solarYear) && diffDays > 168) adjustedDay--;
-
     const monthIndex = Math.floor(adjustedDay / 28);
     const day = (adjustedDay % 28) + 1;
-
     return { year: solarYear, month: customMonths[monthIndex], day };
   }
-
   function clearCalendar() {
     document.getElementById("calendar-container").innerHTML = "";
   }
@@ -138,13 +119,8 @@
     const container = document.getElementById("calendar-container");
     clearCalendar();
 
-    let prevSolarDateStr = null;
-    let prevCell = null;
-
     try {
-      if (year > 275000 || year < -271000) {
-        throw new RangeError("Invalid time value for year: " + year);
-      }
+      if (year > 275000 || year < -271000) { throw new RangeError("Invalid time value for year: " + year); }
 
       for (let month = 0; month < 12; month++) {
         const monthStart = new Date(year, month, 1);
@@ -173,54 +149,48 @@
         for (let day = 1; day <= daysInMonth; day++) {
           const cell = document.createElement("div");
           cell.classList.add("day");
-
           const gregDate = new Date(year, month, day);
           const dateStr = toLocalISOString(gregDate);
           const solar = getSolarDate(gregDate);
 
-          let solarDateStr = `${solar.month}${solar.day ? ' ' + solar.day : ''}`;
+          // Format Current (Gregorian) Date
+          const gregWeekdayName = gregDate.toLocaleDateString(undefined, { weekday: 'long' });
+          const gregDateStrFormatted = `${gregWeekdayName} ${monthName} ${day}${getOrdinalSuffix(day)}`;
 
-          // Add the Solar day of the week if it's a regular calendar day
+          // Format Opposing (Solar) Date
+          let solarDateStr = '';
           if (solar.day) {
-            const solarWeekdayIndex = (solar.day - 1) % 7;
-            solarDateStr = `${solarWeekdays[solarWeekdayIndex]}, ${solarDateStr}`;
+            const solarWeekdayName = solarWeekdays[(solar.day - 1) % 7];
+            solarDateStr = `${solarWeekdayName} ${solar.month} ${solar.day}${getOrdinalSuffix(solar.day)}`;
+          } else {
+            solarDateStr = solar.month;
           }
-
-          const fullSolarStr = `${solarDateStr} (${solar.year})`;
+          if (solar.year !== year) {
+            solarDateStr += ` (${solar.year})`;
+          }
 
           if (dateStr === todayStr && year === today.getFullYear()) {
             cell.classList.add("today");
-            setTimeout(() => cell.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
           }
 
-          if (prevSolarDateStr && prevSolarDateStr === fullSolarStr) {
-            cell.style.backgroundColor = '#ffcccc';
-            if (prevCell) {
-              prevCell.style.backgroundColor = '#ffcccc';
-            }
-          }
-
-          prevSolarDateStr = fullSolarStr;
-          prevCell = cell;
-
-          cell.innerHTML = `<div class="date">${day}</div><div class="custom-date">${fullSolarStr}</div>`;
+          cell.innerHTML = `
+            <div style="font-weight: bold; color: grey;">${gregDateStrFormatted}</div>
+            <div style="font-weight: bold; color: black;">${solarDateStr}</div>
+          `;
           grid.appendChild(cell);
         }
         calendar.appendChild(grid);
         container.appendChild(calendar);
       }
     } catch (error) {
-      // Error handling code remains the same
+      // Error handling
     }
   }
 
   document.getElementById("year-select").addEventListener("change", () => {
     const year = parseInt(document.getElementById("year-select").value, 10);
-    if (!isNaN(year)) {
-      buildGregorianCalendar(year);
-    }
+    if (!isNaN(year)) { buildGregorianCalendar(year); }
   });
-
   buildGregorianCalendar(2025);
 </script>
 </body>
