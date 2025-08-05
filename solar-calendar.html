@@ -5,47 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Solar Calendar with Gregorian Calendar Dates</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      color: #333;
-    }
-    h1, h2 {
-      text-align: center;
-    }
-    .calendar {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 1px;
-      background: #ccc;
-      margin: 1em auto;
-      max-width: 1400px; /* Increased for new format */
-    }
-    .day, .header {
-      background: white;
-      padding: 10px;
-      text-align: center;
-      min-height: 50px;
-      font-size: 0.9em; /* Adjusted for more text */
-    }
-    .header {
-      background: #e0e0e0;
-      font-weight: bold;
-    }
-    .month {
-      margin-bottom: 2em;
-    }
-    .today {
-      outline: 3px solid #007BFF;
-      outline-offset: -3px;
-      border-radius: 4px;
-      background-color: #e9f5ff;
-    }
+    body { font-family: Arial, sans-serif; background: #f9f9f9; color: #333; }
+    h1, h2 { text-align: center; }
+    .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: #ccc; margin: 1em auto; max-width: 1400px; }
+    .day, .header { background: white; padding: 10px; text-align: center; min-height: 60px; font-size: 0.9em; line-height: 1.4; }
+    .header { background: #e0e0e0; font-weight: bold; }
+    .month { margin-bottom: 2em; }
+    .today { outline: 3px solid #007BFF; outline-offset: -3px; border-radius: 4px; background-color: #e9f5ff; }
   </style>
 </head>
 <body>
 <h1>Solar Calendar with Gregorian Calendar Dates</h1>
-<div style="text-align:center;">
+<div style="text-align:center; margin-bottom: 1em;">
   <label for="year-select">Select Year: </label>
   <input type="number" id="year-select" value="2025" min="1" max="9999" />
 </div>
@@ -132,28 +103,30 @@
           for (let day = 0; day < 7; day++) {
             const cell = document.createElement("div");
             cell.classList.add("day");
-            const gregDateStr = toLocalISOString(currentDate);
+            const gregDateStrForCheck = toLocalISOString(currentDate);
 
-            // Format Current (Solar) Date
+            const solarWeekdayName = weekdays[day];
+            const gregWeekdayName = currentDate.toLocaleDateString(undefined, { weekday: 'long' });
+            const areWeekdaysSame = (solarWeekdayName === gregWeekdayName);
             const customDay = week * 7 + day + 1;
-            const solarDateStr = `${weekdays[day]} ${monthName} ${customDay}${getOrdinalSuffix(customDay)}`;
-
-            // Format Opposing (Gregorian) Date
+            const solarDateStr = `${monthName} ${customDay}${getOrdinalSuffix(customDay)}`;
             const gregDay = currentDate.getDate();
             const gregMonthName = currentDate.toLocaleDateString(undefined, { month: 'long' });
-            const gregWeekdayName = currentDate.toLocaleDateString(undefined, { weekday: 'long' });
-            let gregDateStrFormatted = `${gregWeekdayName} ${gregMonthName} ${gregDay}${getOrdinalSuffix(gregDay)}`;
+            let gregDateStr = areWeekdaysSame ? "" : `${gregWeekdayName}, `;
+            gregDateStr += `${gregMonthName} ${gregDay}${getOrdinalSuffix(gregDay)}`;
             if (currentDate.getFullYear() !== year) {
-              gregDateStrFormatted += ` (${currentDate.getFullYear()})`;
+              gregDateStr += ` (${currentDate.getFullYear()})`;
             }
 
-            if (gregDateStr === todayStr && year === new Date().getFullYear()) {
+            if (gregDateStrForCheck === todayStr && year === new Date().getFullYear()) {
               cell.classList.add("today");
+              setTimeout(() => cell.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
             }
 
             cell.innerHTML = `
-              <div style="font-weight: bold; color: grey;">${solarDateStr}</div>
-              <div style="font-weight: bold; color: black;">${gregDateStrFormatted}</div>
+              <div style="color: black;">${solarDateStr}</div>
+              <div style="font-size: 0.9em; font-weight: bold; color: #555;">Greg:</div>
+              <div style="font-size: 0.9em; color: #555;">${gregDateStr}</div>
             `;
             calendar.appendChild(cell);
             currentDate.setDate(currentDate.getDate() + 1);
@@ -165,12 +138,12 @@
         if (monthName === "August" && isLeapYear(year)) {
           const solstice = document.createElement("div");
           solstice.classList.add("month");
-          solstice.innerHTML = `<h2>Solstice Day</h2><div class="calendar"><div class="day" style="font-weight: bold; color: black;">(Intercalary Day)</div></div>`;
+          solstice.innerHTML = `<h2>Solstice Day</h2><div class="calendar"><div class="day" style="color: black;">(Intercalary Day)</div></div>`;
           container.appendChild(solstice);
         }
       }
     } catch (error) {
-      // Error handling
+      console.error("Calendar build failed:", error);
     }
   }
 

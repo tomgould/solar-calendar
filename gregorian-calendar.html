@@ -5,47 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Gregorian Calendar with Solar Calendar Dates</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      color: #333;
-    }
-    h1, h2 {
-      text-align: center;
-    }
-    .calendar {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 1px;
-      background: #ccc;
-      margin: 1em auto;
-      max-width: 1400px; /* Increased for new format */
-    }
-    .day, .header {
-      background: white;
-      padding: 10px;
-      text-align: center;
-      min-height: 50px;
-      font-size: 0.9em; /* Adjusted for more text */
-    }
-    .header {
-      background: #e0e0e0;
-      font-weight: bold;
-    }
-    .month {
-      margin-bottom: 2em;
-    }
-    .today {
-      outline: 3px solid #007BFF;
-      outline-offset: -3px;
-      border-radius: 4px;
-      background-color: #e9f5ff;
-    }
+    body { font-family: Arial, sans-serif; background: #f9f9f9; color: #333; }
+    h1, h2 { text-align: center; }
+    .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: #ccc; margin: 1em auto; max-width: 1400px; }
+    .day, .header { background: white; padding: 10px; text-align: center; min-height: 60px; font-size: 0.9em; line-height: 1.4; }
+    .header { background: #e0e0e0; font-weight: bold; }
+    .month { margin-bottom: 2em; }
+    .today { outline: 3px solid #007BFF; outline-offset: -3px; border-radius: 4px; background-color: #e9f5ff; }
   </style>
 </head>
 <body>
 <h1>Gregorian Calendar with Solar Calendar Dates</h1>
-<div class="controls">
+<div style="text-align:center; margin-bottom: 1em;">
   <label for="year-select">Select Year: </label>
   <input type="number" id="year-select" value="2025" min="1" max="9999" />
 </div>
@@ -75,21 +46,23 @@
     return "th";
   }
 
-  // --- Functions getSpringEquinox, getFirstMonday, isLeapYear, getSolarDate, clearCalendar remain the same ---
   function getSpringEquinox(year) {
     if (year > 275000 || year < -271000) { throw new RangeError("Invalid time value for year: " + year); }
     if (year < 1583) return new Date(year, 2, 21);
     if (year >= 2044 && (year - 2044) % 4 === 0) return new Date(year, 2, 19);
     return new Date(year, 2, 20);
   }
+
   function getFirstMonday(date) {
     const day = date.getDay();
     const offset = (day === 1) ? 0 : (8 - day) % 7;
     return new Date(date.getTime() + offset * msPerDay);
   }
+
   function isLeapYear(year) {
     return (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0));
   }
+
   function getSolarDate(date) {
     let solarYear = date.getFullYear();
     let equinoxForYear = getSpringEquinox(solarYear);
@@ -111,6 +84,7 @@
     const day = (adjustedDay % 28) + 1;
     return { year: solarYear, month: customMonths[monthIndex], day };
   }
+
   function clearCalendar() {
     document.getElementById("calendar-container").innerHTML = "";
   }
@@ -140,28 +114,25 @@
         });
         const startDay = monthStart.getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-        for (let i = 0; i < startDay; i++) {
-          const empty = document.createElement("div");
-          empty.classList.add("day");
-          grid.appendChild(empty);
-        }
+        for (let i = 0; i < startDay; i++) { grid.appendChild(document.createElement("div")); }
 
         for (let day = 1; day <= daysInMonth; day++) {
           const cell = document.createElement("div");
           cell.classList.add("day");
           const gregDate = new Date(year, month, day);
-          const dateStr = toLocalISOString(gregDate);
+          const dateStrForCheck = toLocalISOString(gregDate);
           const solar = getSolarDate(gregDate);
 
-          // Format Current (Gregorian) Date
           const gregWeekdayName = gregDate.toLocaleDateString(undefined, { weekday: 'long' });
-          const gregDateStrFormatted = `${gregWeekdayName} ${monthName} ${day}${getOrdinalSuffix(day)}`;
-
-          // Format Opposing (Solar) Date
+          const solarWeekdayName = solar.day ? solarWeekdays[(solar.day - 1) % 7] : null;
+          const areWeekdaysSame = (gregWeekdayName === solarWeekdayName);
+          const gregDateStr = `${monthName} ${day}${getOrdinalSuffix(day)}`;
           let solarDateStr = '';
           if (solar.day) {
-            const solarWeekdayName = solarWeekdays[(solar.day - 1) % 7];
-            solarDateStr = `${solarWeekdayName} ${solar.month} ${solar.day}${getOrdinalSuffix(solar.day)}`;
+            if (!areWeekdaysSame) {
+              solarDateStr += `${solarWeekdayName}, `;
+            }
+            solarDateStr += `${solar.month} ${solar.day}${getOrdinalSuffix(solar.day)}`;
           } else {
             solarDateStr = solar.month;
           }
@@ -169,13 +140,15 @@
             solarDateStr += ` (${solar.year})`;
           }
 
-          if (dateStr === todayStr && year === today.getFullYear()) {
+          if (dateStrForCheck === todayStr && year === today.getFullYear()) {
             cell.classList.add("today");
+            setTimeout(() => cell.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
           }
 
           cell.innerHTML = `
-            <div style="font-weight: bold; color: grey;">${gregDateStrFormatted}</div>
-            <div style="font-weight: bold; color: black;">${solarDateStr}</div>
+            <div style="color: black;">${gregDateStr}</div>
+            <div style="font-size: 0.9em; font-weight: bold; color: #555;">Sol:</div>
+            <div style="font-size: 0.9em; color: #555;">${solarDateStr}</div>
           `;
           grid.appendChild(cell);
         }
@@ -183,7 +156,7 @@
         container.appendChild(calendar);
       }
     } catch (error) {
-      // Error handling
+      console.error("Calendar build failed:", error);
     }
   }
 
