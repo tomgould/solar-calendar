@@ -74,6 +74,12 @@
     // This can create an invalid date if the year is too large
     if (year < 1583) return new Date(year, 2, 21);
     if (year >= 2044 && (year - 2044) % 4 === 0) return new Date(year, 2, 19);
+
+    // Check for extreme years that break the getSpringEquinox function
+    if (year > 275000 || year < -271000) {
+      throw new RangeError("Invalid time value for year: " + year);
+    }
+
     return new Date(year, 2, 20);
   }
 
@@ -89,11 +95,6 @@
 
   function getSolarDate(date) {
     let solarYear = date.getFullYear();
-
-    // Check for extreme years that break the getSpringEquinox function
-    if (solarYear > 275000 || solarYear < -271000) {
-      throw new RangeError("Invalid time value for year: " + solarYear);
-    }
 
     let solarYearStart = getFirstMonday(getSpringEquinox(solarYear));
     while (date < solarYearStart) {
