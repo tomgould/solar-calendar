@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,18 +67,22 @@
   const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const msPerDay = 86400000;
   const today = new Date();
-  const todayStr = today.toISOString().split('T')[0];
+
+  function toLocalISOString(date) {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  const todayStr = toLocalISOString(today);
 
   function getSpringEquinox(year) {
-    // This can create an invalid date if the year is too large
-    if (year < 1583) return new Date(year, 2, 21);
-    if (year >= 2044 && (year - 2044) % 4 === 0) return new Date(year, 2, 19);
-
-    // Check for extreme years that break the getSpringEquinox function
     if (year > 275000 || year < -271000) {
       throw new RangeError("Invalid time value for year: " + year);
     }
-
+    if (year < 1583) return new Date(year, 2, 21);
+    if (year >= 2044 && (year - 2044) % 4 === 0) return new Date(year, 2, 19);
     return new Date(year, 2, 20);
   }
 
@@ -96,14 +99,25 @@
   function getSolarDate(date) {
     let solarYear = date.getFullYear();
 
-    let solarYearStart = getFirstMonday(getSpringEquinox(solarYear));
-    while (date < solarYearStart) {
+    let equinoxForYear = getSpringEquinox(solarYear);
+    if (date < equinoxForYear) {
       solarYear--;
-      solarYearStart = getFirstMonday(getSpringEquinox(solarYear));
+      equinoxForYear = getSpringEquinox(solarYear);
     }
 
-    const diffDays = Math.floor((date - solarYearStart) / msPerDay);
-    if (diffDays === 364) return { year: solarYear, month: "Equinox Day", day: null };
+    let solarYearStart = getFirstMonday(equinoxForYear);
+
+    if (date < solarYearStart) {
+      const prevEquinox = getSpringEquinox(solarYear - 1);
+      solarYearStart = getFirstMonday(prevEquinox);
+    }
+
+    const diffDays = Math.round((date - solarYearStart) / msPerDay);
+
+    if (toLocalISOString(date) === toLocalISOString(equinoxForYear)) {
+      return { year: solarYear, month: "Equinox Day", day: null };
+    }
+
     if (isLeapYear(solarYear) && diffDays === 168) return { year: solarYear, month: "Solstice Day", day: null };
 
     let adjustedDay = diffDays;
@@ -123,8 +137,10 @@
     const container = document.getElementById("calendar-container");
     clearCalendar();
 
+    let prevSolarDateStr = null;
+    let prevCell = null;
+
     try {
-      // Proactively check if the input year is within a reasonable range.
       if (year > 275000 || year < -271000) {
         throw new RangeError("Invalid time value for year: " + year);
       }
@@ -163,15 +179,27 @@
           cell.classList.add("day");
 
           const gregDate = new Date(year, month, day);
-          const dateStr = gregDate.toISOString().split('T')[0];
+          const dateStr = toLocalISOString(gregDate);
           const solar = getSolarDate(gregDate);
+          const currentSolarDateStr = `${solar.month}${solar.day ? ' ' + solar.day : ''} (${solar.year})`;
 
           if (dateStr === todayStr && year === today.getFullYear()) {
             cell.classList.add("today");
             setTimeout(() => cell.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
           }
 
-          cell.innerHTML = `<div class="date">${day}</div><div class="custom-date">${solar.month}${solar.day ? ' ' + solar.day : ''} (${solar.year})</div>`;
+          // Check for and highlight duplicates
+          if (prevSolarDateStr && prevSolarDateStr === currentSolarDateStr) {
+            cell.style.backgroundColor = '#ffcccc'; // light red
+            if (prevCell) {
+              prevCell.style.backgroundColor = '#ffcccc'; // light red
+            }
+          }
+
+          prevSolarDateStr = currentSolarDateStr;
+          prevCell = cell;
+
+          cell.innerHTML = `<div class="date">${day}</div><div class="custom-date">${currentSolarDateStr}</div>`;
           grid.appendChild(cell);
         }
 
@@ -193,7 +221,7 @@
         container.appendChild(errorMessage);
       } else {
         console.error("An unexpected error occurred:", error);
-        throw error; // Re-throw other errors
+        throw error;
       }
     }
   }
