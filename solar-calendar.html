@@ -68,14 +68,14 @@
   function getSpringEquinox(year) {
     if (year < 1583) return new Date(year, 2, 21);
     if (year >= 2044 && (year - 2044) % 4 === 0) return new Date(year, 2, 19);
+
+    // Proactively check if the input year is within a reasonable range.
+    if (year > 275000 || year < -271000) {
+      throw new RangeError("Invalid time value for year: " + year);
+    }
+
     return new Date(year, 2, 20);
   }
-
-  // Proactively check if the input year is within a reasonable range.
-  if (year > 275000 || year < -271000) {
-    throw new RangeError("Invalid time value for year: " + year);
-  }
-
 
   function getFirstMonday(date) {
     const day = date.getDay();
