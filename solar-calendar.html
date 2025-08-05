@@ -71,6 +71,12 @@
     return new Date(year, 2, 20);
   }
 
+  // Proactively check if the input year is within a reasonable range.
+  if (year > 275000 || year < -271000) {
+    throw new RangeError("Invalid time value for year: " + year);
+  }
+
+
   function getFirstMonday(date) {
     const day = date.getDay();
     const offset = (day === 1) ? 0 : (8 - day) % 7;
@@ -86,63 +92,88 @@
   }
 
   function buildCalendar(year) {
-    clearCalendar();
     const container = document.getElementById("calendar-container");
-    const equinoxDate = getSpringEquinox(year);
-    const startDate = getFirstMonday(equinoxDate);
-    let currentDate = new Date(startDate);
+    clearCalendar();
 
-    const equinox = document.createElement("div");
-    equinox.classList.add("month");
-    equinox.innerHTML = `<h2>Equinox Day</h2><div class="calendar"><div class="day">${equinoxDate.toISOString().split('T')[0]}</div></div>`;
-    container.appendChild(equinox);
+    try {
+      const equinoxDate = getSpringEquinox(year);
+      const startDate = getFirstMonday(equinoxDate);
+      let currentDate = new Date(startDate);
 
-    for (let m = 0; m < 13; m++) {
-      const monthName = customMonths[m];
-      const monthDiv = document.createElement("div");
-      monthDiv.classList.add("month");
-
-      const title = document.createElement("h2");
-      title.textContent = `${monthName}`;
-      monthDiv.appendChild(title);
-
-      const calendar = document.createElement("div");
-      calendar.classList.add("calendar");
-
-      weekdays.forEach(day => {
-        const header = document.createElement("div");
-        header.classList.add("header");
-        header.textContent = day;
-        calendar.appendChild(header);
-      });
-
-      for (let week = 0; week < 4; week++) {
-        for (let day = 0; day < 7; day++) {
-          const cell = document.createElement("div");
-          cell.classList.add("day");
-
-          const gregDate = currentDate.toISOString().split('T')[0];
-          const customDay = week * 7 + day + 1;
-
-          if (gregDate === todayStr && year === new Date().getFullYear()) {
-            cell.classList.add("today");
-            setTimeout(() => cell.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-          }
-
-          cell.innerHTML = `<div class="date">${gregDate}</div><div class="custom-date">${monthName} ${customDay}</div>`;
-          calendar.appendChild(cell);
-          currentDate.setDate(currentDate.getDate() + 1);
-        }
+      // Proactively check if the date is valid before trying to use it.
+      if (isNaN(currentDate.getTime())) {
+        throw new RangeError("Invalid time value for year: " + year);
       }
 
-      monthDiv.appendChild(calendar);
-      container.appendChild(monthDiv);
+      const equinox = document.createElement("div");
+      equinox.classList.add("month");
+      equinox.innerHTML = `<h2>Equinox Day</h2><div class="calendar"><div class="day">${equinoxDate.toISOString().split('T')[0]}</div></div>`;
+      container.appendChild(equinox);
 
-      if (monthName === "August" && isLeapYear(year)) {
-        const solstice = document.createElement("div");
-        solstice.classList.add("month");
-        solstice.innerHTML = `<h2>Solstice Day</h2><div class="calendar"><div class="day">Outside time</div></div>`;
-        container.appendChild(solstice);
+      for (let m = 0; m < 13; m++) {
+        const monthName = customMonths[m];
+        const monthDiv = document.createElement("div");
+        monthDiv.classList.add("month");
+
+        const title = document.createElement("h2");
+        title.textContent = `${monthName}`;
+        monthDiv.appendChild(title);
+
+        const calendar = document.createElement("div");
+        calendar.classList.add("calendar");
+
+        weekdays.forEach(day => {
+          const header = document.createElement("div");
+          header.classList.add("header");
+          header.textContent = day;
+          calendar.appendChild(header);
+        });
+
+        for (let week = 0; week < 4; week++) {
+          for (let day = 0; day < 7; day++) {
+            const cell = document.createElement("div");
+            cell.classList.add("day");
+
+            const gregDate = currentDate.toISOString().split('T')[0];
+            const customDay = week * 7 + day + 1;
+
+            if (gregDate === todayStr && year === new Date().getFullYear()) {
+              cell.classList.add("today");
+              setTimeout(() => cell.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+            }
+
+            cell.innerHTML = `<div class="date">${gregDate}</div><div class="custom-date">${monthName} ${customDay}</div>`;
+            calendar.appendChild(cell);
+            currentDate.setDate(currentDate.getDate() + 1);
+          }
+        }
+
+        monthDiv.appendChild(calendar);
+        container.appendChild(monthDiv);
+
+        if (monthName === "August" && isLeapYear(year)) {
+          const solstice = document.createElement("div");
+          solstice.classList.add("month");
+          solstice.innerHTML = `<h2>Solstice Day</h2><div class="calendar"><div class="day">Outside time</div></div>`;
+          container.appendChild(solstice);
+        }
+      }
+    } catch (error) {
+      if (error instanceof RangeError) {
+        const errorMessage = document.createElement("h1");
+        errorMessage.style.textAlign = "center";
+        errorMessage.style.textTransform = "uppercase";
+        errorMessage.style.color = "red";
+        errorMessage.style.padding = "50px";
+        if (year > 0) {
+          errorMessage.textContent = "the sun has exploded, it's OK though, everyone you know is dead";
+        } else {
+          errorMessage.textContent = "Humans haven't evolved yet, the calendar has not been invented yet!";
+        }
+        container.appendChild(errorMessage);
+      } else {
+        console.error("An unexpected error occurred:", error);
+        throw error; // Re-throw other errors
       }
     }
   }

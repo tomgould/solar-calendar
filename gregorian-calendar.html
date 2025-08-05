@@ -71,6 +71,7 @@
   const todayStr = today.toISOString().split('T')[0];
 
   function getSpringEquinox(year) {
+    // This can create an invalid date if the year is too large
     if (year < 1583) return new Date(year, 2, 21);
     if (year >= 2044 && (year - 2044) % 4 === 0) return new Date(year, 2, 19);
     return new Date(year, 2, 20);
@@ -88,6 +89,12 @@
 
   function getSolarDate(date) {
     let solarYear = date.getFullYear();
+
+    // Check for extreme years that break the getSpringEquinox function
+    if (solarYear > 275000 || solarYear < -271000) {
+      throw new RangeError("Invalid time value for year: " + solarYear);
+    }
+
     let solarYearStart = getFirstMonday(getSpringEquinox(solarYear));
     while (date < solarYearStart) {
       solarYear--;
@@ -112,57 +119,81 @@
   }
 
   function buildGregorianCalendar(year) {
-    clearCalendar();
     const container = document.getElementById("calendar-container");
+    clearCalendar();
 
-    for (let month = 0; month < 12; month++) {
-      const monthStart = new Date(year, month, 1);
-      const monthName = monthStart.toLocaleString('default', { month: 'long' });
-      const calendar = document.createElement("div");
-      calendar.classList.add("month");
-
-      const title = document.createElement("h2");
-      title.textContent = `${monthName}`;
-      calendar.appendChild(title);
-
-      const grid = document.createElement("div");
-      grid.classList.add("calendar");
-
-      weekdays.forEach(day => {
-        const header = document.createElement("div");
-        header.classList.add("header");
-        header.textContent = day;
-        grid.appendChild(header);
-      });
-
-      const startDay = monthStart.getDay();
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-      for (let i = 0; i < startDay; i++) {
-        const empty = document.createElement("div");
-        empty.classList.add("day");
-        grid.appendChild(empty);
+    try {
+      // Proactively check if the input year is within a reasonable range.
+      if (year > 275000 || year < -271000) {
+        throw new RangeError("Invalid time value for year: " + year);
       }
 
-      for (let day = 1; day <= daysInMonth; day++) {
-        const cell = document.createElement("div");
-        cell.classList.add("day");
+      for (let month = 0; month < 12; month++) {
+        const monthStart = new Date(year, month, 1);
+        const monthName = monthStart.toLocaleString('default', { month: 'long' });
+        const calendar = document.createElement("div");
+        calendar.classList.add("month");
 
-        const gregDate = new Date(year, month, day);
-        const dateStr = gregDate.toISOString().split('T')[0];
-        const solar = getSolarDate(gregDate);
+        const title = document.createElement("h2");
+        title.textContent = `${monthName}`;
+        calendar.appendChild(title);
 
-        if (dateStr === todayStr && year === today.getFullYear()) {
-          cell.classList.add("today");
-          setTimeout(() => cell.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+        const grid = document.createElement("div");
+        grid.classList.add("calendar");
+
+        weekdays.forEach(day => {
+          const header = document.createElement("div");
+          header.classList.add("header");
+          header.textContent = day;
+          grid.appendChild(header);
+        });
+
+        const startDay = monthStart.getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        for (let i = 0; i < startDay; i++) {
+          const empty = document.createElement("div");
+          empty.classList.add("day");
+          grid.appendChild(empty);
         }
 
-        cell.innerHTML = `<div class="date">${day}</div><div class="custom-date">${solar.month}${solar.day ? ' ' + solar.day : ''} (${solar.year})</div>`;
-        grid.appendChild(cell);
-      }
+        for (let day = 1; day <= daysInMonth; day++) {
+          const cell = document.createElement("div");
+          cell.classList.add("day");
 
-      calendar.appendChild(grid);
-      container.appendChild(calendar);
+          const gregDate = new Date(year, month, day);
+          const dateStr = gregDate.toISOString().split('T')[0];
+          const solar = getSolarDate(gregDate);
+
+          if (dateStr === todayStr && year === today.getFullYear()) {
+            cell.classList.add("today");
+            setTimeout(() => cell.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+          }
+
+          cell.innerHTML = `<div class="date">${day}</div><div class="custom-date">${solar.month}${solar.day ? ' ' + solar.day : ''} (${solar.year})</div>`;
+          grid.appendChild(cell);
+        }
+
+        calendar.appendChild(grid);
+        container.appendChild(calendar);
+      }
+    } catch (error) {
+      if (error instanceof RangeError) {
+        const errorMessage = document.createElement("h1");
+        errorMessage.style.textAlign = "center";
+        errorMessage.style.textTransform = "uppercase";
+        errorMessage.style.color = "red";
+        errorMessage.style.padding = "50px";
+        if (year > 0) {
+          errorMessage.textContent = "the sun has exploded, it's OK though, everyone you know is dead";
+        } else {
+          errorMessage.textContent = "Humans haven't evolved yet, the calendar has not been invented yet!";
+        }
+        container.appendChild(errorMessage);
+      } else {
+        console.error("An unexpected error occurred:", error);
+        throw error; // Re-throw other errors
+      }
     }
   }
 
