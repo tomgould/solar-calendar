@@ -3,13 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Solar Calendar with Gregorian Dates</title>
+  <title>Fixed Solar Calendar (13x28)</title>
   <link rel="stylesheet" href="calendar-styles.css">
+   <style>
+      /* Ensure 4 rows for 28 days */
+      .month.active {
+          /* Grid is already 7 columns, just let content fill */
+      }
+      .day.fixed-calendar-day {
+         /* Specific styles if needed */
+      }
+      .year-extra-days {
+          padding: 1rem;
+          margin-bottom: 1rem;
+          background: var(--bg-secondary);
+          border-radius: 8px;
+          text-align: center;
+          box-shadow: var(--card-shadow);
+      }
+      .year-extra-days h3 {
+          margin-bottom: 0.5rem;
+          color: var(--accent-secondary);
+      }
+   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>🌞 Solar Calendar</h1>
+      <h1>🗓️ Fixed Solar Calendar (13x28)</h1>
       <div class="controls">
         <div class="control-group">
           <label for="year-input">Year:</label>
@@ -38,6 +59,13 @@
       </button>
     </div>
 
+    <!-- Section to display Year Day / Leap Day -->
+    <div class="year-extra-days" id="year-extra-days">
+        <h3>Year End Days</h3>
+        <span id="year-day-info"></span>
+        <span id="leap-day-info"></span>
+    </div>
+
     <div class="astronomical-events" id="astronomical-events"></div>
 
     <div id="calendar-container"></div>
@@ -46,32 +74,31 @@
   <script src="calendar-processor.js"></script>
   <script>
     const calendarProcessor = new CalendarProcessor();
-    let currentMonth = 0; // 0-11 for Solar Months
-    let selectedYear; // Will be set after data load
+    let currentMonth = 0; // 0-12 for Fixed Months
+    let selectedYear; // Set after data load
 
     function displayAstronomicalEvents() {
-      if (!selectedYear) return; // Don't run if year not set
+      if (!selectedYear) return;
+      // ... (Keep existing astronomical event display logic - it uses Gregorian dates) ...
       const events = calendarProcessor.getAstronomicalEvents(selectedYear);
       const container = document.getElementById('astronomical-events');
 
       const eventData = [
-        { key: 'vernalEquinox', title: '🌱 Vernal Equinox', class: 'vernal', description: 'Spring begins', time: 'Solar New Year' },
-        { key: 'summerSolstice', title: '☀️ Summer Solstice', class: 'summer', description: 'Longest day', time: 'Mid-Summer' },
-        { key: 'autumnEquinox', title: '🍂 Autumn Equinox', class: 'autumn', description: 'Fall begins', time: 'Mid-Fall' },
-        { key: 'winterSolstice', title: '❄️ Winter Solstice', class: 'winter', description: 'Shortest day', time: 'Mid-Winter' }
+        { key: 'vernalEquinox', title: '🌱 Vernal Equinox', class: 'vernal', description: 'Approx. Spring Start', time: 'Anchor Point' },
+        { key: 'summerSolstice', title: '☀️ Summer Solstice', class: 'summer', description: 'Longest day', time: 'Approx.' },
+        { key: 'autumnEquinox', title: '🍂 Autumn Equinox', class: 'autumn', description: 'Approx. Fall Start', time: 'Approx.' },
+        { key: 'winterSolstice', title: '❄️ Winter Solstice', class: 'winter', description: 'Shortest day', time: 'Approx.' }
       ];
 
       container.innerHTML = eventData.map(event => {
-        const date = events[event.key]; // This is a UTC Date object
-        if (!date || isNaN(date.getTime())) return ''; // Check for invalid date
-
-        // Use UTC methods to display date correctly regardless of local timezone
+        const date = events[event.key]; // UTC Date object
+        if (!date || isNaN(date.getTime())) return '';
         const monthName = calendarProcessor.gregorianMonths[date.getUTCMonth()];
         const day = date.getUTCDate();
         const dayName = calendarProcessor.dayNames[date.getUTCDay()];
 
         return `
-          <div class="astro-event ${event.class}" onclick="navigateToEvent('${event.key}')">
+          <div class="astro-event ${event.class}" onclick="navigateToGregorianEvent('${event.key}')">
             <div class="astro-event-icon">${event.title.split(' ')[0]}</div>
             <div class="astro-event-title">${event.title.substring(3)}</div>
             <div class="astro-event-date">${dayName}, ${monthName} ${day}</div>
@@ -84,36 +111,43 @@
       }).join('');
     }
 
-    function navigateToEvent(eventKey) {
-      if (!selectedYear) return;
-      const events = calendarProcessor.getAstronomicalEvents(selectedYear);
-      const eventDate = events[eventKey]; // UTC Date object
-      if (!eventDate || isNaN(date.getTime())) return;
-
-      // Pass the UTC Date object directly
-      const solarDate = calendarProcessor.getSolarDateFromGregorian(eventDate, selectedYear);
-      if (!solarDate) return;
-
-      currentMonth = solarDate.monthIndex;
-      updateDisplay(); // Update month indicator and show correct month grid
-
-      // Highlight the specific day after display update
-      setTimeout(() => {
+    // Navigate to Gregorian calendar focused on the event date
+    function navigateToGregorianEvent(eventKey) {
+        if (!selectedYear) return;
+        const events = calendarProcessor.getAstronomicalEvents(selectedYear);
+        const eventDate = events[eventKey]; // UTC Date object
+        if (!eventDate || isNaN(eventDate.getTime())) return;
         const eventDateStr = calendarProcessor.toISODateString(eventDate);
-        const dayElement = document.querySelector(`.month.active [data-gregorian-date="${eventDateStr}"]`);
-        if (dayElement) {
-          dayElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          // Simple highlight effect
-          dayElement.style.transition = 'none';
-          dayElement.style.outline = '3px solid var(--accent-secondary)';
-          dayElement.style.outlineOffset = '-3px';
-          setTimeout(() => {
-             dayElement.style.transition = 'outline 1.5s ease-out';
-             dayElement.style.outline = '0px solid transparent';
-          }, 100);
-        }
-      }, 100); // Allow time for month visibility change
+        window.location.href = `gregorian-calendar.html?date=${eventDateStr}&year=${selectedYear}`;
     }
+
+    // Display info about Year Day and Leap Day
+    function displayExtraDays() {
+        if (!selectedYear) return;
+        const isLeap = calendarProcessor.isSolarLeapYear(selectedYear);
+
+        const yearDayGregorian = calendarProcessor.getGregorianDateForSolarDay(selectedYear, 365);
+        const yearDayInfoEl = document.getElementById('year-day-info');
+        if (yearDayGregorian) {
+            yearDayInfoEl.textContent = `Year Day: ${formatGregorianDateForDisplay(yearDayGregorian).month} ${formatGregorianDateForDisplay(yearDayGregorian).day}`;
+        } else {
+            yearDayInfoEl.textContent = 'Year Day: (Error)';
+        }
+
+        const leapDayInfoEl = document.getElementById('leap-day-info');
+        if (isLeap) {
+            const leapDayGregorian = calendarProcessor.getGregorianDateForSolarDay(selectedYear, 366);
+             if (leapDayGregorian) {
+                leapDayInfoEl.textContent = ` | Leap Day: ${formatGregorianDateForDisplay(leapDayGregorian).month} ${formatGregorianDateForDisplay(leapDayGregorian).day}`;
+             } else {
+                 leapDayInfoEl.textContent = ' | Leap Day: (Error)';
+             }
+             leapDayInfoEl.style.display = 'inline';
+        } else {
+            leapDayInfoEl.style.display = 'none';
+        }
+    }
+
 
     // Formats a UTC Date object for display
     function formatGregorianDateForDisplay(date) {
@@ -124,10 +158,9 @@
         return { month, day, dayName };
     }
 
-
     function generateCalendar() {
        if (!selectedYear) {
-            console.error("Cannot generate calendar without a selected year.");
+            console.error("Cannot generate calendar: Year not set.");
             return;
        }
       const container = document.getElementById('calendar-container');
@@ -136,204 +169,166 @@
       const today = new Date(); // Local today
       const todayStr = calendarProcessor.toISODateString(new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()))); // UTC today string
 
-      calendarProcessor.solarMonths.forEach((month, monthIndex) => {
+      calendarProcessor.fixedMonths.forEach((month, monthIndex) => {
         const monthDiv = document.createElement('div');
-        monthDiv.className = 'month'; // Initially hidden via CSS
+        monthDiv.className = 'month'; // Initially hidden
         monthDiv.id = `month-${monthIndex}`;
 
-        // 1. Add day headers (Sun, Mon, etc.)
-        calendarProcessor.dayNames.forEach(day => {
-          const header = document.createElement('div');
-          header.className = 'header';
-          header.textContent = day;
-          monthDiv.appendChild(header);
-        });
-
-        // 2. Calculate offset for the first day
-        const firstSolarDayOfMonth = month.startDay;
-        const firstGregorianDate = calendarProcessor.getGregorianDateForSolarDay(selectedYear, firstSolarDayOfMonth);
-
-        if (firstGregorianDate && !isNaN(firstGregorianDate.getTime())) {
-          const firstDayOfWeek = firstGregorianDate.getUTCDay(); // 0=Sun, 1=Mon...
-
-          // Add empty cells for padding before the 1st day
-          for (let i = 0; i < firstDayOfWeek; i++) {
-            const emptyDay = document.createElement('div');
-            emptyDay.className = 'day empty';
-            monthDiv.appendChild(emptyDay);
-          }
-
-          // 3. Add day cells for the month
-          const daysInThisMonth = calendarProcessor.getDaysInSolarMonth(selectedYear, monthIndex);
-
-          for (let dayOfMonth = 1; dayOfMonth <= daysInThisMonth; dayOfMonth++) {
-            const solarDayOfYear = month.startDay + dayOfMonth - 1;
-            const gregorianDate = calendarProcessor.getGregorianDateForSolarDay(selectedYear, solarDayOfYear); // Gets UTC Date
-
-            if (gregorianDate && !isNaN(gregorianDate.getTime())) {
-              const dayDiv = document.createElement('div');
-              dayDiv.className = 'day';
-
-              const gregorianDateStr = calendarProcessor.toISODateString(gregorianDate); // YYYY-MM-DD
-              dayDiv.setAttribute('data-gregorian-date', gregorianDateStr);
-
-              // Check if it's today
-              if (gregorianDateStr === todayStr) {
-                dayDiv.classList.add('today');
-              }
-
-              // Check for astronomical events
-              const astroEvent = calendarProcessor.checkAstronomicalEvent(gregorianDate, selectedYear);
-              if (astroEvent) {
-                dayDiv.classList.add(astroEvent.class); // Add class like 'vernal-equinox'
-                const badge = document.createElement('div');
-                badge.className = 'astro-badge';
-                badge.textContent = astroEvent.icon;
-                dayDiv.appendChild(badge);
-              }
-
-              // Solar day number (1-31)
-              const dayNumber = document.createElement('div');
-              dayNumber.className = 'day-number';
-              dayNumber.textContent = dayOfMonth;
-              dayDiv.appendChild(dayNumber);
-
-              // Corresponding Gregorian date info
-              const { month: gMonth, day: gDay, dayName } = formatGregorianDateForDisplay(gregorianDate);
-              const gregorianInfo = document.createElement('div');
-              gregorianInfo.className = 'gregorian-date';
-              gregorianInfo.innerHTML = `${gMonth.substring(0,3)} ${gDay}`; // Abbreviate month
-              dayDiv.appendChild(gregorianInfo);
-
-              /* Optional: Display Gregorian Day Name
-              const dayNameInfo = document.createElement('div');
-              dayNameInfo.className = 'gregorian-month'; // Reusing class, maybe rename
-              dayNameInfo.textContent = dayName;
-              dayDiv.appendChild(dayNameInfo);
-              */
-
-              // Add click handler to link to Gregorian calendar
-              dayDiv.style.cursor = 'pointer';
-              dayDiv.addEventListener('click', () => {
-                window.location.href = `gregorian-calendar.html?date=${gregorianDateStr}&year=${selectedYear}`;
-              });
-
-              monthDiv.appendChild(dayDiv);
-            } else {
-                 console.warn(`Could not calculate Gregorian date for Solar year ${selectedYear}, day ${solarDayOfYear}`);
-                 // Optionally add a placeholder or error cell
-                 const errorDay = document.createElement('div');
-                 errorDay.className = 'day empty error';
-                 errorDay.textContent = '?';
-                 monthDiv.appendChild(errorDay);
-            }
-          } // End loop through days of month
-        } else {
-             console.error(`Could not get Gregorian date for first day of Solar month ${monthIndex + 1}, year ${selectedYear}`);
-             // Add error message or handle gracefully
+        // 1. Add fixed headers: Mon -> Sun
+        for (let i = 1; i <= 7; i++) { // Loop Mon(1) to Sun(0->7)
+            const dayIndex = i % 7;
+            const header = document.createElement('div');
+            header.className = 'header';
+            header.textContent = calendarProcessor.dayNames[dayIndex];
+            monthDiv.appendChild(header);
         }
 
-        container.appendChild(monthDiv); // Append the completed month grid
-      }); // End loop through solarMonths
+        // 2. Add 28 day cells (always 4 full weeks)
+        for (let dayOfMonth = 1; dayOfMonth <= 28; dayOfMonth++) {
+          // Calculate the day number within the 364-day cycle
+          const solarDayOfYear = month.startDay + dayOfMonth - 1;
+          const gregorianDate = calendarProcessor.getGregorianDateForSolarDay(selectedYear, solarDayOfYear); // Gets UTC Date
 
-      updateDisplay(); // Ensure the correct month is shown initially
+          const dayDiv = document.createElement('div');
+          dayDiv.className = 'day fixed-calendar-day'; // Added class
+
+          if (gregorianDate && !isNaN(gregorianDate.getTime())) {
+            const gregorianDateStr = calendarProcessor.toISODateString(gregorianDate); // YYYY-MM-DD
+            dayDiv.setAttribute('data-gregorian-date', gregorianDateStr);
+
+            // Check if it's today
+            if (gregorianDateStr === todayStr) {
+              dayDiv.classList.add('today');
+            }
+
+            // Check for astronomical events (based on Gregorian date)
+            const astroEvent = calendarProcessor.checkAstronomicalEvent(gregorianDate, selectedYear);
+            if (astroEvent) {
+              dayDiv.classList.add(astroEvent.class);
+              const badge = document.createElement('div');
+              badge.className = 'astro-badge';
+              badge.textContent = astroEvent.icon;
+              dayDiv.appendChild(badge);
+            }
+
+            // Fixed Solar day number (1-28)
+            const dayNumber = document.createElement('div');
+            dayNumber.className = 'day-number';
+            dayNumber.textContent = dayOfMonth;
+            dayDiv.appendChild(dayNumber);
+
+            // Corresponding Gregorian date info
+            const { month: gMonth, day: gDay } = formatGregorianDateForDisplay(gregorianDate);
+            const gregorianInfo = document.createElement('div');
+            gregorianInfo.className = 'gregorian-date';
+            gregorianInfo.innerHTML = `${gMonth.substring(0,3)} ${gDay}`;
+            dayDiv.appendChild(gregorianInfo);
+
+            // Add click handler to link to Gregorian calendar
+            dayDiv.style.cursor = 'pointer';
+            dayDiv.addEventListener('click', () => {
+              window.location.href = `gregorian-calendar.html?date=${gregorianDateStr}&year=${selectedYear}`;
+            });
+
+          } else {
+               // Handle error if Gregorian date couldn't be calculated
+               dayDiv.classList.add('empty', 'error');
+               dayDiv.textContent = '?';
+               console.warn(`Could not calculate Gregorian date for Solar year ${selectedYear}, day ${solarDayOfYear}`);
+          }
+           monthDiv.appendChild(dayDiv);
+        } // End loop through 28 days
+
+        container.appendChild(monthDiv); // Append the completed month grid
+      }); // End loop through fixedMonths
+
+      updateDisplay(); // Ensure the correct month is shown
     }
 
-    // Updates which month grid is visible and the month indicator text
+    // Updates visibility, month indicator, and extra days display
     function updateDisplay() {
        if (!selectedYear) return;
       document.querySelectorAll('.month').forEach((monthEl, index) => {
         monthEl.classList.toggle('active', index === currentMonth);
       });
 
-      const titleData = calendarProcessor.formatSolarMonthTitle(currentMonth);
+      // Update month indicator title
+      const titleData = calendarProcessor.formatSolarMonthTitle(currentMonth, selectedYear);
       const indicator = document.getElementById('current-month-indicator');
       indicator.innerHTML = `
         <span class="month-title-main">${titleData.main}</span>
         <span class="month-title-sub">${titleData.sub}</span>
       `;
 
-      displayAstronomicalEvents(); // Refresh events based on the current year
+      displayAstronomicalEvents(); // Refresh astro events
+      displayExtraDays(); // Refresh Year Day / Leap Day info
     }
 
-    // Navigate between months, handling year wrapping
+    // Navigate between fixed months (0-12)
     function navigateMonth(direction) {
        if (!selectedYear) return;
       let newMonth = currentMonth + direction;
 
       if (newMonth < 0) { // Wrap to previous year
         selectedYear--;
-        if (selectedYear < 1900) selectedYear = 1900; // Boundary check
-        newMonth = 11; // Last month index
+        if (selectedYear < 1900) selectedYear = 1900;
+        newMonth = 12; // Last month index (Sol)
         document.getElementById('year-input').value = selectedYear;
-        generateCalendar(); // Regenerate calendar for the new year
-      } else if (newMonth >= 12) { // Wrap to next year
+        generateCalendar(); // Regenerate
+      } else if (newMonth >= 13) { // Wrap to next year
         selectedYear++;
-        if (selectedYear > 2100) selectedYear = 2100; // Boundary check
-        newMonth = 0; // First month index
+        if (selectedYear > 2100) selectedYear = 2100;
+        newMonth = 0; // First month index (March)
         document.getElementById('year-input').value = selectedYear;
-        generateCalendar(); // Regenerate calendar for the new year
+        generateCalendar(); // Regenerate
       }
 
       currentMonth = newMonth;
-      updateDisplay(); // Show the new current month
+      updateDisplay(); // Show new month
     }
 
-    // Navigate between years
+    // Navigate years (logic remains same, triggers regeneration)
     function navigateYear(direction) {
-       if (!selectedYear) return;
-      const yearInput = document.getElementById('year-input');
-      let newYear = selectedYear + direction;
-
-      // Enforce year boundaries
-      if (newYear < 1900) newYear = 1900;
-      if (newYear > 2100) newYear = 2100;
-
-      yearInput.value = newYear; // Update input field
-      updateYear(); // Trigger regeneration and display update
+        if (!selectedYear) return;
+        const yearInput = document.getElementById('year-input');
+        let newYear = selectedYear + direction;
+        if (newYear < 1900) newYear = 1900;
+        if (newYear > 2100) newYear = 2100;
+        yearInput.value = newYear;
+        updateYear();
     }
 
-    // Update calendar when year input changes
+    // Update on year input change (logic remains same)
     function updateYear() {
       const yearInput = document.getElementById('year-input');
       let newYear = parseInt(yearInput.value);
-
-      // Validate and clamp the year
-      if (isNaN(newYear) || newYear < 1900) {
-        newYear = 1900;
-      } else if (newYear > 2100) {
-        newYear = 2100;
-      }
-      yearInput.value = newYear; // Correct input field if needed
+      if (isNaN(newYear) || newYear < 1900) newYear = 1900;
+      else if (newYear > 2100) newYear = 2100;
+      yearInput.value = newYear;
 
       if (selectedYear !== newYear) {
           selectedYear = newYear;
-          // Optionally reset to the first month when year changes, or keep current month
-          // currentMonth = 0;
-          generateCalendar(); // Regenerate for the new year
-          updateDisplay(); // Update titles and visibility
+          // currentMonth = 0; // Optionally reset to first month
+          generateCalendar(); // Regenerate fully
+          updateDisplay();
       }
     }
 
-    // Toggle between light and dark themes
-    function toggleTheme() {
+    // Theme toggling (same)
+    function toggleTheme() { /* ... keep existing toggleTheme ... */
       const html = document.documentElement;
       const isDark = html.getAttribute('data-theme') === 'dark';
       const newTheme = isDark ? 'light' : 'dark';
       html.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme); // Save preference
-
+      localStorage.setItem('theme', newTheme);
       const icon = document.getElementById('theme-icon');
       const text = document.getElementById('theme-text');
       icon.textContent = isDark ? '🌙' : '☀️';
       text.textContent = isDark ? 'Dark Mode' : 'Light Mode';
     }
-
-    // Initialize theme based on saved preference or default
-    function initializeTheme() {
+    function initializeTheme() { /* ... keep existing initializeTheme ... */
       const savedTheme = localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
-
       const icon = document.getElementById('theme-icon');
       const text = document.getElementById('theme-text');
       if (savedTheme === 'dark') {
@@ -345,105 +340,110 @@
       }
     }
 
-    // Handle URL parameters for deep linking
+    // Handle URL parameters for fixed calendar
     function handleURLParameters() {
       const urlParams = new URLSearchParams(window.location.search);
       const targetYear = urlParams.get('year');
-      const targetMonth = urlParams.get('month'); // Expecting Solar month index (0-11)
-      const targetDate = urlParams.get('date'); // Expecting Gregorian YYYY-MM-DD
+      // Note: 'month' param might be less useful now unless it's 0-12
+      const targetMonth = urlParams.get('month');
+      const targetDate = urlParams.get('date'); // Gregorian YYYY-MM-DD still useful
 
-      let yearToSet = new Date().getFullYear(); // Default to current year
-
+      let yearToSet = new Date().getFullYear();
       if (targetYear) {
         let year = parseInt(targetYear);
-        if (year >= 1900 && year <= 2100) {
-          yearToSet = year;
-        }
+        if (year >= 1900 && year <= 2100) yearToSet = year;
       }
-
-      selectedYear = yearToSet; // Set the initial year
+      selectedYear = yearToSet; // Set initial year
       document.getElementById('year-input').value = selectedYear;
 
-      let monthToSet = 0; // Default to first month
-      let dateToHighlight = null;
+      let monthToSet = 0; // Default to first month (March)
+      let dateToHighlight = null; // Gregorian YYYY-MM-DD
 
-      if (targetMonth !== null) {
-        const monthIndex = parseInt(targetMonth);
-        if (monthIndex >= 0 && monthIndex < 12) {
-          monthToSet = monthIndex;
-        }
-      } else if (targetDate) {
-         // Convert Gregorian YYYY-MM-DD to Solar month index
-         // Need to parse targetDate carefully, assuming it's UTC
+      // If Gregorian date is provided, derive the corresponding fixed month
+      if (targetDate) {
          const dateParts = targetDate.split('-');
          if (dateParts.length === 3) {
              const year = parseInt(dateParts[0]);
-             const month = parseInt(dateParts[1]) - 1; // JS month is 0-indexed
+             const month = parseInt(dateParts[1]) - 1;
              const day = parseInt(dateParts[2]);
-             // Create a UTC date object
              const gDate = new Date(Date.UTC(year, month, day));
 
-             if (!isNaN(gDate.getTime()) && year === selectedYear) { // Ensure date is valid and in the selected year
-                 const solarDate = calendarProcessor.getSolarDateFromGregorian(gDate, selectedYear);
-                 if (solarDate) {
-                     monthToSet = solarDate.monthIndex;
-                     dateToHighlight = targetDate; // Store YYYY-MM-DD to highlight later
+             if (!isNaN(gDate.getTime())) {
+                 // Determine Solar year and start date first
+                 let potentialSolarYear = year;
+                 let startDate = calendarProcessor.getSolarYearStartDate(potentialSolarYear);
+                 if (!startDate || gDate < startDate) {
+                     potentialSolarYear--;
                  }
-             } else if (year !== selectedYear) {
-                 console.warn(`URL date parameter year (${year}) does not match selected year (${selectedYear}). Ignoring date parameter.`);
+                 // Now convert using the correct solar year context
+                 const solarInfo = calendarProcessor.getSolarDateFromGregorian(gDate, potentialSolarYear);
+
+                 if (solarInfo && solarInfo.monthIndex >= 0) { // Check it's not a special day
+                     // If date's year caused a shift in solar year, update selectedYear
+                     if (solarInfo.year !== selectedYear) {
+                          console.warn(`URL date parameter resulted in Solar Year ${solarInfo.year}, updating selected year.`);
+                          selectedYear = solarInfo.year;
+                          document.getElementById('year-input').value = selectedYear;
+                     }
+                     monthToSet = solarInfo.monthIndex;
+                     dateToHighlight = targetDate;
+                 } else if (solarInfo && solarInfo.specialDay) {
+                      // Landed on Year Day or Leap Day, maybe default to last/first month?
+                      monthToSet = 12; // Default to 'Sol' if landing on special day
+                      dateToHighlight = targetDate; // Still highlight the Gregorian date
+                      console.log(`URL date ${targetDate} corresponds to ${solarInfo.specialDay}. Showing last month.`);
+                 }
              }
          }
+      // Allow overriding month directly (less common for fixed calendar)
+      } else if (targetMonth !== null) {
+        const monthIndex = parseInt(targetMonth);
+        if (monthIndex >= 0 && monthIndex < 13) {
+          monthToSet = monthIndex;
+        }
       }
 
-      currentMonth = monthToSet; // Set the initial month
+      currentMonth = monthToSet; // Set the initial month index
 
-      // Return date to highlight after calendar generation
-      return dateToHighlight;
+      return dateToHighlight; // Return Gregorian date string if highlight needed
     }
 
-    // Initial setup when the DOM is ready
+    // DOM Ready Initialisation
     document.addEventListener('DOMContentLoaded', async () => {
       initializeTheme();
 
-      // Load essential equinox data before doing anything else
+      // CRITICAL: Load equinox data and calculate start dates BEFORE parsing URL or generating
       await calendarProcessor.loadVernalEquinoxData();
+      // Note: preCalculateYearStartDates is called within loadVernalEquinoxData now
 
-      // Set initial year and month based on URL or defaults
-      const dateToHighlight = handleURLParameters();
+      const dateToHighlight = handleURLParameters(); // Sets selectedYear and currentMonth
 
-      // Setup year input listeners
+      // Setup year input
       const yearInput = document.getElementById('year-input');
-      // Set value again in case handleURLParameters changed selectedYear
       yearInput.value = selectedYear;
       yearInput.addEventListener('change', updateYear);
       yearInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault(); // Prevent potential form submission
-          updateYear();
-        }
+        if (e.key === 'Enter') { e.preventDefault(); updateYear(); }
       });
 
-      // Generate the calendar grid for the initial year
-      generateCalendar();
-      // updateDisplay is called within generateCalendar's end
+      generateCalendar(); // Generates all month grids, updateDisplay called inside
 
-      // Highlight specific date from URL if applicable
+      // Highlight day from URL if needed
       if (dateToHighlight) {
         setTimeout(() => {
-          // Ensure querySelector targets the visible month
           const dayElement = document.querySelector(`.month.active [data-gregorian-date="${dateToHighlight}"]`);
           if (dayElement) {
-              dayElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-              // Simple highlight effect
-              dayElement.style.transition = 'none';
-              dayElement.style.outline = '3px solid var(--accent-secondary)';
-              dayElement.style.outlineOffset = '-3px';
-              setTimeout(() => {
-                 dayElement.style.transition = 'outline 1.5s ease-out';
-                 dayElement.style.outline = '0px solid transparent';
-              }, 100);
+            dayElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+             // Simple highlight effect
+             dayElement.style.transition = 'none';
+             dayElement.style.outline = '3px solid var(--accent-secondary)';
+             dayElement.style.outlineOffset = '-3px';
+             setTimeout(() => {
+                dayElement.style.transition = 'outline 1.5s ease-out';
+                dayElement.style.outline = '0px solid transparent';
+             }, 100);
           }
-        }, 300); // Delay slightly longer to ensure layout is stable
+        }, 300);
       }
     });
   </script>
