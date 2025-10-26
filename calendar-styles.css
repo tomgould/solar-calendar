@@ -21,16 +21,17 @@
   --summer-color: #f59e0b;
   --autumn-color: #ef4444;
   --winter-color: #3b82f6;
+  --grid-gap: 2px;
 }
 
 [data-theme="dark"] {
   --bg-primary: #1a1a2e;
   --bg-secondary: #16213e;
-  --bg-tertiary: #0f172a;
+  --bg-tertiary: #2a2c41;
   --text-primary: #e4e4e7;
   --text-secondary: #a1a1aa;
   --text-tertiary: #71717a;
-  --border-color: #27272a;
+  --border-color: #3a3b53;
   --card-bg: #27293d;
   --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
   --card-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.4);
@@ -51,37 +52,43 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
-  line-height: 1.6;
-  transition: var(--transition);
+  line-height: 1.5;
+  transition: background 0.3s, color 0.3s;
+  overscroll-behavior: none;
 }
 
 .container {
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 header {
   text-align: center;
-  padding: 2rem 1rem;
+  padding: 1.5rem 0.5rem;
   background: var(--bg-secondary);
-  border-radius: 16px;
-  margin-bottom: 2rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
   box-shadow: var(--card-shadow);
 }
 
 h1 {
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-size: clamp(1.25rem, 4vw, 2rem);
   font-weight: 700;
   background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .controls {
@@ -90,7 +97,7 @@ h1 {
   gap: 1rem;
   align-items: center;
   justify-content: center;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
 }
 
 .control-group {
@@ -106,19 +113,26 @@ label {
 }
 
 input[type="number"] {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
   border: 2px solid var(--border-color);
   border-radius: 8px;
   background: var(--card-bg);
   color: var(--text-primary);
   font-size: 1rem;
-  width: 100px;
+  width: 90px;
   transition: var(--transition);
+  -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 input[type="number"]:focus {
   outline: none;
   border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(var(--accent-primary), 0.3);
 }
 
 .theme-toggle {
@@ -127,7 +141,7 @@ input[type="number"]:focus {
   border-radius: 8px;
   background: var(--card-bg);
   color: var(--text-primary);
-  font-size: 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: var(--transition);
   display: flex;
@@ -143,31 +157,36 @@ input[type="number"]:focus {
 
 .nav-controls {
   display: flex;
-  gap: 1rem;
-  justify-content: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 0.5rem;
   position: sticky;
-  top: 0;
+  top: 0.5rem;
   z-index: 100;
   background: var(--bg-primary);
-  padding: 1rem 0;
+  padding: 0.5rem;
   border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid var(--border-color);
 }
 
 .nav-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1rem;
   border: 2px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: 8px;
   background: var(--card-bg);
   color: var(--text-primary);
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 0.25rem;
   box-shadow: var(--card-shadow);
+  flex-shrink: 0;
 }
 
 .nav-btn:hover:not(:disabled) {
@@ -183,37 +202,41 @@ input[type="number"]:focus {
 }
 
 .month-indicator {
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1rem;
   background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
   color: white;
-  border-radius: 12px;
+  border-radius: 8px;
   font-weight: 700;
-  font-size: 1.1rem;
-  min-width: 150px;
+  font-size: 1rem;
+  flex-grow: 1;
   text-align: center;
   box-shadow: var(--card-shadow);
+}
+.month-title-main {
+  display: block;
+  font-size: 1em;
+}
+.month-title-sub {
+  display: block;
+  font-size: 0.75em;
+  opacity: 0.85;
+  font-weight: 500;
 }
 
 /* Astronomical Events Section */
 .astronomical-events {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
   background: var(--bg-secondary);
   border-radius: 12px;
   box-shadow: var(--card-shadow);
 }
 
-@media (max-width: 768px) {
-  .astronomical-events {
-    grid-template-columns: 1fr;
-  }
-}
-
 .astro-event {
-  padding: 0.75rem 1rem;
+  padding: 0.75rem;
   background: var(--card-bg);
   border-radius: 8px;
   border: 2px solid var(--border-color);
@@ -228,54 +251,32 @@ input[type="number"]:focus {
   box-shadow: var(--card-shadow-hover);
 }
 
-.astro-event.vernal {
-  border-color: var(--vernal-color);
-}
-
-.astro-event.summer {
-  border-color: var(--summer-color);
-}
-
-.astro-event.autumn {
-  border-color: var(--autumn-color);
-}
-
-.astro-event.winter {
-  border-color: var(--winter-color);
-}
+.astro-event.vernal { border-color: var(--vernal-color); }
+.astro-event.summer { border-color: var(--summer-color); }
+.astro-event.autumn { border-color: var(--autumn-color); }
+.astro-event.winter { border-color: var(--winter-color); }
 
 .astro-event-title {
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   margin-bottom: 0.25rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.astro-event.vernal .astro-event-title {
-  color: var(--vernal-color);
-}
-
-.astro-event.summer .astro-event-title {
-  color: var(--summer-color);
-}
-
-.astro-event.autumn .astro-event-title {
-  color: var(--autumn-color);
-}
-
-.astro-event.winter .astro-event-title {
-  color: var(--winter-color);
-}
+.astro-event.vernal .astro-event-title { color: var(--vernal-color); }
+.astro-event.summer .astro-event-title { color: var(--summer-color); }
+.astro-event.autumn .astro-event-title { color: var(--autumn-color); }
+.astro-event.winter .astro-event-title { color: var(--winter-color); }
 
 .astro-event-date {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--text-primary);
   font-weight: 600;
 }
 
 .astro-event-icon {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin-bottom: 0.25rem;
 }
 
@@ -285,16 +286,16 @@ input[type="number"]:focus {
   left: 50%;
   transform: translateX(-50%) translateY(-8px);
   background: var(--card-bg);
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 0.75rem;
+  padding: 0.5rem 0.75rem;
   box-shadow: var(--card-shadow-hover);
   opacity: 0;
   pointer-events: none;
-  transition: var(--transition);
+  transition: opacity 0.2s, transform 0.2s;
   white-space: nowrap;
   z-index: 1000;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .astro-event:hover .astro-tooltip {
@@ -304,224 +305,211 @@ input[type="number"]:focus {
 
 #calendar-container {
   position: relative;
-  overflow: hidden;
 }
 
 .month {
-  margin-bottom: 3rem;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 0.5s ease forwards;
-  scroll-margin-top: 100px;
-  display: none;
+  display: none; /* Hidden by default */
+  margin-bottom: 1rem;
 }
 
 .month.active {
-  display: block;
-}
-
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.month h2 {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: var(--text-primary);
-  padding: 1rem;
-  background: var(--header-bg);
-  border-radius: 12px;
-  position: sticky;
-  top: 80px;
-  z-index: 50;
-  box-shadow: var(--card-shadow);
-  transition: var(--transition);
-}
-
-.month h2.month-link:hover {
-  background: var(--accent-primary);
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: var(--card-shadow-hover);
-}
-
-.month-title-main {
-  display: block;
-  font-size: 1em;
-  margin-bottom: 0.25rem;
-}
-
-.month-title-sub {
-  display: block;
-  font-size: 0.75em;
-  opacity: 0.85;
-  font-weight: 500;
-}
-
-.calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 1rem;
-  background: transparent;
+  gap: var(--grid-gap);
+  background: var(--border-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .header {
   background: var(--header-bg);
-  padding: 1rem;
+  padding: 0.75rem 0.25rem;
   text-align: center;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
-  border-radius: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .day {
   background: var(--card-bg);
-  border: 2px solid var(--border-color);
-  border-radius: 12px;
-  padding: 1rem;
+  border: none;
+  border-radius: 0;
+  padding: 0.5rem;
   cursor: pointer;
-  transition: var(--transition);
-  min-height: 100px;
+  transition: background 0.2s;
+  min-height: 16vh;
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: var(--card-shadow);
 }
 
 .day:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--card-shadow-hover);
-  border-color: var(--accent-primary);
+  background: var(--bg-tertiary);
+  z-index: 10;
+  position: relative;
 }
 
 .day.empty {
-  background: transparent;
-  border: none;
+  background: var(--bg-secondary);
   cursor: default;
-  box-shadow: none;
 }
 
 .day.empty:hover {
-  transform: none;
+  background: var(--bg-secondary);
 }
 
 .day.today {
   background: var(--today-bg);
-  border-color: var(--today-border);
-  border-width: 3px;
-}
-
-.day.today::before {
-  content: '●';
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  color: var(--today-border);
-  font-size: 0.8rem;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  border: 2px solid var(--today-border);
+  box-shadow: inset 0 0 0 2px var(--today-border);
+  z-index: 5;
+  position: relative;
 }
 
 /* Astronomical Event Day Styling */
 .day.vernal-equinox {
-  border-color: var(--vernal-color);
-  border-width: 3px;
-  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(16, 185, 129, 0.1) 100%);
+  box-shadow: inset 0 0 0 3px var(--vernal-color);
 }
-
 .day.summer-solstice {
-  border-color: var(--summer-color);
-  border-width: 3px;
-  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(245, 158, 11, 0.1) 100%);
+  box-shadow: inset 0 0 0 3px var(--summer-color);
 }
-
 .day.autumn-equinox {
-  border-color: var(--autumn-color);
-  border-width: 3px;
-  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(239, 68, 68, 0.1) 100%);
+  box-shadow: inset 0 0 0 3px var(--autumn-color);
 }
-
 .day.winter-solstice {
-  border-color: var(--winter-color);
-  border-width: 3px;
-  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(59, 130, 246, 0.1) 100%);
+  box-shadow: inset 0 0 0 3px var(--winter-color);
 }
 
 .day-number {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .day.today .day-number {
   color: var(--today-border);
+  font-weight: 900;
 }
 
 .astro-badge {
   position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
-  font-size: 1.2rem;
-  z-index: 10;
+  top: 0.35rem;
+  right: 0.35rem;
+  font-size: 1rem;
+  z-index: 2;
+  line-height: 1;
 }
 
 .gregorian-date {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
   font-weight: 600;
   margin-top: auto;
 }
 
 .gregorian-month {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-tertiary);
   font-weight: 500;
 }
 
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
-  .calendar {
-    gap: 0.5rem;
+  .container {
+    padding: 0.25rem;
+  }
+  
+  header {
+    padding: 1rem 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
   }
 
-  .day {
-    min-height: 80px;
-    padding: 0.5rem;
-  }
-
-  .day-number {
+  h1 {
     font-size: 1.2rem;
   }
 
-  .gregorian-date {
-    font-size: 0.75rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .nav-controls {
-    flex-direction: column;
+  .controls {
     gap: 0.5rem;
+  }
+  
+  .nav-controls {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    top: 0;
+    border-radius: 0;
+    padding: 0.25rem;
+    box-shadow: var(--card-shadow);
   }
 
   .nav-btn {
-    width: 100%;
+    padding: 0.6rem 0.5rem;
+    font-size: 0.75rem;
+    flex-grow: 1;
     justify-content: center;
+    border-radius: 6px;
   }
 
   .month-indicator {
+    order: -1; /* Move to top */
     width: 100%;
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+
+  .astronomical-events {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .astro-event {
+    padding: 0.5rem;
+  }
+  .astro-event-title {
+    font-size: 0.75rem;
+  }
+  .astro-event-date {
+    font-size: 0.8rem;
+  }
+
+  .day {
+    min-height: 12vh;
+    padding: 0.25rem;
+    font-size: 0.7rem;
+  }
+
+  .header {
+    padding: 0.5rem 0.1rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+
+  .day-number {
+    font-size: 0.9rem;
+  }
+
+  .astro-badge {
+    font-size: 0.8rem;
+    top: 0.2rem;
+    right: 0.2rem;
+  }
+
+  .gregorian-date {
+    font-size: 0.65rem;
+  }
+  .gregorian-month {
+    font-size: 0.6rem;
   }
 }

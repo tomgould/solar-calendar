@@ -98,7 +98,7 @@ class CalendarProcessor {
         englishName: 'Twelfth Month',
         persianName: 'Esfand',
         season: 'Winter',
-        days: 29,
+        days: 29, // Handled by leap year logic
         startDay: 337,
         gregorianMonths: ['February', 'March']
       }
@@ -115,30 +115,82 @@ class CalendarProcessor {
     this.dayNamesFull = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     // Vernal Equinox dates (starting point for Solar calendar)
-    this.vernalEquinoxData = this._initVernalEquinoxData();
+    // This will be populated by loadVernalEquinoxData
+    this.vernalEquinoxData = {};
+    this.astronomicalEventCache = {}; // Cache for event dates
   }
 
   /**
-   * Initialize vernal equinox data for years 1900-2100
+   * Load vernal equinox data from JSON file
    */
-  _initVernalEquinoxData() {
-    const data = {};
-    // Simplified approximation: March 20 for most years, with leap year adjustments
-    for (let year = 1900; year <= 2100; year++) {
-      // Most years: March 20
-      // Leap years and century rules affect this slightly
-      if (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)) {
-        data[year] = `${year}-03-20`;
-      } else {
-        data[year] = `${year}-03-20`;
+  async loadVernalEquinoxData() {
+    try {
+      const response = await fetch('spring_equinox_dates_0001_to_2100.json');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      const data = await response.json();
+      
+      // Process the data into the format the class expects (YYYY-MM-DD)
+      this.vernalEquinoxData = data.reduce((acc, entry) => {
+        const year = parseInt(entry.year, 10);
+        if (year >= 1900 && year <= 2100) {
+          // The 'date' field is like "1-03-21" or "2024-03-20".
+          // We trust the 'year' field and parse month/day from 'date'.
+          const parts = entry.date.split('-');
+          const month = parts[1].padStart(2, '0');
+          const day = parts[2].padStart(2, '0');
+          const yearStr = String(entry.year).padStart(4, '0');
+          acc[year] = `${yearStr}-${month}-${day}`;
+        }
+        return acc;
+      }, {});
+
+    } catch (error) {
+      console.error('Error loading equinox data, using fallback:', error);
+      this._useFallbackEquinoxData();
     }
-    // Special adjustments for known variations
-    const march19Years = [1916, 1920, 1924, 1928, 1932, 1936, 1940, 1944, 1948, 1952, 1956, 1960, 1964, 1968, 1972, 1976, 1980, 1984, 1988, 1992, 1996, 2000, 2004, 2008, 2012, 2016, 2020, 2024, 2028, 2032, 2036, 2040, 2044, 2048, 2052, 2056, 2060, 2064, 2068, 2072, 2076, 2080, 2084, 2088, 2092, 2096, 2100];
+  }
+
+  /**
+   * Fallback equinox data if JSON fetch fails
+   */
+  _useFallbackEquinoxData() {
+    // Simplified approximation: March 20 for most years
+    for (let year = 1900; year <= 2100; year++) {
+      this.vernalEquinoxData[year] = `${year}-03-20`;
+    }
+    // Special adjustments for known variations (post-2044)
+    const march19Years = [2044, 2048, 2052, 2056, 2060, 2064, 2068, 2072, 2076, 2080, 2084, 2088, 2092, 2096, 2100];
     march19Years.forEach(year => {
-      if (year >= 2016) data[year] = `${year}-03-19`;
+      this.vernalEquinoxData[year] = `${year}-03-19`;
     });
-    return data;
+  }
+
+  /**
+   * Check if a Gregorian year is a leap year
+   */
+  isGregorianLeapYear(year) {
+    return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+  }
+
+  /**
+   * Check if a Solar year is a leap year
+   * A solar year is a leap year if its Vernal Equinox is on March 19
+   * or if the *following* year's Vernal Equinox is on March 19.
+   * This also corresponds to Gregorian leap years in this simplified model.
+   * We will base it on the Gregorian leap year for simplicity, as the
+   * Persian calendar's leap year rule is complex.
+   * A common approximation is that if the *Gregorian* year is a leap year,
+   * the *corresponding* Solar year (which starts in March) will have a 30-day Esfand.
+   */
+  isSolarLeapYear(solarYear) {
+    // The Persian leap year is complex. A common approximation
+    // is to check if the *next* Gregorian year is a leap year.
+    // e.g., Solar 1399 (March 2020-March 2021) was a leap year
+    // because 2020 (Gregorian) was a leap year.
+    // Let's check the Gregorian year this solar year *starts* in.
+    return this.isGregorianLeapYear(solarYear);
   }
 
   /**
@@ -146,11 +198,14 @@ class CalendarProcessor {
    */
   getGregorianDateForSolarDay(solarYear, solarDay) {
     const vernalEquinox = this.vernalEquinoxData[solarYear];
-    if (!vernalEquinox) return null;
+    if (!vernalEquinox) {
+      console.error(`No equinox data for year ${solarYear}`);
+      return null;
+    }
 
-    const startDate = new Date(vernalEquinox + 'T00:00:00');
+    const startDate = new Date(vernalEquinox + 'T00:00:00Z'); // Use UTC
     const targetDate = new Date(startDate);
-    targetDate.setDate(startDate.getDate() + solarDay - 1);
+    targetDate.setUTCDate(startDate.getUTCDate() + solarDay - 1);
 
     return targetDate;
   }
@@ -159,31 +214,44 @@ class CalendarProcessor {
    * Get Solar date from Gregorian date
    */
   getSolarDateFromGregorian(gregorianDate, gregorianYear) {
-    const vernalEquinox = this.vernalEquinoxData[gregorianYear];
+    let solarYear = gregorianYear;
+    let vernalEquinox = this.vernalEquinoxData[solarYear];
     if (!vernalEquinox) return null;
 
-    const startDate = new Date(vernalEquinox + 'T00:00:00');
-    const daysDiff = Math.floor((gregorianDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+    let startDate = new Date(vernalEquinox + 'T00:00:00Z');
+    
+    // Create a UTC date for comparison
+    const gDateUTC = new Date(Date.UTC(gregorianDate.getFullYear(), gregorianDate.getMonth(), gregorianDate.getDate()));
 
-    if (daysDiff < 1) {
+    if (gDateUTC < startDate) {
       // Date is before this year's vernal equinox, belongs to previous solar year
-      const prevVernalEquinox = this.vernalEquinoxData[gregorianYear - 1];
-      if (!prevVernalEquinox) return null;
-      const prevStartDate = new Date(prevVernalEquinox + 'T00:00:00');
-      const prevDaysDiff = Math.floor((gregorianDate - prevStartDate) / (1000 * 60 * 60 * 24)) + 1;
-      return this._getSolarMonthDay(prevDaysDiff, gregorianYear - 1);
+      solarYear--;
+      vernalEquinox = this.vernalEquinoxData[solarYear];
+      if (!vernalEquinox) return null;
+      startDate = new Date(vernalEquinox + 'T00:00:00Z');
     }
 
-    return this._getSolarMonthDay(daysDiff, gregorianYear);
+    const daysDiff = Math.floor((gDateUTC - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+    return this._getSolarMonthDay(daysDiff, solarYear);
   }
 
   /**
    * Helper to get solar month and day from day number
    */
   _getSolarMonthDay(dayNumber, solarYear) {
+    const isLeap = this.isSolarLeapYear(solarYear);
+    
     for (let i = 0; i < this.solarMonths.length; i++) {
       const month = this.solarMonths[i];
-      if (dayNumber >= month.startDay && dayNumber < month.startDay + month.days) {
+      let daysInMonth = month.days;
+      
+      // Adjust days for last month in leap year
+      if (i === 11 && isLeap) {
+        daysInMonth = 30;
+      }
+      
+      if (dayNumber >= month.startDay && dayNumber < month.startDay + daysInMonth) {
         const day = dayNumber - month.startDay + 1;
         return {
           monthIndex: i,
@@ -196,19 +264,46 @@ class CalendarProcessor {
         };
       }
     }
-    return null;
+    
+    // Handle day 366 in a leap year (which should be Esfand 30)
+    if (isLeap && dayNumber === 366) {
+      const month = this.solarMonths[11];
+      return {
+        monthIndex: 11,
+        month: month,
+        day: 30,
+        year: solarYear,
+        englishName: month.englishName,
+        persianName: month.persianName,
+        monthNumber: 12
+      };
+    }
+
+    return null; // Date is out of range
   }
 
   /**
-   * Get astronomical events for a year
+   * Get astronomical events for a year (approximations)
+   * Caches results per year.
    */
   getAstronomicalEvents(year) {
-    return {
-      vernalEquinox: new Date(year, 2, 20), // March 20
-      summerSolstice: new Date(year, 5, 21), // June 21
-      autumnEquinox: new Date(year, 8, 22), // September 22
-      winterSolstice: new Date(year, 11, 21) // December 21
+    if (this.astronomicalEventCache[year]) {
+      return this.astronomicalEventCache[year];
+    }
+
+    // Use the *actual* loaded vernal equinox data
+    const vernalEquinoxDate = this.vernalEquinoxData[year] ? new Date(this.vernalEquinoxData[year] + 'T00:00:00Z') : new Date(Date.UTC(year, 2, 20));
+    
+    // Other events are approximations based on the equinox
+    const events = {
+      vernalEquinox: vernalEquinoxDate,
+      summerSolstice: new Date(Date.UTC(year, 5, 21)), // June 21
+      autumnEquinox: new Date(Date.UTC(year, 8, 22)), // Sep 22
+      winterSolstice: new Date(Date.UTC(year, 11, 21)) // Dec 21
     };
+
+    this.astronomicalEventCache[year] = events;
+    return events;
   }
 
   /**
@@ -216,6 +311,7 @@ class CalendarProcessor {
    */
   checkAstronomicalEvent(date, year) {
     const events = this.getAstronomicalEvents(year);
+    // Compare using UTC date strings
     const dateStr = this.toISODateString(date);
 
     for (const [key, eventDate] of Object.entries(events)) {
@@ -240,18 +336,19 @@ class CalendarProcessor {
   }
 
   /**
-   * Format date to ISO string (YYYY-MM-DD)
+   * Format date to ISO string (YYYY-MM-DD) using UTC
    */
   toISODateString(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
 
   /**
    * Format month title for Solar calendar
-   * Format: "First Month / March-April / Farvardin / 1/12"
+   * Format: "First Month / March-April"
+   * "Farvardin / 1/12"
    */
   formatSolarMonthTitle(monthIndex) {
     const month = this.solarMonths[monthIndex];
@@ -268,31 +365,23 @@ class CalendarProcessor {
 
   /**
    * Format month title for Gregorian calendar
-   * Format: "March / Farvardin-Ordibehesht / 1-2/12"
+   * Format: "March / Farvardin-Ordibehesht"
+   * "Solar: 1-2/12"
    */
   formatGregorianMonthTitle(gregorianMonthIndex) {
     const gregorianMonth = this.gregorianMonths[gregorianMonthIndex];
     
     // Find corresponding solar months
-    const correspondingSolarMonths = [];
-    for (let i = 0; i < this.solarMonths.length; i++) {
-      const solarMonth = this.solarMonths[i];
-      if (solarMonth.gregorianMonths.includes(gregorianMonth)) {
-        correspondingSolarMonths.push({
-          name: solarMonth.persianName,
-          number: i + 1
-        });
-      }
-    }
+    const correspondingSolarMonths = this.getSolarMonthsForGregorian(gregorianMonthIndex);
     
     if (correspondingSolarMonths.length === 0) return { main: gregorianMonth, sub: '' };
     
-    const persianNames = correspondingSolarMonths.map(m => m.name).join('-');
-    const solarNumbers = correspondingSolarMonths.map(m => m.number).join('-');
+    const persianNames = correspondingSolarMonths.map(m => m.persianName).join('-');
+    const solarNumbers = correspondingSolarMonths.map(m => m.monthNumber).join('-');
     
     return {
       main: `${gregorianMonth} / ${persianNames}`,
-      sub: `Solar Months: ${solarNumbers}/12`
+      sub: `Solar: ${solarNumbers}/12`
     };
   }
 
@@ -317,11 +406,5 @@ class CalendarProcessor {
     
     return result;
   }
-
-  /**
-   * Check if a year is a leap year
-   */
-  isLeapYear(year) {
-    return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
-  }
 }
+
