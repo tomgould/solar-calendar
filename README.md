@@ -1,98 +1,194 @@
-# ☀️ Solar Calendar
+# Solar & Gregorian Calendar System
 
-The Solar Calendar is a fresh, easy-to-follow calendar system that stays naturally in sync with the Earth's orbit around the sun.
+## Overview
+A comprehensive dual-calendar system displaying both Solar (Persian) and Gregorian calendars with full astronomical event tracking and cross-calendar linking.
 
-Instead of uneven months, it gives us **13 months of 28 days** — each with exactly 4 full weeks. The year always begins with the **Spring Equinox** (when day and night are equal), and it uses two special days to stay perfectly aligned:
+## Files
 
-- **Equinox Day** — the real astronomical start of the year
-- **Solstice Day** — a leap correction day added after August during leap years
+### HTML Files
+- **solar-calendar.html** - Solar calendar with Gregorian date references
+- **gregorian-calendar.html** - Gregorian calendar with Solar date references
 
-🌍 Best of all:
-- It **removes the need for daylight savings time**
-- It **fixes the old calendar naming problem** — now **September, October, November, and December** are once again the **7th, 8th, 9th, and 10th months** — as their names suggest
+### JavaScript
+- **calendar-processor.js** - CalendarProcessor class handling all date conversions and calculations
 
-This project shows:
+### CSS
+- **calendar-styles.css** - Shared styling for both calendars
 
-- A full **Solar Calendar** (starting with 2025) with each day matched to the standard Gregorian date
-- A full **Gregorian Calendar** with each day mapped to its Solar Calendar equivalent
+## Features
 
-It's an experiment in **re-thinking how we measure time** — to make it simpler, fairer, and more human.
+### Solar Calendar Display Format
+Each month shows:
+```
+First Month / March-April
+Farvardin / 1/12
+```
+- **English Name**: First Month, Second Month, etc. (ordinal position)
+- **Gregorian Months**: Corresponding Gregorian months that overlap
+- **Persian Name**: Traditional Persian month name (Farvardin, Ordibehesht, etc.)
+- **Month Number**: Position in solar year (1/12, 2/12, etc.)
 
-## 🌍 View the Calendars Online
+### Gregorian Calendar Display Format
+Each month shows:
+```
+March / Farvardin-Ordibehesht
+Solar Months: 1-2/12
+```
+- **Gregorian Month**: Standard month name
+- **Solar Months**: Corresponding Persian month names
+- **Solar Numbers**: Position numbers of the solar months
 
-You can view the calendars here:
+### Astronomical Events
+Both calendars display:
+- 🌱 **Vernal Equinox** (March 20) - Spring begins
+- ☀️ **Summer Solstice** (June 21) - Longest day
+- 🍂 **Autumn Equinox** (September 22) - Fall begins
+- ❄️ **Winter Solstice** (December 21) - Shortest day
 
-- [**Solar Calendar**](https://tomgould.github.io/solar-calendar/solar-calendar.html){:target="_blank"}
-- [**Gregorian Calendar with Solar Dates**](https://tomgould.github.io/solar-calendar/gregorian-calendar.html){:target="_blank"}
+Features:
+- Clickable event cards with hover tooltips
+- Special day highlighting with colored borders
+- Event badges on calendar days
+- Direct navigation to event dates
 
----
+### Cross-Calendar Linking
+- **Click month headings** to jump to the corresponding month in the other calendar
+- **Click any day** in one calendar to view it in the other calendar
+- URL parameters enable deep linking between calendars
+- Smooth animations and highlighting
+- Bidirectional navigation maintains year context
 
-## 🔄 GitHub Repository & Pages Site
+**Month Heading Links:**
+- Solar calendar month → Opens first corresponding Gregorian month
+- Gregorian calendar month → Opens first corresponding Solar month
 
-- **GitHub Repository**: [https://github.com/tomgould/solar-calendar](https://github.com/tomgould/solar-calendar)
-- **Live GitHub Pages Site**: [https://tomgould.github.io/solar-calendar/](https://tomgould.github.io/solar-calendar/)
+**Day Links:**
+- Solar calendar day → Opens exact date in Gregorian calendar
+- Gregorian calendar day → Opens exact date in Solar calendar
 
----
+### Month Name Origins
 
-## 🔭 What is the Solar Calendar?
+The Persian month names come from the **Solar Hijri calendar** (Zoroastrian tradition):
 
-- 📅 **13 months**, each with exactly **28 days** — no short or long months
-- 🗓️ Every month **starts on a Monday** — easy to plan, easy to remember
-- 🌱 The year begins on the **first Monday on or after the Spring Equinox**
-- ☀️ **Equinox Day** marks the real astronomical start of the year — outside of months and weeks
-- 🔁 **Solstice Day** is added after August in leap years to keep the calendar perfectly synced
-- 🕰️ **No more daylight savings time** — the calendar flows with the sun naturally
-- 🧠 **Names finally make sense again**:
-   - **September** is month 7
-   - **October** is month 8
-   - **November** is month 9
-   - **December** is month 10
-- ✅ No drifting, no guesswork — it's aligned with the Earth's actual orbit
+1. **Farvardin** - Guardian spirits
+2. **Ordibehesht** - Best righteousness
+3. **Khordad** - Perfection
+4. **Tir** - Rain/water deity
+5. **Mordad** - Immortality
+6. **Shahrivar** - Desirable dominion
+7. **Mehr** - Love/affection
+8. **Aban** - Waters
+9. **Azar** - Fire
+10. **Dey** - Creator
+11. **Bahman** - Good mind
+12. **Esfand** - Holy devotion
 
+## CalendarProcessor Class
 
----
+The `CalendarProcessor` class provides:
 
-## 🧠 Features
+### Properties
+- `solarMonths` - Complete solar month data with English names, Persian names, and Gregorian mappings
+- `gregorianMonths` - Standard month names
+- `vernalEquinoxData` - Vernal equinox dates for years 1900-2100
 
-- Full Gregorian calendar display
-- Overlay with corresponding Solar Calendar dates
-- Accurate solar year rollover
-- Leap-year Solstice Day support
-- Equinox Day marking
-- Clean, responsive HTML/CSS grid layout
-- Efficient, recursion-free JavaScript logic
+### Key Methods
 
----
+#### Date Conversion
+```javascript
+getGregorianDateForSolarDay(solarYear, solarDay)
+// Convert solar day number to Gregorian date
 
-## 🙌 Contributing
+getSolarDateFromGregorian(gregorianDate, gregorianYear)
+// Convert Gregorian date to solar calendar info
+```
 
-We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING.md) to get started.
+#### Astronomical Events
+```javascript
+getAstronomicalEvents(year)
+// Get all 4 astronomical events for a year
 
----
+checkAstronomicalEvent(date, year)
+// Check if a date is an astronomical event
+```
 
-## 📄 License
+#### Formatting
+```javascript
+formatSolarMonthTitle(monthIndex)
+// Returns: { main: "First Month / March-April", sub: "Farvardin / 1/12" }
 
-This project is licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
+formatGregorianMonthTitle(gregorianMonthIndex)
+// Returns: { main: "March / Farvardin-Ordibehesht", sub: "Solar Months: 1-2/12" }
+```
 
----
+## Usage
 
-## 🚀 Getting Started
+### Basic Setup
+All three files must be in the same directory:
+```
+solar-calendar.html
+gregorian-calendar.html
+calendar-processor.js
+calendar-styles.css
+```
 
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/tomgould/solar-calendar.git
-   cd solar-calendar
-   ```
+### Standalone Use
+Each HTML file works independently and includes all necessary JavaScript inline.
 
-2. Open `solar-calendar.html` or `gregorian-calendar.html` in your browser — no build tools required!
+### Year Selection
+Both calendars support years 1900-2100 through the year input control.
 
----
+### Theme Toggle
+- Light/Dark mode toggle
+- Preference saved in localStorage
+- System preference detection
 
-## 🙋 Questions?
+### Navigation
+- Previous/Next month buttons
+- Smooth scrolling between months
+- Active month indicator
+- **Clickable month headings** - hover to see link effect, click to navigate to other calendar
+- Month headings show hover state to indicate they are clickable
 
-Open an [issue](https://github.com/tomgould/solar-calendar/issues) and we’ll get back to you!
+## Technical Details
 
----
+### Solar Calendar
+- Based on astronomical observations
+- Starts at Vernal Equinox (Nowruz - Persian New Year)
+- First 6 months: 31 days each
+- Next 5 months: 30 days each  
+- Last month (Esfand): 29 days (30 in leap years)
 
-Thanks again!  
-– Tom ☀️
+### Date Calculations
+- Solar year starts March 20/21 (Vernal Equinox)
+- Leap years follow Gregorian leap year rules for simplicity
+- Astronomical event dates are approximations
+
+### Browser Compatibility
+- Modern browsers (Chrome, Firefox, Safari, Edge)
+- ES6+ JavaScript features
+- CSS Grid and Flexbox layouts
+- CSS custom properties (variables)
+
+## Customization
+
+### Styling
+Modify `calendar-styles.css` to customize:
+- Color schemes (CSS custom properties in `:root`)
+- Layout dimensions
+- Typography
+- Animation timing
+
+### Date Processing
+Extend `CalendarProcessor` class to:
+- Add more calendar systems
+- Improve astronomical event accuracy
+- Add cultural holidays
+- Implement custom date calculations
+
+## License
+This calendar system is provided as-is for educational and personal use.
+
+## Credits
+Solar calendar based on the Persian Solar Hijri calendar system.
+Astronomical event calculations are approximate for demonstration purposes.

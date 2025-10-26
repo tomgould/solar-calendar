@@ -1,0 +1,527 @@
+/* Calendar Shared Styles */
+
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --text-primary: #1a1a1a;
+  --text-secondary: #6c757d;
+  --text-tertiary: #adb5bd;
+  --border-color: #dee2e6;
+  --card-bg: #ffffff;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --accent-primary: #4a90e2;
+  --accent-secondary: #667eea;
+  --today-bg: #e3f2fd;
+  --today-border: #2196f3;
+  --header-bg: #f1f3f5;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --vernal-color: #10b981;
+  --summer-color: #f59e0b;
+  --autumn-color: #ef4444;
+  --winter-color: #3b82f6;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-tertiary: #0f172a;
+  --text-primary: #e4e4e7;
+  --text-secondary: #a1a1aa;
+  --text-tertiary: #71717a;
+  --border-color: #27272a;
+  --card-bg: #27293d;
+  --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --accent-primary: #60a5fa;
+  --accent-secondary: #818cf8;
+  --today-bg: #1e3a5f;
+  --today-border: #3b82f6;
+  --header-bg: #1e293b;
+  --vernal-color: #34d399;
+  --summer-color: #fbbf24;
+  --autumn-color: #f87171;
+  --winter-color: #60a5fa;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  transition: var(--transition);
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+header {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: var(--card-shadow);
+}
+
+h1 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1.5rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+input[type="number"] {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 1rem;
+  width: 100px;
+  transition: var(--transition);
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.theme-toggle {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.theme-toggle:hover {
+  background: var(--bg-tertiary);
+  transform: translateY(-2px);
+}
+
+.nav-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-primary);
+  padding: 1rem 0;
+  border-radius: 12px;
+}
+
+.nav-btn {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: var(--card-shadow);
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: var(--accent-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.month-indicator {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: white;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  min-width: 150px;
+  text-align: center;
+  box-shadow: var(--card-shadow);
+}
+
+/* Astronomical Events Section */
+.astronomical-events {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+}
+
+@media (max-width: 768px) {
+  .astronomical-events {
+    grid-template-columns: 1fr;
+  }
+}
+
+.astro-event {
+  padding: 0.75rem 1rem;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  text-align: center;
+}
+
+.astro-event:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.astro-event.vernal {
+  border-color: var(--vernal-color);
+}
+
+.astro-event.summer {
+  border-color: var(--summer-color);
+}
+
+.astro-event.autumn {
+  border-color: var(--autumn-color);
+}
+
+.astro-event.winter {
+  border-color: var(--winter-color);
+}
+
+.astro-event-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.astro-event.vernal .astro-event-title {
+  color: var(--vernal-color);
+}
+
+.astro-event.summer .astro-event-title {
+  color: var(--summer-color);
+}
+
+.astro-event.autumn .astro-event-title {
+  color: var(--autumn-color);
+}
+
+.astro-event.winter .astro-event-title {
+  color: var(--winter-color);
+}
+
+.astro-event-date {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.astro-event-icon {
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+}
+
+.astro-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-shadow: var(--card-shadow-hover);
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--transition);
+  white-space: nowrap;
+  z-index: 1000;
+  font-size: 0.85rem;
+}
+
+.astro-event:hover .astro-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-12px);
+}
+
+#calendar-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.month {
+  margin-bottom: 3rem;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease forwards;
+  scroll-margin-top: 100px;
+  display: none;
+}
+
+.month.active {
+  display: block;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.month h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  padding: 1rem;
+  background: var(--header-bg);
+  border-radius: 12px;
+  position: sticky;
+  top: 80px;
+  z-index: 50;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+}
+
+.month h2.month-link:hover {
+  background: var(--accent-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.month-title-main {
+  display: block;
+  font-size: 1em;
+  margin-bottom: 0.25rem;
+}
+
+.month-title-sub {
+  display: block;
+  font-size: 0.75em;
+  opacity: 0.85;
+  font-weight: 500;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1rem;
+  background: transparent;
+}
+
+.header {
+  background: var(--header-bg);
+  padding: 1rem;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.day {
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: var(--card-shadow);
+}
+
+.day:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: var(--accent-primary);
+}
+
+.day.empty {
+  background: transparent;
+  border: none;
+  cursor: default;
+  box-shadow: none;
+}
+
+.day.empty:hover {
+  transform: none;
+}
+
+.day.today {
+  background: var(--today-bg);
+  border-color: var(--today-border);
+  border-width: 3px;
+}
+
+.day.today::before {
+  content: '●';
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  color: var(--today-border);
+  font-size: 0.8rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Astronomical Event Day Styling */
+.day.vernal-equinox {
+  border-color: var(--vernal-color);
+  border-width: 3px;
+  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(16, 185, 129, 0.1) 100%);
+}
+
+.day.summer-solstice {
+  border-color: var(--summer-color);
+  border-width: 3px;
+  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(245, 158, 11, 0.1) 100%);
+}
+
+.day.autumn-equinox {
+  border-color: var(--autumn-color);
+  border-width: 3px;
+  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(239, 68, 68, 0.1) 100%);
+}
+
+.day.winter-solstice {
+  border-color: var(--winter-color);
+  border-width: 3px;
+  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(59, 130, 246, 0.1) 100%);
+}
+
+.day-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.day.today .day-number {
+  color: var(--today-border);
+}
+
+.astro-badge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  font-size: 1.2rem;
+  z-index: 10;
+}
+
+.gregorian-date {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-top: auto;
+}
+
+.gregorian-month {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .calendar {
+    gap: 0.5rem;
+  }
+
+  .day {
+    min-height: 80px;
+    padding: 0.5rem;
+  }
+
+  .day-number {
+    font-size: 1.2rem;
+  }
+
+  .gregorian-date {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .nav-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .month-indicator {
+    width: 100%;
+  }
+}

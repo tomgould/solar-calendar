@@ -3,957 +3,419 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gregorian Calendar with Solar Calendar Dates</title>
+  <title>Gregorian Calendar with Solar Dates</title>
+  <link rel="stylesheet" href="calendar-styles.css">
   <style>
-    :root {
-      --bg-primary: #ffffff;
-      --bg-secondary: #f8f9fa;
-      --bg-tertiary: #e9ecef;
-      --text-primary: #1a1a1a;
-      --text-secondary: #6c757d;
-      --text-tertiary: #adb5bd;
-      --border-color: #dee2e6;
-      --card-bg: #ffffff;
-      --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
-      --accent-primary: #4a90e2;
-      --accent-secondary: #667eea;
-      --today-bg: #e3f2fd;
-      --today-border: #2196f3;
-      --header-bg: #f1f3f5;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    [data-theme="dark"] {
-      --bg-primary: #1a1a2e;
-      --bg-secondary: #16213e;
-      --bg-tertiary: #0f172a;
-      --text-primary: #e4e4e7;
-      --text-secondary: #a1a1aa;
-      --text-tertiary: #71717a;
-      --border-color: #27272a;
-      --card-bg: #27293d;
-      --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-      --card-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.4);
-      --accent-primary: #60a5fa;
-      --accent-secondary: #818cf8;
-      --today-bg: #1e3a5f;
-      --today-border: #3b82f6;
-      --header-bg: #1e293b;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.6;
-      transition: var(--transition);
-    }
-
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 1rem;
-    }
-
-    header {
-      text-align: center;
-      padding: 2rem 1rem;
-      background: var(--bg-secondary);
-      border-radius: 16px;
-      margin-bottom: 2rem;
-      box-shadow: var(--card-shadow);
-    }
-
-    h1 {
-      font-size: clamp(1.5rem, 4vw, 2.5rem);
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 1.5rem;
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      align-items: center;
-      justify-content: center;
-      margin-top: 1.5rem;
-    }
-
-    .control-group {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    label {
-      font-weight: 600;
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
-    input[type="number"] {
-      padding: 0.5rem 1rem;
-      border: 2px solid var(--border-color);
-      border-radius: 8px;
-      background: var(--card-bg);
-      color: var(--text-primary);
-      font-size: 1rem;
-      width: 100px;
-      transition: var(--transition);
-    }
-
-    input[type="number"]:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-    }
-
-    .theme-toggle {
-      padding: 0.5rem 1rem;
-      border: 2px solid var(--border-color);
-      border-radius: 8px;
-      background: var(--card-bg);
-      color: var(--text-primary);
-      font-size: 1rem;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-weight: 600;
-    }
-
-    .theme-toggle:hover {
-      background: var(--bg-tertiary);
-      transform: translateY(-2px);
-    }
-
-    .nav-controls {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      margin-bottom: 2rem;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: var(--bg-primary);
-      padding: 1rem 0;
-      border-radius: 12px;
-    }
-
-    .nav-btn {
-      padding: 0.75rem 1.5rem;
-      border: 2px solid var(--border-color);
-      border-radius: 12px;
-      background: var(--card-bg);
-      color: var(--text-primary);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: var(--card-shadow);
-    }
-
-    .nav-btn:hover:not(:disabled) {
-      background: var(--accent-primary);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: var(--card-shadow-hover);
-    }
-
-    .nav-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .month-indicator {
-      padding: 0.75rem 1.5rem;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      color: white;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 1.1rem;
-      min-width: 150px;
-      text-align: center;
-      box-shadow: var(--card-shadow);
-    }
-
-    #calendar-container {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .month {
-      margin-bottom: 3rem;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 0.5s ease forwards;
-      scroll-margin-top: 100px;
-      display: none;
-    }
-
-    .month.active {
-      display: block;
-    }
-
-    .equinox-day {
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      color: white;
-      padding: 2rem;
-      border-radius: 16px;
-      text-align: center;
-      margin-bottom: 3rem;
-      box-shadow: var(--card-shadow-hover);
-      width: 100%;
-    }
-
-    .equinox-day h2 {
-      color: white;
-      background: transparent;
-      margin-bottom: 1rem;
-      box-shadow: none;
-      position: static;
-      font-size: clamp(1.5rem, 3vw, 2rem);
-      font-weight: 700;
-      padding: 1rem;
-    }
-
-    .equinox-day .day {
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      font-size: 1.2rem;
-      font-weight: 700;
-      min-height: auto;
-      padding: 1.5rem;
-      width: 100%;
-      max-width: 100%;
-      display: block;
-    }
-
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .month h2 {
-      font-size: clamp(1.5rem, 3vw, 2rem);
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 1.5rem;
-      color: var(--text-primary);
-      padding: 1rem;
-      background: var(--header-bg);
-      border-radius: 12px;
-      position: sticky;
-      top: 80px;
-      z-index: 50;
-      box-shadow: var(--card-shadow);
-      transition: var(--transition);
-    }
-
-    .month h2.month-link:hover {
-      background: var(--accent-primary);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: var(--card-shadow-hover);
-    }
-
-    .calendar-name {
-      font-size: 0.85em;
-      opacity: 0.8;
-      font-weight: 600;
-    }
-
-    .calendar {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 1rem;
-      background: transparent;
-    }
-
-    .header {
-      background: var(--header-bg);
-      padding: 1rem;
-      text-align: center;
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      border-radius: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .header .full { display: inline; }
-    .header .abbr { display: none; }
-
-    .day {
-      background: var(--card-bg);
-      padding: 1rem;
-      text-align: center;
-      min-height: 120px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 0.5rem;
-      border-radius: 12px;
-      border: 2px solid var(--border-color);
-      transition: var(--transition);
-      box-shadow: var(--card-shadow);
-      cursor: pointer;
-      position: relative;
-    }
-
-    .day:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--card-shadow-hover);
-      border-color: var(--accent-primary);
-    }
-
-    .day.clickable:hover::after {
-      content: '🔗';
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      font-size: 0.8rem;
-      opacity: 0.6;
-    }
-
-    .day-greg {
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--text-primary);
-    }
-
-    .day-month {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-
-    .day-month .full { display: inline; }
-    .day-month .abbr { display: none; }
-
+    /* Additional styles specific to Gregorian calendar */
     .day-ordinal {
-      font-size: 1.8rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: var(--text-primary);
-      line-height: 1;
-      margin: 0.25rem 0;
+      margin-bottom: 0.3rem;
     }
 
     .day-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--accent-primary);
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      margin-bottom: 0.2rem;
     }
-
-    .day-label .full { display: inline; }
-    .day-label .abbr { display: none; }
 
     .day-solar {
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       color: var(--text-secondary);
-      line-height: 1.4;
+      font-weight: 500;
     }
 
-    .day-solar .full { display: inline; }
-    .day-solar .abbr { display: none; }
-
-    .today {
-      background: var(--today-bg) !important;
-      border: 3px solid var(--today-border) !important;
-      box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.1), var(--card-shadow-hover) !important;
-      animation: pulse 2s ease-in-out infinite;
+    .solar-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      margin-top: 0.5rem;
     }
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
+    .solar-month-name {
+      font-weight: 600;
+      color: var(--accent-primary);
     }
 
-    @media (max-width: 768px) {
-      .container {
-        padding: 0.5rem;
-      }
-
-      header {
-        padding: 1.5rem 1rem;
-        margin-bottom: 1rem;
-      }
-
-      .calendar {
-        gap: 0.25rem;
-      }
-
-      .header {
-        padding: 0.4rem 0.1rem;
-        font-size: 0.65rem;
-        letter-spacing: 0;
-      }
-
-      .header .full { display: none; }
-      .header .abbr { display: inline; }
-
-      .day {
-        padding: 0.5rem 0.25rem;
-        min-height: 90px;
-        gap: 0.2rem;
-      }
-
-      .day-month {
-        font-size: 0.65rem;
-      }
-
-      .day-month .full { display: none; }
-      .day-month .abbr { display: inline; }
-
-      .day-ordinal {
-        font-size: 1.3rem;
-        margin: 0.1rem 0;
-      }
-
-      .day-greg {
-        font-size: 0.85rem;
-      }
-
-      .day-label {
-        font-size: 0.6rem;
-      }
-
-      .day-label .full { display: none; }
-      .day-label .abbr { display: inline; }
-
-      .day-solar {
-        font-size: 0.7rem;
-      }
-
-      .day-solar .full { display: none; }
-      .day-solar .abbr { display: inline; }
-
-      .month h2 {
-        font-size: 1.25rem;
-        padding: 0.75rem;
-      }
-
-      .nav-controls {
-        gap: 0.5rem;
-      }
-
-      .nav-btn, .month-indicator {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .calendar {
-        gap: 0.2rem;
-      }
-
-      .header {
-        padding: 0.3rem 0.1rem;
-        font-size: 0.6rem;
-      }
-
-      .day {
-        min-height: 75px;
-        padding: 0.4rem 0.2rem;
-      }
-
-      .day-month {
-        font-size: 0.6rem;
-      }
-
-      .day-ordinal {
-        font-size: 1.1rem;
-      }
-
-      .day-greg {
-        font-size: 0.75rem;
-      }
-
-      .day-label {
-        font-size: 0.55rem;
-      }
-
-      .day-solar {
-        font-size: 0.65rem;
-      }
+    .solar-day-number {
+      color: var(--text-secondary);
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <h1>Gregorian Calendar with Solar Calendar Dates</h1>
-    <div class="controls">
-      <div class="control-group">
-        <label for="year-select">Select Year:</label>
-        <input type="number" id="year-select" value="2025" min="1" max="9999" />
+  <div class="container">
+    <header>
+      <h1>📅 Gregorian Calendar with Solar Dates</h1>
+      <div class="controls">
+        <div class="control-group">
+          <label for="year-input">Year:</label>
+          <input type="number" id="year-input" min="1900" max="2100" />
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span id="theme-icon">🌙</span>
+          <span id="theme-text">Dark Mode</span>
+        </button>
       </div>
-      <button class="theme-toggle" id="theme-toggle">
-        <span id="theme-icon">🌙</span>
-        <span id="theme-text">Dark Mode</span>
+    </header>
+
+    <div class="nav-controls">
+      <button class="nav-btn" id="prev-btn" onclick="navigateMonth(-1)">
+        ◀ Previous
+      </button>
+      <div class="month-indicator" id="current-month-indicator">January</div>
+      <button class="nav-btn" id="next-btn" onclick="navigateMonth(1)">
+        Next ▶
       </button>
     </div>
-  </header>
 
-  <div class="nav-controls">
-    <button class="nav-btn" id="prev-month">← Previous</button>
-    <div class="month-indicator" id="month-indicator">January</div>
-    <button class="nav-btn" id="next-month">Next →</button>
+    <div class="astronomical-events" id="astronomical-events"></div>
+
+    <div id="calendar-container"></div>
   </div>
 
-  <div id="calendar-container"></div>
-</div>
+  <script src="calendar-processor.js"></script>
+  <script>
+    const calendarProcessor = new CalendarProcessor();
+    let currentMonth = 0;
+    let selectedYear = new Date().getFullYear();
 
-<script>
-  const customMonths = ["March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January", "February", "Sol"];
-  const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const weekdaysAbbr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const solarWeekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-  const msPerDay = 86400000;
-  const today = new Date();
-  let currentMonthIndex = 0;
-  let allMonths = [];
-
-  // Theme management
-  function initTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
-    setTheme(theme);
-  }
-
-  function setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-    const themeIcon = document.getElementById('theme-icon');
-    const themeText = document.getElementById('theme-text');
-    if (theme === 'dark') {
-      themeIcon.textContent = '☀️';
-      themeText.textContent = 'Light Mode';
-    } else {
-      themeIcon.textContent = '🌙';
-      themeText.textContent = 'Dark Mode';
+    function displayAstronomicalEvents() {
+      const events = calendarProcessor.getAstronomicalEvents(selectedYear);
+      const container = document.getElementById('astronomical-events');
+      
+      const eventData = [
+        {
+          key: 'vernalEquinox',
+          title: '🌱 Vernal Equinox',
+          class: 'vernal',
+          description: 'Spring begins - Equal day and night',
+          time: '~05:00 UTC'
+        },
+        {
+          key: 'summerSolstice',
+          title: '☀️ Summer Solstice',
+          class: 'summer',
+          description: 'Longest day of the year',
+          time: '~21:00 UTC'
+        },
+        {
+          key: 'autumnEquinox',
+          title: '🍂 Autumn Equinox',
+          class: 'autumn',
+          description: 'Fall begins - Equal day and night',
+          time: '~07:00 UTC'
+        },
+        {
+          key: 'winterSolstice',
+          title: '❄️ Winter Solstice',
+          class: 'winter',
+          description: 'Shortest day of the year',
+          time: '~03:00 UTC'
+        }
+      ];
+      
+      container.innerHTML = eventData.map(event => {
+        const date = events[event.key];
+        if (!date) return '';
+        
+        const monthName = calendarProcessor.gregorianMonths[date.getMonth()];
+        const day = date.getDate();
+        const dayName = calendarProcessor.dayNames[date.getDay()];
+        
+        return `
+          <div class="astro-event ${event.class}" onclick="navigateToEvent('${event.key}')">
+            <div class="astro-event-icon">${event.title.split(' ')[0]}</div>
+            <div class="astro-event-title">${event.title.substring(3)}</div>
+            <div class="astro-event-date">${dayName}, ${monthName} ${day}, ${selectedYear}</div>
+            <div class="astro-tooltip">
+              ${event.description}<br>
+              <small>${event.time}</small>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
-  }
 
-  document.getElementById('theme-toggle').addEventListener('click', () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-  });
-
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    if (!localStorage.getItem('theme')) {
-      setTheme(e.matches ? 'dark' : 'light');
+    function navigateToEvent(eventKey) {
+      const events = calendarProcessor.getAstronomicalEvents(selectedYear);
+      const eventDate = events[eventKey];
+      if (!eventDate) return;
+      
+      currentMonth = eventDate.getMonth();
+      updateDisplay();
+      
+      // Scroll and highlight the specific day
+      setTimeout(() => {
+        const monthElement = document.getElementById(`month-${currentMonth}`);
+        if (monthElement) {
+          monthElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        setTimeout(() => {
+          const eventDateStr = calendarProcessor.toISODateString(eventDate);
+          const dayElement = document.querySelector(`[data-gregorian-date="${eventDateStr}"]`);
+          if (dayElement) {
+            dayElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            dayElement.style.animation = 'pulse 1s ease-in-out 3';
+          }
+        }, 500);
+      }, 100);
     }
-  });
 
-  function toLocalISOString(date) {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  const todayStr = toLocalISOString(today);
-
-  function getOrdinalSuffix(day) {
-    const j = day % 10, k = day % 100;
-    if (j == 1 && k != 11) { return "st"; }
-    if (j == 2 && k != 12) { return "nd"; }
-    if (j == 3 && k != 13) { return "rd"; }
-    return "th";
-  }
-
-  function getAbbrWeekday(fullWeekday) {
-    const map = {
-      'Monday': 'Mon',
-      'Tuesday': 'Tue',
-      'Wednesday': 'Wed',
-      'Thursday': 'Thu',
-      'Friday': 'Fri',
-      'Saturday': 'Sat',
-      'Sunday': 'Sun'
-    };
-    return map[fullWeekday] || fullWeekday;
-  }
-
-  function getAbbrMonth(fullMonth) {
-    const map = {
-      'January': 'Jan',
-      'February': 'Feb',
-      'March': 'Mar',
-      'April': 'Apr',
-      'May': 'May',
-      'June': 'Jun',
-      'July': 'Jul',
-      'August': 'Aug',
-      'September': 'Sep',
-      'October': 'Oct',
-      'November': 'Nov',
-      'December': 'Dec',
-      'Sol': 'Sol'
-    };
-    return map[fullMonth] || fullMonth;
-  }
-
-  function getSpringEquinox(year) {
-    if (year > 275000 || year < -271000) { throw new RangeError("Invalid time value for year: " + year); }
-    if (year < 1583) return new Date(year, 2, 21);
-    if (year >= 2044 && (year - 2044) % 4 === 0) return new Date(year, 2, 19);
-    return new Date(year, 2, 20);
-  }
-
-  function getAutumnEquinox(year) {
-    if (year > 275000 || year < -271000) { throw new RangeError("Invalid time value for year: " + year); }
-    // Autumn equinox is typically September 22 or 23
-    if (year < 1583) return new Date(year, 8, 23);
-    if (year >= 2044 && (year - 2044) % 4 === 0) return new Date(year, 8, 22);
-    return new Date(year, 8, 22);
-  }
-
-  function getFirstMonday(date) {
-    const day = date.getDay();
-    const offset = (day === 1) ? 0 : (8 - day) % 7;
-    return new Date(date.getTime() + offset * msPerDay);
-  }
-
-  function isLeapYear(year) {
-    return (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0));
-  }
-
-  function getSolarDate(date) {
-    let solarYear = date.getFullYear();
-    let equinoxForYear = getSpringEquinox(solarYear);
-    if (date < equinoxForYear) {
-      solarYear--;
-      equinoxForYear = getSpringEquinox(solarYear);
+    function getOrdinalSuffix(day) {
+      const j = day % 10, k = day % 100;
+      if (j == 1 && k != 11) return "st";
+      if (j == 2 && k != 12) return "nd";
+      if (j == 3 && k != 13) return "rd";
+      return "th";
     }
-    let solarYearStart = getFirstMonday(equinoxForYear);
-    if (date < solarYearStart) {
-      const prevEquinox = getSpringEquinox(solarYear - 1);
-      solarYearStart = getFirstMonday(prevEquinox);
-    }
-    const diffDays = Math.round((date - solarYearStart) / msPerDay);
-    if (toLocalISOString(date) === toLocalISOString(equinoxForYear)) { return { year: solarYear, month: "Equinox Day", day: null }; }
-    if (isLeapYear(solarYear) && diffDays === 168) { return { year: solarYear, month: "Solstice Day", day: null }; }
-    let adjustedDay = diffDays;
-    if (isLeapYear(solarYear) && diffDays > 168) adjustedDay--;
-    const monthIndex = Math.floor(adjustedDay / 28);
-    const day = (adjustedDay % 28) + 1;
-    return { year: solarYear, month: customMonths[monthIndex], day };
-  }
 
-  function clearCalendar() {
-    document.getElementById("calendar-container").innerHTML = "";
-    allMonths = [];
-    currentMonthIndex = 0;
-  }
+    function generateCalendar() {
+      const container = document.getElementById('calendar-container');
+      container.innerHTML = '';
 
-  function buildGregorianCalendar(year) {
-    const container = document.getElementById("calendar-container");
-    clearCalendar();
-
-    try {
-      if (year > 275000 || year < -271000) { throw new RangeError("Invalid time value for year: " + year); }
-
-      // Calculate equinoxes
-      const springEquinoxDate = getSpringEquinox(year);
-      const autumnEquinoxDate = getAutumnEquinox(year);
-      const springEqDay = springEquinoxDate.getDate();
-      const autumnEqDay = autumnEquinoxDate.getDate();
-      const readableSpringEquinox = `${springEquinoxDate.toLocaleDateString(undefined, { weekday: 'long' })} ${springEquinoxDate.toLocaleDateString(undefined, { month: 'long' })} ${springEqDay}${getOrdinalSuffix(springEqDay)}`;
-      const readableAutumnEquinox = `${autumnEquinoxDate.toLocaleDateString(undefined, { weekday: 'long' })} ${autumnEquinoxDate.toLocaleDateString(undefined, { month: 'long' })} ${autumnEqDay}${getOrdinalSuffix(autumnEqDay)}`;
+      const today = new Date();
+      const todayStr = calendarProcessor.toISODateString(today);
 
       for (let month = 0; month < 12; month++) {
-        // Add Spring Equinox before March
-        if (month === 2) {
-          const springEquinox = document.createElement("div");
-          springEquinox.classList.add("equinox-day", "month");
-          springEquinox.setAttribute('data-month-index', allMonths.length);
-          springEquinox.innerHTML = `<h2>Spring Equinox</h2><div class="day">${readableSpringEquinox}</div>`;
-          container.appendChild(springEquinox);
-          allMonths.push(springEquinox);
-        }
+        const monthDiv = document.createElement('div');
+        monthDiv.className = 'month';
+        monthDiv.id = `month-${month}`;
 
-        // Add Autumn Equinox before September
-        if (month === 8) {
-          const autumnEquinox = document.createElement("div");
-          autumnEquinox.classList.add("equinox-day", "month");
-          autumnEquinox.setAttribute('data-month-index', allMonths.length);
-          autumnEquinox.innerHTML = `<h2>Autumn Equinox</h2><div class="day">${readableAutumnEquinox}</div>`;
-          container.appendChild(autumnEquinox);
-          allMonths.push(autumnEquinox);
-        }
+        const monthTitle = document.createElement('h2');
+        monthTitle.className = 'month-link';
+        monthTitle.style.cursor = 'pointer';
+        
+        const titleData = calendarProcessor.formatGregorianMonthTitle(month);
+        monthTitle.innerHTML = `
+          <span class="month-title-main">${titleData.main}</span>
+          <span class="month-title-sub">${titleData.sub}</span>
+        `;
+        
+        // Add click handler to navigate to corresponding Solar month
+        monthTitle.addEventListener('click', () => {
+          // Get the first solar month that corresponds to this gregorian month
+          const solarMonths = calendarProcessor.getSolarMonthsForGregorian(month);
+          if (solarMonths.length > 0) {
+            const solarMonthIndex = solarMonths[0].index;
+            window.location.href = `solar-calendar.html?month=${solarMonthIndex}&year=${selectedYear}`;
+          }
+        });
+        
+        monthDiv.appendChild(monthTitle);
 
-        const monthStart = new Date(year, month, 1);
-        const monthName = monthStart.toLocaleString('default', { month: 'long' });
-        const calendar = document.createElement("div");
-        calendar.classList.add("month");
-        calendar.setAttribute('data-month-index', allMonths.length);
-        const title = document.createElement("h2");
-        title.classList.add("month-link");
-        title.textContent = `${monthName} ${year}`;
+        const calendar = document.createElement('div');
+        calendar.className = 'calendar';
 
-        // Add calendar label and make clickable
-        const calendarLabel = document.createElement("span");
-        calendarLabel.classList.add("calendar-name");
-        calendarLabel.textContent = " (Gregorian)";
-        title.appendChild(calendarLabel);
-
-        // Add click handler to jump to corresponding month on Solar calendar
-        title.style.cursor = "pointer";
-        title.addEventListener('click', () => {
-          // Map Gregorian months to Solar months
-          const gregorianToSolar = {
-            'January': 'January',
-            'February': 'February',
-            'March': 'March',
-            'April': 'April',
-            'May': 'May',
-            'June': 'June',
-            'July': 'July',
-            'August': 'August',
-            'September': 'September',
-            'October': 'October',
-            'November': 'November',
-            'December': 'December'
-          };
-          const targetMonth = gregorianToSolar[monthName];
-          window.location.href = `solar-calendar.html?month=${targetMonth}&year=${year}`;
+        // Add day headers
+        calendarProcessor.dayNamesFull.forEach(day => {
+          const header = document.createElement('div');
+          header.className = 'header';
+          header.textContent = day.substring(0, 3);
+          calendar.appendChild(header);
         });
 
-        calendar.appendChild(title);
-        const grid = document.createElement("div");
-        grid.classList.add("calendar");
-        weekdays.forEach((day, idx) => {
-          const header = document.createElement("div");
-          header.classList.add("header");
-          header.innerHTML = `<span class="full">${day}</span><span class="abbr">${weekdaysAbbr[idx]}</span>`;
-          grid.appendChild(header);
-        });
+        // Calculate days
+        const monthStart = new Date(selectedYear, month, 1);
+        const daysInMonth = new Date(selectedYear, month + 1, 0).getDate();
         const startDay = monthStart.getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        for (let i = 0; i < startDay; i++) { grid.appendChild(document.createElement("div")); }
 
+        // Empty cells before month starts
+        for (let i = 0; i < startDay; i++) {
+          const emptyDay = document.createElement('div');
+          emptyDay.className = 'day empty';
+          calendar.appendChild(emptyDay);
+        }
+
+        // Days of the month
         for (let day = 1; day <= daysInMonth; day++) {
-          const cell = document.createElement("div");
-          cell.classList.add("day");
-          const gregDate = new Date(year, month, day);
-          const dateStrForCheck = toLocalISOString(gregDate);
-          const solar = getSolarDate(gregDate);
+          const dayDiv = document.createElement('div');
+          dayDiv.className = 'day';
+          
+          const gregorianDate = new Date(selectedYear, month, day);
+          const gregorianDateStr = calendarProcessor.toISODateString(gregorianDate);
+          dayDiv.setAttribute('data-gregorian-date', gregorianDateStr);
 
-          const gregWeekdayName = gregDate.toLocaleDateString(undefined, { weekday: 'long' });
-          const gregWeekdayAbbr = getAbbrWeekday(gregWeekdayName);
-          const solarWeekdayName = solar.day ? solarWeekdays[(solar.day - 1) % 7] : null;
-          const solarWeekdayAbbr = solarWeekdayName ? getAbbrWeekday(solarWeekdayName) : null;
-          const areWeekdaysSame = (gregWeekdayName === solarWeekdayName);
-
-          // Build month display with both full and abbreviated versions
-          const monthNameAbbr = getAbbrMonth(monthName);
-          const monthDisplay = `<span class="full">${monthName}</span><span class="abbr">${monthNameAbbr}</span>`;
-
-          let solarDateStr = '';
-          if (solar.day) {
-            const solarWeekdayDisplay = areWeekdaysSame ? "" : `<span class="full">${solarWeekdayName}</span><span class="abbr">${solarWeekdayAbbr}</span>, `;
-            const solarMonthAbbr = getAbbrMonth(solar.month);
-            const solarMonthDisplay = `<span class="full">${solar.month}</span><span class="abbr">${solarMonthAbbr}</span>`;
-            const solarYearDisplay = solar.year !== year ? ` (${solar.year})` : '';
-            solarDateStr = `${solarWeekdayDisplay}${solarMonthDisplay} ${solar.day}${getOrdinalSuffix(solar.day)}${solarYearDisplay}`;
-          } else {
-            solarDateStr = solar.month;
+          // Check if today
+          if (gregorianDateStr === todayStr) {
+            dayDiv.classList.add('today');
           }
 
-          if (dateStrForCheck === todayStr && year === today.getFullYear()) {
-            cell.classList.add("today");
+          // Check for astronomical events
+          const astroEvent = calendarProcessor.checkAstronomicalEvent(gregorianDate, selectedYear);
+          if (astroEvent) {
+            dayDiv.classList.add(astroEvent.class);
+            const badge = document.createElement('div');
+            badge.className = 'astro-badge';
+            badge.textContent = astroEvent.icon;
+            dayDiv.appendChild(badge);
           }
 
-          // Add data attribute and click handler for cross-calendar linking
-          cell.classList.add("clickable");
-          cell.setAttribute('data-greg-date', dateStrForCheck);
-          cell.addEventListener('click', () => {
-            window.location.href = `solar-calendar.html?date=${dateStrForCheck}&year=${year}`;
+          // Get solar date information
+          const solarDate = calendarProcessor.getSolarDateFromGregorian(gregorianDate, selectedYear);
+
+          // Build day content
+          const dayNumber = document.createElement('div');
+          dayNumber.className = 'day-ordinal';
+          dayNumber.textContent = `${day}${getOrdinalSuffix(day)}`;
+          dayDiv.appendChild(dayNumber);
+
+          // Solar information
+          if (solarDate) {
+            const solarInfo = document.createElement('div');
+            solarInfo.className = 'solar-info';
+            
+            const label = document.createElement('div');
+            label.className = 'day-label';
+            label.textContent = 'Solar:';
+            solarInfo.appendChild(label);
+
+            const solarDetails = document.createElement('div');
+            solarDetails.className = 'day-solar';
+            solarDetails.innerHTML = `
+              <span class="solar-month-name">${solarDate.persianName}</span>
+              <span class="solar-day-number">${solarDate.day}</span>
+            `;
+            solarInfo.appendChild(solarDetails);
+
+            dayDiv.appendChild(solarInfo);
+          }
+
+          // Add click handler for linking
+          dayDiv.style.cursor = 'pointer';
+          dayDiv.addEventListener('click', () => {
+            window.location.href = `solar-calendar.html?date=${gregorianDateStr}&year=${selectedYear}`;
           });
 
-          cell.innerHTML = `
-            <div class="day-month">${monthDisplay}</div>
-            <div class="day-ordinal">${day}${getOrdinalSuffix(day)}</div>
-            <div class="day-label"><span class="full">Solar:</span><span class="abbr">Sol:</span></div>
-            <div class="day-solar">${solarDateStr}</div>
-          `;
-          grid.appendChild(cell);
+          calendar.appendChild(dayDiv);
         }
-        calendar.appendChild(grid);
-        container.appendChild(calendar);
-        allMonths.push(calendar);
+
+        monthDiv.appendChild(calendar);
+        container.appendChild(monthDiv);
       }
 
-      updateNavigation();
-      scrollToTodayOrFirstMonth();
-    } catch (error) {
-      console.error("Calendar build failed:", error);
+      displayAstronomicalEvents();
     }
-  }
 
-  function scrollToTodayOrFirstMonth() {
-    // Check for URL parameter for cross-calendar navigation
-    const urlParams = new URLSearchParams(window.location.search);
-    const targetDate = urlParams.get('date');
-    const targetYear = urlParams.get('year');
-    const targetMonth = urlParams.get('month');
+    function updateDisplay() {
+      document.querySelectorAll('.month').forEach((month, index) => {
+        month.classList.toggle('active', index === currentMonth);
+      });
 
-    setTimeout(() => {
-      let targetIndex = 0;
+      const monthName = calendarProcessor.gregorianMonths[currentMonth];
+      document.getElementById('current-month-indicator').textContent = monthName;
 
-      // If there's a month parameter, try to find that month
-      if (targetMonth) {
-        const monthElements = Array.from(document.querySelectorAll('.month h2'));
-        const matchingMonthElement = monthElements.find(h2 => h2.textContent.includes(targetMonth));
-        if (matchingMonthElement) {
-          const monthElement = matchingMonthElement.closest('.month');
-          targetIndex = parseInt(monthElement.getAttribute('data-month-index'));
-        }
-      } else if (targetDate && targetYear) {
-        // If there's a date parameter, try to find and highlight that date
-        const dateElement = document.querySelector(`[data-greg-date="${targetDate}"]`);
-        if (dateElement) {
-          dateElement.classList.add('today');
-          dateElement.style.animation = 'pulse 1s ease-in-out 3';
-          const monthElement = dateElement.closest('.month');
-          if (monthElement) {
-            targetIndex = parseInt(monthElement.getAttribute('data-month-index'));
-          }
-        }
+      document.getElementById('prev-btn').disabled = currentMonth === 0;
+      document.getElementById('next-btn').disabled = currentMonth === 11;
+
+      displayAstronomicalEvents();
+    }
+
+    function navigateMonth(direction) {
+      const newMonth = currentMonth + direction;
+      if (newMonth >= 0 && newMonth < 12) {
+        currentMonth = newMonth;
+        updateDisplay();
+        document.getElementById(`month-${currentMonth}`).scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }
+
+    function updateYear() {
+      const yearInput = document.getElementById('year-input');
+      const newYear = parseInt(yearInput.value);
+
+      if (newYear >= 1900 && newYear <= 2100) {
+        selectedYear = newYear;
+        currentMonth = 0;
+        generateCalendar();
+        updateDisplay();
       } else {
-        // Look for today
-        const todayElement = document.querySelector('.today');
-        if (todayElement) {
-          const monthElement = todayElement.closest('.month');
-          if (monthElement) {
-            targetIndex = parseInt(monthElement.getAttribute('data-month-index'));
-          }
+        alert('Please enter a year between 1900 and 2100');
+        yearInput.value = selectedYear;
+      }
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      html.setAttribute('data-theme', newTheme);
+      
+      const icon = document.getElementById('theme-icon');
+      const text = document.getElementById('theme-text');
+      
+      if (newTheme === 'dark') {
+        icon.textContent = '☀️';
+        text.textContent = 'Light Mode';
+      } else {
+        icon.textContent = '🌙';
+        text.textContent = 'Dark Mode';
+      }
+      
+      localStorage.setItem('theme', newTheme);
+    }
+
+    function initializeTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      
+      const icon = document.getElementById('theme-icon');
+      const text = document.getElementById('theme-text');
+      
+      if (savedTheme === 'dark') {
+        icon.textContent = '☀️';
+        text.textContent = 'Light Mode';
+      }
+    }
+
+    // Handle URL parameters for cross-calendar navigation
+    function handleURLParameters() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetDate = urlParams.get('date');
+      const targetMonth = urlParams.get('month');
+      
+      if (targetMonth !== null) {
+        const monthIndex = parseInt(targetMonth);
+        if (monthIndex >= 0 && monthIndex < 12) {
+          currentMonth = monthIndex;
+        }
+      } else if (targetDate) {
+        const date = new Date(targetDate);
+        if (!isNaN(date.getTime())) {
+          currentMonth = date.getMonth();
+          selectedYear = date.getFullYear();
+          
+          setTimeout(() => {
+            const dayElement = document.querySelector(`[data-gregorian-date="${targetDate}"]`);
+            if (dayElement) {
+              dayElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              dayElement.style.animation = 'pulse 1s ease-in-out 3';
+            }
+          }, 500);
         }
       }
-
-      currentMonthIndex = targetIndex || 0;
-      updateNavigation();
-    }, 100);
-  }
-
-  function updateNavigation() {
-    const prevBtn = document.getElementById('prev-month');
-    const nextBtn = document.getElementById('next-month');
-    const indicator = document.getElementById('month-indicator');
-
-    // Never disable buttons - we'll roll over to next/previous year
-    prevBtn.disabled = false;
-    nextBtn.disabled = false;
-
-    // Hide all months
-    allMonths.forEach(month => month.classList.remove('active'));
-
-    // Show current month
-    if (allMonths[currentMonthIndex]) {
-      allMonths[currentMonthIndex].classList.add('active');
-      const monthElement = allMonths[currentMonthIndex];
-      const monthTitle = monthElement.querySelector('h2');
-      if (monthTitle) {
-        indicator.textContent = monthTitle.textContent;
-      }
     }
-  }
 
-  document.getElementById('prev-month').addEventListener('click', () => {
-    if (currentMonthIndex > 0) {
-      currentMonthIndex--;
-      updateNavigation();
-    } else {
-      // Roll back to previous year
-      const currentYear = parseInt(document.getElementById('year-select').value, 10);
-      if (currentYear > 1) {
-        document.getElementById('year-select').value = currentYear - 1;
-        buildGregorianCalendar(currentYear - 1);
-        observeMonths();
-        // Go to last month of previous year
-        setTimeout(() => {
-          currentMonthIndex = allMonths.length - 1;
-          updateNavigation();
-        }, 100);
-      }
-    }
-  });
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeTheme();
+      const yearInput = document.getElementById('year-input');
+      yearInput.value = selectedYear;
+      yearInput.addEventListener('change', updateYear);
+      yearInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') updateYear();
+      });
 
-  document.getElementById('next-month').addEventListener('click', () => {
-    if (currentMonthIndex < allMonths.length - 1) {
-      currentMonthIndex++;
-      updateNavigation();
-    } else {
-      // Roll forward to next year
-      const currentYear = parseInt(document.getElementById('year-select').value, 10);
-      if (currentYear < 9999) {
-        document.getElementById('year-select').value = currentYear + 1;
-        buildGregorianCalendar(currentYear + 1);
-        observeMonths();
-        // Go to first month of next year
-        setTimeout(() => {
-          currentMonthIndex = 0;
-          updateNavigation();
-        }, 100);
-      }
-    }
-  });
-
-  function observeMonths() {
-    // No longer needed since we're not scrolling
-  }
-
-  document.getElementById("year-select").addEventListener("change", () => {
-    const year = parseInt(document.getElementById("year-select").value, 10);
-    if (!isNaN(year)) {
-      buildGregorianCalendar(year);
-      observeMonths();
-    }
-  });
-
-  initTheme();
-
-  // Check for year parameter in URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const urlYear = urlParams.get('year');
-  const initialYear = urlYear ? parseInt(urlYear, 10) : 2025;
-
-  if (!isNaN(initialYear)) {
-    document.getElementById('year-select').value = initialYear;
-    buildGregorianCalendar(initialYear);
-  } else {
-    buildGregorianCalendar(2025);
-  }
-
-  observeMonths();
-</script>
+      generateCalendar();
+      handleURLParameters();
+      updateDisplay();
+    });
+  </script>
 </body>
 </html>
