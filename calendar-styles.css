@@ -47,17 +47,28 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; height: 100%; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background: var(--bg-primary); color: var(--text-primary);
   line-height: 1.5; transition: background 0.3s, color 0.3s;
   overscroll-behavior: none;
+  display: flex; /* Enable flex for viewport height */
+  flex-direction: column;
+  min-height: 100vh; /* Ensure body takes full viewport height */
 }
-.container { max-width: 1600px; margin: 0 auto; padding: 0.5rem; }
+.container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0.5rem;
+  width: 100%; /* Ensure container takes full width */
+  flex-grow: 1; /* Allow container to fill body */
+  display: flex;
+  flex-direction: column;
+}
 
 /* --- Header & Controls --- */
-header { text-align: center; padding: 1.5rem 0.5rem; background: var(--bg-secondary); border-radius: 12px; margin-bottom: 1rem; box-shadow: var(--card-shadow); }
+header { text-align: center; padding: 1.5rem 0.5rem; background: var(--bg-secondary); border-radius: 12px; margin-bottom: 0.5rem; box-shadow: var(--card-shadow); flex-shrink: 0; /* Prevent header from shrinking */ }
 h1 { font-size: clamp(1.25rem, 4vw, 2rem); font-weight: 700; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem; }
 .controls { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: center; margin-top: 1rem; }
 .control-group { display: flex; align-items: center; gap: 0.5rem; }
@@ -69,7 +80,7 @@ input[type="number"]:focus { outline: none; border-color: var(--accent-primary);
 .theme-toggle:hover { background: var(--bg-tertiary); transform: translateY(-2px); }
 
 /* --- Navigation --- */
-.nav-controls { display: flex; gap: 0.5rem; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; position: sticky; top: 0.5rem; z-index: 100; background: var(--bg-primary); padding: 0.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
+.nav-controls { display: flex; gap: 0.5rem; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; position: sticky; top: 0.5rem; z-index: 100; background: var(--bg-primary); padding: 0.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-color); flex-shrink: 0; /* Prevent nav from shrinking */ }
 .nav-btn { padding: 0.5rem 1rem; border: 2px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-primary); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 0.25rem; box-shadow: var(--card-shadow); flex-shrink: 0; }
 .nav-btn:hover:not(:disabled) { background: var(--accent-primary); color: white; transform: translateY(-2px); box-shadow: var(--card-shadow-hover); }
 .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -78,12 +89,12 @@ input[type="number"]:focus { outline: none; border-color: var(--accent-primary);
 .month-title-sub { display: block; font-size: 0.75em; opacity: 0.85; font-weight: 500; }
 
 /* --- Extra Days Display (Solar Calendar) --- */
-.year-extra-days { padding: 1rem; margin-bottom: 1rem; background: var(--bg-secondary); border-radius: 8px; text-align: center; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); }
-.year-extra-days h3 { margin-bottom: 0.5rem; color: var(--accent-secondary); font-size: 1rem; }
-.year-extra-days span { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;}
+.year-extra-days { padding: 0.75rem; margin-bottom: 0.5rem; background: var(--bg-secondary); border-radius: 8px; text-align: center; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); flex-shrink: 0; /* Prevent from shrinking */ }
+.year-extra-days h3 { margin-bottom: 0.25rem; color: var(--accent-secondary); font-size: 0.9rem; }
+.year-extra-days span { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;}
 
 /* --- Astronomical Events --- */
-.astronomical-events { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-bottom: 1rem; padding: 0.5rem; background: var(--bg-secondary); border-radius: 12px; box-shadow: var(--card-shadow); }
+.astronomical-events { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Adjusted minmax */ gap: 0.5rem; margin-bottom: 0.5rem; padding: 0.5rem; background: var(--bg-secondary); border-radius: 12px; box-shadow: var(--card-shadow); flex-shrink: 0; /* Prevent from shrinking */ }
 .astro-event { padding: 0.75rem; background: var(--card-bg); border-radius: 8px; border: 2px solid var(--border-color); cursor: pointer; transition: var(--transition); position: relative; text-align: center; }
 .astro-event:hover { transform: translateY(-2px); box-shadow: var(--card-shadow-hover); }
 .astro-event.vernal { border-color: var(--vernal-color); } .astro-event.vernal .astro-event-title { color: var(--vernal-color); }
@@ -97,14 +108,50 @@ input[type="number"]:focus { outline: none; border-color: var(--accent-primary);
 .astro-event:hover .astro-tooltip { opacity: 1; transform: translateX(-50%) translateY(-12px); }
 
 /* --- Calendar Grid --- */
-#calendar-container { position: relative; }
-.month { display: none; margin-bottom: 1rem; }
-.month.active { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--grid-gap); background: var(--border-color); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; box-shadow: var(--card-shadow); animation: fadeIn 0.3s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-.header { background: var(--header-bg); padding: 0.75rem 0.25rem; text-align: center; font-weight: 700; font-size: 0.8rem; color: var(--text-secondary); }
+#calendar-container {
+    position: relative;
+    flex-grow: 1; /* Key change: Allow this container to fill remaining space */
+    display: flex; /* Use flex to make the active month fill it */
+    flex-direction: column;
+}
+.month { display: none; margin-bottom: 0; /* Removed bottom margin */ }
+.month.active {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    /* Define rows: auto for header, 1fr for each week to distribute space */
+    grid-template-rows: auto repeat(4, 1fr); /* For 13x28 calendar */
+    gap: var(--grid-gap);
+    background: var(--border-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    animation: fadeIn 0.3s ease;
+    flex-grow: 1; /* Key change: Make active month fill calendar-container */
+    height: 100%; /* Ensure it takes full height of container */
+}
+/* Adjust grid rows for Gregorian calendar (can have up to 6 weeks) */
+.gregorian-calendar .month.active { /* Add class to body in gregorian-calendar.html */
+    grid-template-rows: auto repeat(6, 1fr);
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } /* Simplified fade */
+.header { background: var(--header-bg); padding: 0.5rem 0.25rem; /* Reduced padding */ text-align: center; font-weight: 700; font-size: 0.75rem; color: var(--text-secondary); }
 
 /* --- Day Cell --- */
-.day { background: var(--card-bg); border: none; padding: 0.5rem; cursor: pointer; transition: background 0.2s; min-height: 14vh; /* Adjusted */ display: flex; flex-direction: column; position: relative; overflow: hidden; }
+.day {
+    background: var(--card-bg);
+    border: none;
+    padding: 0.35rem; /* Slightly reduced padding */
+    cursor: pointer;
+    transition: background 0.2s;
+    /* min-height removed - height controlled by grid-template-rows */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    height: 100%; /* Ensure day fills grid cell */
+}
 .day:hover { background: var(--bg-tertiary); z-index: 10; position: relative; }
 .day.empty { background: var(--bg-secondary); cursor: default; }
 .day.empty:hover { background: var(--bg-secondary); }
@@ -117,45 +164,49 @@ input[type="number"]:focus { outline: none; border-color: var(--accent-primary);
 .day.today.summer-solstice { box-shadow: inset 0 0 0 2px var(--today-border), inset 0 0 0 5px var(--summer-color); }
 .day.today.autumn-equinox { box-shadow: inset 0 0 0 2px var(--today-border), inset 0 0 0 5px var(--autumn-color); }
 .day.today.winter-solstice { box-shadow: inset 0 0 0 2px var(--today-border), inset 0 0 0 5px var(--winter-color); }
-.day-number { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem; } /* Solar day number */
+.day-number { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.15rem; } /* Solar day number */
 .day.today .day-number { color: var(--today-border); font-weight: 900; }
-.astro-badge { position: absolute; top: 0.35rem; right: 0.35rem; font-size: 1rem; z-index: 2; line-height: 1; }
-.gregorian-date { font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; margin-top: auto; } /* Gregorian info in Solar view */
+.astro-badge { position: absolute; top: 0.25rem; right: 0.25rem; font-size: 0.9rem; z-index: 2; line-height: 1; }
+.gregorian-date { font-size: 0.7rem; color: var(--text-secondary); font-weight: 600; margin-top: auto; } /* Gregorian info in Solar view */
 
 /* --- Gregorian Calendar Specific Day Styles --- */
-.day-ordinal { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem; } /* Gregorian day number */
-.day-label { font-size: 0.65rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem; }
-.day-solar { font-size: 0.7rem; color: var(--text-secondary); font-weight: 500; }
-.solar-info { display: flex; flex-direction: column; gap: 0.15rem; margin-top: 0.5rem; }
+.day-ordinal { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.15rem; } /* Gregorian day number */
+.day-label { font-size: 0.6rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.1rem; }
+.day-solar { font-size: 0.65rem; color: var(--text-secondary); font-weight: 500; }
+.solar-info { display: flex; flex-direction: column; gap: 0.1rem; margin-top: 0.3rem; }
 .solar-month-name { font-weight: 600; color: var(--accent-primary); }
 .solar-day-number { color: var(--text-secondary); }
-.special-day { font-weight: 700; color: var(--accent-secondary); font-size: 0.75rem; text-align: center; margin-top: 0.5rem; }
+.special-day { font-weight: 700; color: var(--accent-secondary); font-size: 0.7rem; text-align: center; margin-top: 0.3rem; }
 
 /* --- Responsive Adjustments --- */
 @media (max-width: 768px) {
   .container { padding: 0.25rem; }
   header { padding: 1rem 0.5rem; margin-bottom: 0.5rem; border-radius: 8px; }
-  h1 { font-size: 1.2rem; }
+  h1 { font-size: 1.1rem; }
   .controls { gap: 0.5rem; }
   .nav-controls { flex-wrap: wrap; gap: 0.25rem; top: 0; border-radius: 0; padding: 0.25rem; }
-  .nav-btn { padding: 0.6rem 0.5rem; font-size: 0.75rem; flex-grow: 1; justify-content: center; border-radius: 6px; }
-  .month-indicator { order: -1; width: 100%; font-size: 0.9rem; padding: 0.5rem; margin-bottom: 0.25rem; }
-  .year-extra-days { padding: 0.5rem; margin-bottom: 0.5rem; } .year-extra-days h3 { font-size: 0.9rem; } .year-extra-days span { font-size: 0.8rem; }
+  .nav-btn { padding: 0.5rem 0.4rem; font-size: 0.7rem; flex-grow: 1; }
+  .month-indicator { order: -1; width: 100%; font-size: 0.8rem; padding: 0.4rem; margin-bottom: 0.25rem; }
+  .year-extra-days { padding: 0.5rem; margin-bottom: 0.5rem; } .year-extra-days h3 { font-size: 0.8rem; } .year-extra-days span { font-size: 0.75rem; }
   .astronomical-events { grid-template-columns: repeat(2, 1fr); gap: 0.25rem; padding: 0.25rem; margin-bottom: 0.5rem; }
-  .astro-event { padding: 0.5rem; } .astro-event-title { font-size: 0.7rem; } .astro-event-date { font-size: 0.75rem; } .astro-event-icon { font-size: 1rem; margin-bottom: 0.1rem; }
+  .astro-event { padding: 0.5rem; } .astro-event-title { font-size: 0.65rem; } .astro-event-date { font-size: 0.7rem; } .astro-event-icon { font-size: 0.9rem; }
   .month.active { gap: 1px; border-radius: 8px; }
-  .day { min-height: 11vh; /* Slightly less height */ padding: 0.25rem; font-size: 0.7rem; }
-  .header { padding: 0.5rem 0.1rem; font-size: 0.65rem; font-weight: 600; }
-  .day-number, .day-ordinal { font-size: 0.9rem; }
-  .astro-badge { font-size: 0.8rem; top: 0.2rem; right: 0.2rem; }
-  .gregorian-date, .day-solar { font-size: 0.6rem; }
-  .day-label { font-size: 0.55rem; } .special-day { font-size: 0.65rem; }
+  .day { padding: 0.2rem; font-size: 0.65rem; /* min-height removed */ }
+  .header { padding: 0.4rem 0.1rem; font-size: 0.6rem; font-weight: 600; }
+  .day-number, .day-ordinal { font-size: 0.8rem; }
+  .astro-badge { font-size: 0.7rem; top: 0.15rem; right: 0.15rem; }
+  .gregorian-date, .day-solar { font-size: 0.55rem; }
+  .day-label { font-size: 0.5rem; } .special-day { font-size: 0.6rem; }
 }
 @media (max-width: 480px) {
-    .nav-btn { padding: 0.5rem; font-size: 0.7rem; }
-    .month-indicator { font-size: 0.8rem; }
-    .header { font-size: 0.6rem; }
-    .day { min-height: 10vh; /* Further reduce height */ }
-    .day-number, .day-ordinal { font-size: 0.8rem; }
-    .gregorian-date, .day-solar, .special-day { font-size: 0.55rem; }
+    /* Further reduce sizes for smallest screens */
+    h1 { font-size: 1rem; }
+    .nav-btn { font-size: 0.65rem; padding: 0.4rem; }
+    .month-indicator { font-size: 0.75rem; }
+    .header { font-size: 0.55rem; padding: 0.3rem 0; }
+    .day { padding: 0.15rem; }
+    .day-number, .day-ordinal { font-size: 0.7rem; }
+    .gregorian-date, .day-solar, .special-day, .day-label { font-size: 0.5rem; }
+    .astro-badge { font-size: 0.6rem; }
+    .astronomical-events { grid-template-columns: 1fr; } /* Stack events on smallest */
 }

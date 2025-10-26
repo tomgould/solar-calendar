@@ -1,14 +1,14 @@
 /**
- * CalendarProcessor - Handles conversions for a fixed 13x28 calendar system.
- * - 13 months, 28 days each (4 weeks starting Monday).
- * - Year starts on the first Monday on or after the Vernal Equinox.
- * - Includes 'Year Day' (Day 365) and 'Leap Day' (Day 366).
- * - Uses fetched Vernal Equinox data to determine the anchor point.
+ * CalendarProcessor - Handles conversions for the Solar Calendar system.
+ * - This system utilizes 13 months, each containing 28 days (4 weeks starting Monday).
+ * - The year commences on the first Monday occurring on or after the Vernal Equinox.
+ * - Includes 'Year Day' (Day 365) and 'Leap Day' (Day 366) outside the standard months.
+ * - Vernal Equinox data determines the anchor point for each year.
  */
 class CalendarProcessor {
   constructor() {
-    // Fixed 13-month structure
-    this.fixedMonths = [
+    // Current 13-month structure
+    this.calendarStructure = [
       { name: 'March', days: 28, startDay: 1 },
       { name: 'April', days: 28, startDay: 29 },
       { name: 'May', days: 28, startDay: 57 },
@@ -35,7 +35,7 @@ class CalendarProcessor {
   }
 
   /**
-   * Load vernal equinox data from JSON file. Crucial for finding the year's anchor point.
+   * Load vernal equinox data from the JSON source. This defines the year's anchor point.
    */
   async loadVernalEquinoxData() {
     try {
@@ -56,22 +56,20 @@ class CalendarProcessor {
         }
         return acc;
       }, {});
-      console.log("Vernal Equinox data loaded successfully.");
       // Pre-calculate start dates after loading
       this.preCalculateYearStartDates();
 
     } catch (error) {
-      console.error('Error loading vernal equinox data, using simplified fallback:', error);
+      // Use fallback data if fetch fails
       this._useFallbackEquinoxData();
-       this.preCalculateYearStartDates(); // Calculate start dates even with fallback
+      this.preCalculateYearStartDates(); // Calculate start dates even with fallback
     }
   }
 
   /**
-   * Fallback equinox data (simple approximation) if JSON fetch fails.
+   * Fallback equinox data (approximation) if JSON source is unavailable.
    */
   _useFallbackEquinoxData() {
-    console.warn("Using fallback Vernal Equinox data (approximation).");
     for (let year = 1899; year <= 2101; year++) {
         let day = (year >= 2044 && year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)) || year === 2100 ? 19 : 20;
         if (year === 2100) day = 19;
@@ -84,70 +82,61 @@ class CalendarProcessor {
    * of a given Solar year. This is the first Monday on or after the Vernal Equinox.
    */
   getSolarYearStartDate(solarYear) {
-      // Return cached value if available
       if (this.solarYearStartDateCache[solarYear]) {
           return this.solarYearStartDateCache[solarYear];
       }
 
       const vernalEquinoxStr = this.vernalEquinoxData[solarYear];
       if (!vernalEquinoxStr) {
-          console.error(`Missing Vernal Equinox data for year ${solarYear}. Cannot calculate start date.`);
-          return null;
+          return null; // Missing data
       }
 
       const equinoxDate = new Date(vernalEquinoxStr + 'T00:00:00Z');
-      const dayOfWeek = equinoxDate.getUTCDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+      const dayOfWeek = equinoxDate.getUTCDay(); // 0=Sun, 1=Mon
 
       let daysToAdd = 0;
-      if (dayOfWeek !== 1) { // If equinox is not already a Monday
-          daysToAdd = (8 - dayOfWeek) % 7; // Calculate days until next Monday (1-6 days)
+      if (dayOfWeek !== 1) { // If not Monday
+          daysToAdd = (8 - dayOfWeek) % 7;
       }
 
       const startDate = new Date(equinoxDate);
       startDate.setUTCDate(equinoxDate.getUTCDate() + daysToAdd);
 
-      // Cache the result
       this.solarYearStartDateCache[solarYear] = startDate;
       return startDate;
   }
 
    /** Pre-calculate and cache start dates for the relevant range */
    preCalculateYearStartDates() {
-       console.log("Pre-calculating Solar year start dates...");
        for (let year = 1900; year <= 2100; year++) {
            this.getSolarYearStartDate(year); // Calculate and cache
        }
-       console.log("Finished pre-calculating start dates.");
    }
 
   /**
-   * Determine if a Solar year is a leap year (has 366 days).
-   * It's a leap year if the gap between its start date and the next year's start date is 366 days.
+   * Determine if the current Solar year is a leap year (has 366 days).
    */
   isSolarLeapYear(solarYear) {
     const startDate = this.getSolarYearStartDate(solarYear);
     const nextStartDate = this.getSolarYearStartDate(solarYear + 1);
 
     if (!startDate || !nextStartDate) {
-      console.warn(`Cannot determine leap year status for ${solarYear}: Missing start date data. Falling back.`);
-      // Fallback: Check if the *Gregorian* year containing the VE is a leap year. Crude approximation.
+      // Fallback approximation if data is missing
       const veYear = parseInt(this.vernalEquinoxData[solarYear]?.substring(0, 4) || solarYear);
       return (veYear % 4 === 0 && veYear % 100 !== 0) || (veYear % 400 === 0);
     }
 
     const diffTime = Math.abs(nextStartDate - startDate);
-    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24)); // Use Math.round for robustness
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
     return diffDays === 366;
   }
 
   /**
-   * Get the Gregorian date (UTC Date object) for a specific day number within the 13x28 structure
-   * OR for the special Year Day / Leap Day.
-   * solarDayOfYear: 1 to 364 for regular months, 365 for Year Day, 366 for Leap Day.
+   * Get the Gregorian date (UTC Date object) for a specific day number within the Solar year structure.
    */
   getGregorianDateForSolarDay(solarYear, solarDayOfYear) {
-    const startDate = this.getSolarYearStartDate(solarYear); // Gregorian date of Month 1, Day 1
+    const startDate = this.getSolarYearStartDate(solarYear);
     if (!startDate) return null;
 
     if (solarDayOfYear < 1 || solarDayOfYear > (this.isSolarLeapYear(solarYear) ? 366 : 365)) {
@@ -155,182 +144,145 @@ class CalendarProcessor {
     }
 
     const targetDate = new Date(startDate);
-    targetDate.setUTCDate(startDate.getUTCDate() + solarDayOfYear - 1); // Add days
-
+    targetDate.setUTCDate(startDate.getUTCDate() + solarDayOfYear - 1);
     return targetDate;
   }
 
   /**
-   * Get Solar date information { monthIndex, day, year, specialDay? }
-   * from a Gregorian date (local Date object).
+   * Get Solar date information { monthIndex, day, year, specialDay? } from a Gregorian date.
    */
   getSolarDateFromGregorian(gregorianDate) {
-    // Convert input Gregorian date to UTC midnight for consistent calculations
     const gDateUTC = new Date(Date.UTC(gregorianDate.getFullYear(), gregorianDate.getMonth(), gregorianDate.getDate()));
-    const gYear = gregorianDate.getFullYear(); // Use the Gregorian year as a hint
+    const gYear = gregorianDate.getFullYear();
 
-    // Find the start date of the Solar year potentially containing this Gregorian date
     let solarYear = gYear;
     let solarYearStartDate = this.getSolarYearStartDate(solarYear);
 
-    // If the date is before the calculated start date, it belongs to the previous Solar year
+    // Determine the correct Solar year context
     if (!solarYearStartDate || gDateUTC < solarYearStartDate) {
         solarYear--;
         solarYearStartDate = this.getSolarYearStartDate(solarYear);
-        if (!solarYearStartDate) {
-            console.error(`Cannot find start date for Solar year ${solarYear}`);
-            return null; // Cannot proceed
-        }
+        if (!solarYearStartDate) return null;
     }
 
-    // Calculate the number of days passed since the start of this Solar year (0-based index)
     const diffTime = gDateUTC - solarYearStartDate;
     const daysSinceSolarYearStart = Math.floor(diffTime / (1000 * 60 * 60 * 24)); // 0-based
 
     const isLeap = this.isSolarLeapYear(solarYear);
 
-    // Check for special days first
-    if (daysSinceSolarYearStart === 364) { // Day 365
+    // Check for Year Day or Leap Day
+    if (daysSinceSolarYearStart === 364) {
         return { monthIndex: -1, day: 1, year: solarYear, specialDay: 'Year Day', monthName: 'Year Day', monthNumber: null };
-    } else if (isLeap && daysSinceSolarYearStart === 365) { // Day 366
+    } else if (isLeap && daysSinceSolarYearStart === 365) {
         return { monthIndex: -1, day: 2, year: solarYear, specialDay: 'Leap Day', monthName: 'Leap Day', monthNumber: null };
     } else if (daysSinceSolarYearStart >= (isLeap ? 366 : 365)) {
-        // This date actually falls into the *next* solar year (should have been caught earlier, but safety check)
-        console.warn("Date calculation overflowed into next solar year, re-evaluating.");
-         return this.getSolarDateFromGregorian(gregorianDate, solarYear + 1); // Re-run with hint
+         // Date belongs to the subsequent Solar year
+         return this.getSolarDateFromGregorian(gregorianDate, solarYear + 1);
     } else if (daysSinceSolarYearStart < 0) {
-        console.error("Negative day difference calculated, logic error.");
-        return null;
+        return null; // Calculation error
     }
-
 
     // Regular day within the 13 months
     const monthIndex = Math.floor(daysSinceSolarYearStart / 28);
-    const dayOfMonth = (daysSinceSolarYearStart % 28) + 1; // 1-based day
+    const dayOfMonth = (daysSinceSolarYearStart % 28) + 1; // 1-based
 
-    if (monthIndex < 0 || monthIndex >= this.fixedMonths.length) {
-         console.error(`Invalid month index calculated: ${monthIndex}`);
-         return null;
+    if (monthIndex < 0 || monthIndex >= this.calendarStructure.length) {
+         return null; // Index out of bounds
     }
 
-    const month = this.fixedMonths[monthIndex];
+    const month = this.calendarStructure[monthIndex];
     return {
       monthIndex: monthIndex,
-      month: month, // Keep ref if needed
+      month: month,
       day: dayOfMonth,
       year: solarYear,
-      monthName: month.name, // Use the new name
-      monthNumber: monthIndex + 1, // 1-based month number
-      specialDay: null // Not a special day
+      monthName: month.name,
+      monthNumber: monthIndex + 1,
+      specialDay: null
     };
   }
 
   /**
-   * Format month title for the fixed Solar calendar view.
-   * Example: { main: "March / (1/13)", sub: "Gregorian: Mar-Apr" }
+   * Format month title for the Solar calendar view.
    */
   formatSolarMonthTitle(monthIndex, solarYear) {
-      if (monthIndex < 0 || monthIndex >= this.fixedMonths.length) return { main: 'Invalid Month', sub: '' };
-      const month = this.fixedMonths[monthIndex];
-
-      // Estimate Gregorian range (less precise now)
+      if (monthIndex < 0 || monthIndex >= this.calendarStructure.length) return { main: 'Invalid Month', sub: '' };
+      const month = this.calendarStructure[monthIndex];
       const startDayOfYear = month.startDay;
       const endDayOfYear = startDayOfYear + month.days - 1;
       const gregStartDate = this.getGregorianDateForSolarDay(solarYear, startDayOfYear);
       const gregEndDate = this.getGregorianDateForSolarDay(solarYear, endDayOfYear);
-
       let gregRange = '';
       if (gregStartDate && gregEndDate) {
           const startM = this.gregorianMonths[gregStartDate.getUTCMonth()].substring(0, 3);
           const endM = this.gregorianMonths[gregEndDate.getUTCMonth()].substring(0, 3);
           gregRange = startM === endM ? startM : `${startM}-${endM}`;
       }
-
       return {
           main: `${month.name} / (${monthIndex + 1}/13)`,
           sub: `Gregorian: ${gregRange}`
       };
   }
 
-
   /**
-   * Format month title for Gregorian calendar view (shows corresponding fixed calendar info).
-   * Example: { main: "March / Solar: March", sub: "Month 1/13" }
+   * Format month title for Gregorian calendar view, showing corresponding Solar info.
    */
   formatGregorianMonthTitle(gregorianMonthIndex, gregorianYear) {
     if (gregorianMonthIndex < 0 || gregorianMonthIndex > 11) return { main: 'Invalid Month', sub: '' };
     const gregorianMonthName = this.gregorianMonths[gregorianMonthIndex];
-
-    // Find which Solar months overlap significantly
-    // Get start and end dates of the Gregorian month
     const gregMonthStartDate = new Date(Date.UTC(gregorianYear, gregorianMonthIndex, 1));
-    const gregMonthEndDate = new Date(Date.UTC(gregorianYear, gregorianMonthIndex + 1, 0)); // Day 0 of next month = last day of current
-
-    // Convert start and end to Solar dates
+    const gregMonthEndDate = new Date(Date.UTC(gregorianYear, gregorianMonthIndex + 1, 0));
     const solarStartInfo = this.getSolarDateFromGregorian(gregMonthStartDate);
     const solarEndInfo = this.getSolarDateFromGregorian(gregMonthEndDate);
-
     let solarInfoStr = '';
     let solarNumStr = '';
-
     if (solarStartInfo && solarEndInfo) {
         const startMonthName = solarStartInfo.monthName || solarStartInfo.specialDay;
         const endMonthName = solarEndInfo.monthName || solarEndInfo.specialDay;
-
         if (startMonthName === endMonthName) {
             solarInfoStr = startMonthName;
             if (solarStartInfo.monthNumber) solarNumStr = `${solarStartInfo.monthNumber}/13`;
         } else {
              solarInfoStr = `${startMonthName}-${endMonthName}`;
-             if(solarStartInfo.monthNumber && solarEndInfo.monthNumber) {
-                 solarNumStr = `${solarStartInfo.monthNumber}-${solarEndInfo.monthNumber}/13`;
-             } else if (solarStartInfo.monthNumber) {
-                 solarNumStr = `${solarStartInfo.monthNumber}/13+`;
-             } else if (solarEndInfo.monthNumber) {
-                  solarNumStr = `+${solarEndInfo.monthNumber}/13`;
-             }
+             if(solarStartInfo.monthNumber && solarEndInfo.monthNumber) solarNumStr = `${solarStartInfo.monthNumber}-${solarEndInfo.monthNumber}/13`;
+             else if (solarStartInfo.monthNumber) solarNumStr = `${solarStartInfo.monthNumber}/13+`;
+             else if (solarEndInfo.monthNumber) solarNumStr = `+${solarEndInfo.monthNumber}/13`;
         }
     }
-
     return {
       main: `${gregorianMonthName} / Solar: ${solarInfoStr}`,
       sub: solarNumStr ? `Month(s) ${solarNumStr}` : ''
     };
   }
 
-  // --- Methods below are less dependent on the core calendar structure ---
-  // --- but kept for compatibility and astronomical event display   ---
-
   /**
-   * Get approximate astronomical event dates for a given Gregorian year.
-   * Uses the actual loaded Vernal Equinox date. Other dates are approximations.
+   * Get approximate astronomical event dates (Gregorian).
    */
   getAstronomicalEvents(year) {
     if (this.astronomicalEventCache[year]) {
       return this.astronomicalEventCache[year];
     }
     const vernalEquinoxStr = this.vernalEquinoxData[year];
+    // Use approximation if exact data is missing
     const vernalEquinoxDate = vernalEquinoxStr ? new Date(vernalEquinoxStr + 'T00:00:00Z') : new Date(Date.UTC(year, 2, 20));
-
     const events = {
       vernalEquinox: vernalEquinoxDate,
-      summerSolstice: new Date(Date.UTC(year, 5, 21)), // Approx June 21
-      autumnEquinox: new Date(Date.UTC(year, 8, 22)), // Approx Sep 22
-      winterSolstice: new Date(Date.UTC(year, 11, 21)) // Approx Dec 21
+      summerSolstice: new Date(Date.UTC(year, 5, 21)),
+      autumnEquinox: new Date(Date.UTC(year, 8, 22)),
+      winterSolstice: new Date(Date.UTC(year, 11, 21))
     };
     this.astronomicalEventCache[year] = events;
     return events;
   }
 
   /**
-   * Check if a specific Gregorian date (UTC Date object) matches an approximate astronomical event.
+   * Check if a Gregorian date coincides with an approximate astronomical event.
    */
   checkAstronomicalEvent(date, year) {
     const events = this.getAstronomicalEvents(year);
     const dateStr = this.toISODateString(date);
-
     for (const [key, eventDate] of Object.entries(events)) {
-        if (!eventDate || isNaN(eventDate.getTime())) continue; // Skip if event date is invalid
+        if (!eventDate || isNaN(eventDate.getTime())) continue;
         const eventDateStr = this.toISODateString(eventDate);
         if (dateStr === eventDateStr) {
             const icons = { vernalEquinox: '🌱', summerSolstice: '☀️', autumnEquinox: '🍂', winterSolstice: '❄️' };
@@ -342,7 +294,7 @@ class CalendarProcessor {
   }
 
   /**
-   * Format a Date object to an ISO date string (YYYY-MM-DD) using UTC values.
+   * Format Date to ISO string (YYYY-MM-DD) using UTC values.
    */
   toISODateString(date) {
     if (!(date instanceof Date) || isNaN(date.getTime())) return null;
