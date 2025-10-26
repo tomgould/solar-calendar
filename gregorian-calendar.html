@@ -202,6 +202,46 @@
       transform: translateY(20px);
       animation: fadeInUp 0.5s ease forwards;
       scroll-margin-top: 100px;
+      display: none;
+    }
+
+    .month.active {
+      display: block;
+    }
+
+    .equinox-day {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white;
+      padding: 2rem;
+      border-radius: 16px;
+      text-align: center;
+      margin-bottom: 3rem;
+      box-shadow: var(--card-shadow-hover);
+      width: 100%;
+    }
+
+    .equinox-day h2 {
+      color: white;
+      background: transparent;
+      margin-bottom: 1rem;
+      box-shadow: none;
+      position: static;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700;
+      padding: 1rem;
+    }
+
+    .equinox-day .day {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      font-size: 1.2rem;
+      font-weight: 700;
+      min-height: auto;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 100%;
+      display: block;
     }
 
     @keyframes fadeInUp {
@@ -588,6 +628,14 @@
     return new Date(year, 2, 20);
   }
 
+  function getAutumnEquinox(year) {
+    if (year > 275000 || year < -271000) { throw new RangeError("Invalid time value for year: " + year); }
+    // Autumn equinox is typically September 22 or 23
+    if (year < 1583) return new Date(year, 8, 23);
+    if (year >= 2044 && (year - 2044) % 4 === 0) return new Date(year, 8, 22);
+    return new Date(year, 8, 22);
+  }
+
   function getFirstMonday(date) {
     const day = date.getDay();
     const offset = (day === 1) ? 0 : (8 - day) % 7;
@@ -633,7 +681,35 @@
     try {
       if (year > 275000 || year < -271000) { throw new RangeError("Invalid time value for year: " + year); }
 
+      // Calculate equinoxes
+      const springEquinoxDate = getSpringEquinox(year);
+      const autumnEquinoxDate = getAutumnEquinox(year);
+      const springEqDay = springEquinoxDate.getDate();
+      const autumnEqDay = autumnEquinoxDate.getDate();
+      const readableSpringEquinox = `${springEquinoxDate.toLocaleDateString(undefined, { weekday: 'long' })} ${springEquinoxDate.toLocaleDateString(undefined, { month: 'long' })} ${springEqDay}${getOrdinalSuffix(springEqDay)}`;
+      const readableAutumnEquinox = `${autumnEquinoxDate.toLocaleDateString(undefined, { weekday: 'long' })} ${autumnEquinoxDate.toLocaleDateString(undefined, { month: 'long' })} ${autumnEqDay}${getOrdinalSuffix(autumnEqDay)}`;
+
       for (let month = 0; month < 12; month++) {
+        // Add Spring Equinox before March
+        if (month === 2) {
+          const springEquinox = document.createElement("div");
+          springEquinox.classList.add("equinox-day", "month");
+          springEquinox.setAttribute('data-month-index', allMonths.length);
+          springEquinox.innerHTML = `<h2>Spring Equinox</h2><div class="day">${readableSpringEquinox}</div>`;
+          container.appendChild(springEquinox);
+          allMonths.push(springEquinox);
+        }
+
+        // Add Autumn Equinox before September
+        if (month === 8) {
+          const autumnEquinox = document.createElement("div");
+          autumnEquinox.classList.add("equinox-day", "month");
+          autumnEquinox.setAttribute('data-month-index', allMonths.length);
+          autumnEquinox.innerHTML = `<h2>Autumn Equinox</h2><div class="day">${readableAutumnEquinox}</div>`;
+          container.appendChild(autumnEquinox);
+          allMonths.push(autumnEquinox);
+        }
+
         const monthStart = new Date(year, month, 1);
         const monthName = monthStart.toLocaleString('default', { month: 'long' });
         const calendar = document.createElement("div");
@@ -751,46 +827,41 @@
     const targetMonth = urlParams.get('month');
 
     setTimeout(() => {
-      let targetElement = null;
+      let targetIndex = 0;
 
       // If there's a month parameter, try to find that month
       if (targetMonth) {
         const monthElements = Array.from(document.querySelectorAll('.month h2'));
-        const matchingMonth = monthElements.find(h2 => h2.textContent.includes(targetMonth));
-        if (matchingMonth) {
-          targetElement = matchingMonth.closest('.month');
+        const matchingMonthElement = monthElements.find(h2 => h2.textContent.includes(targetMonth));
+        if (matchingMonthElement) {
+          const monthElement = matchingMonthElement.closest('.month');
+          targetIndex = parseInt(monthElement.getAttribute('data-month-index'));
         }
-      }
-
-      // If there's a date parameter, try to find and highlight that date
-      if (!targetElement && targetDate && targetYear) {
+      } else if (targetDate && targetYear) {
+        // If there's a date parameter, try to find and highlight that date
         const dateElement = document.querySelector(`[data-greg-date="${targetDate}"]`);
         if (dateElement) {
           dateElement.classList.add('today');
           dateElement.style.animation = 'pulse 1s ease-in-out 3';
-          targetElement = dateElement;
+          const monthElement = dateElement.closest('.month');
+          if (monthElement) {
+            targetIndex = parseInt(monthElement.getAttribute('data-month-index'));
+          }
+        }
+      } else {
+        // Look for today
+        const todayElement = document.querySelector('.today');
+        if (todayElement) {
+          const monthElement = todayElement.closest('.month');
+          if (monthElement) {
+            targetIndex = parseInt(monthElement.getAttribute('data-month-index'));
+          }
         }
       }
 
-      // If no target from URL, look for today
-      if (!targetElement) {
-        targetElement = document.querySelector('.today');
-      }
-
-      if (targetElement) {
-        const monthElement = targetElement.closest('.month');
-        if (monthElement) {
-          const monthIndex = parseInt(monthElement.getAttribute('data-month-index'));
-          currentMonthIndex = monthIndex;
-          updateNavigation();
-          monthElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      } else if (allMonths.length > 0) {
-        currentMonthIndex = 0;
-        updateNavigation();
-        allMonths[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 300);
+      currentMonthIndex = targetIndex || 0;
+      updateNavigation();
+    }, 100);
   }
 
   function updateNavigation() {
@@ -798,10 +869,16 @@
     const nextBtn = document.getElementById('next-month');
     const indicator = document.getElementById('month-indicator');
 
-    prevBtn.disabled = currentMonthIndex === 0;
-    nextBtn.disabled = currentMonthIndex >= allMonths.length - 1;
+    // Never disable buttons - we'll roll over to next/previous year
+    prevBtn.disabled = false;
+    nextBtn.disabled = false;
 
+    // Hide all months
+    allMonths.forEach(month => month.classList.remove('active'));
+
+    // Show current month
     if (allMonths[currentMonthIndex]) {
+      allMonths[currentMonthIndex].classList.add('active');
       const monthElement = allMonths[currentMonthIndex];
       const monthTitle = monthElement.querySelector('h2');
       if (monthTitle) {
@@ -813,42 +890,45 @@
   document.getElementById('prev-month').addEventListener('click', () => {
     if (currentMonthIndex > 0) {
       currentMonthIndex--;
-      allMonths[currentMonthIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
       updateNavigation();
+    } else {
+      // Roll back to previous year
+      const currentYear = parseInt(document.getElementById('year-select').value, 10);
+      if (currentYear > 1) {
+        document.getElementById('year-select').value = currentYear - 1;
+        buildGregorianCalendar(currentYear - 1);
+        observeMonths();
+        // Go to last month of previous year
+        setTimeout(() => {
+          currentMonthIndex = allMonths.length - 1;
+          updateNavigation();
+        }, 100);
+      }
     }
   });
 
   document.getElementById('next-month').addEventListener('click', () => {
     if (currentMonthIndex < allMonths.length - 1) {
       currentMonthIndex++;
-      allMonths[currentMonthIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
       updateNavigation();
+    } else {
+      // Roll forward to next year
+      const currentYear = parseInt(document.getElementById('year-select').value, 10);
+      if (currentYear < 9999) {
+        document.getElementById('year-select').value = currentYear + 1;
+        buildGregorianCalendar(currentYear + 1);
+        observeMonths();
+        // Go to first month of next year
+        setTimeout(() => {
+          currentMonthIndex = 0;
+          updateNavigation();
+        }, 100);
+      }
     }
   });
 
-  // Intersection Observer to update current month indicator
-  const observerOptions = {
-    root: null,
-    rootMargin: '-100px 0px -60% 0px',
-    threshold: 0
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const monthIndex = parseInt(entry.target.getAttribute('data-month-index'));
-        if (!isNaN(monthIndex)) {
-          currentMonthIndex = monthIndex;
-          updateNavigation();
-        }
-      }
-    });
-  }, observerOptions);
-
   function observeMonths() {
-    document.querySelectorAll('.month').forEach(month => {
-      observer.observe(month);
-    });
+    // No longer needed since we're not scrolling
   }
 
   document.getElementById("year-select").addEventListener("change", () => {
