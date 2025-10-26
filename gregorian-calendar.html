@@ -224,6 +224,20 @@
       top: 80px;
       z-index: 50;
       box-shadow: var(--card-shadow);
+      transition: var(--transition);
+    }
+
+    .month h2.month-link:hover {
+      background: var(--accent-primary);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: var(--card-shadow-hover);
+    }
+
+    .calendar-name {
+      font-size: 0.85em;
+      opacity: 0.8;
+      font-weight: 600;
     }
 
     .calendar {
@@ -620,7 +634,37 @@
         calendar.classList.add("month");
         calendar.setAttribute('data-month-index', allMonths.length);
         const title = document.createElement("h2");
+        title.classList.add("month-link");
         title.textContent = `${monthName} ${year}`;
+
+        // Add calendar label and make clickable
+        const calendarLabel = document.createElement("span");
+        calendarLabel.classList.add("calendar-name");
+        calendarLabel.textContent = " (Gregorian)";
+        title.appendChild(calendarLabel);
+
+        // Add click handler to jump to corresponding month on Solar calendar
+        title.style.cursor = "pointer";
+        title.addEventListener('click', () => {
+          // Map Gregorian months to Solar months
+          const gregorianToSolar = {
+            'January': 'January',
+            'February': 'February',
+            'March': 'March',
+            'April': 'April',
+            'May': 'May',
+            'June': 'June',
+            'July': 'July',
+            'August': 'August',
+            'September': 'September',
+            'October': 'October',
+            'November': 'November',
+            'December': 'December'
+          };
+          const targetMonth = gregorianToSolar[monthName];
+          window.location.href = `solar-calendar.html?month=${targetMonth}&year=${year}`;
+        });
+
         calendar.appendChild(title);
         const grid = document.createElement("div");
         grid.classList.add("calendar");
@@ -698,16 +742,27 @@
     const urlParams = new URLSearchParams(window.location.search);
     const targetDate = urlParams.get('date');
     const targetYear = urlParams.get('year');
+    const targetMonth = urlParams.get('month');
 
     setTimeout(() => {
       let targetElement = null;
 
+      // If there's a month parameter, try to find that month
+      if (targetMonth) {
+        const monthElements = Array.from(document.querySelectorAll('.month h2'));
+        const matchingMonth = monthElements.find(h2 => h2.textContent.includes(targetMonth));
+        if (matchingMonth) {
+          targetElement = matchingMonth.closest('.month');
+        }
+      }
+
       // If there's a date parameter, try to find and highlight that date
-      if (targetDate && targetYear) {
-        targetElement = document.querySelector(`[data-greg-date="${targetDate}"]`);
-        if (targetElement) {
-          targetElement.classList.add('today');
-          targetElement.style.animation = 'pulse 1s ease-in-out 3';
+      if (!targetElement && targetDate && targetYear) {
+        const dateElement = document.querySelector(`[data-greg-date="${targetDate}"]`);
+        if (dateElement) {
+          dateElement.classList.add('today');
+          dateElement.style.animation = 'pulse 1s ease-in-out 3';
+          targetElement = dateElement;
         }
       }
 
