@@ -328,6 +328,9 @@
       letter-spacing: 0.5px;
     }
 
+    .day-label .full { display: inline; }
+    .day-label .abbr { display: none; }
+
     .day-solar {
       font-size: 0.85rem;
       color: var(--text-secondary);
@@ -397,6 +400,9 @@
       .day-label {
         font-size: 0.6rem;
       }
+
+      .day-label .full { display: none; }
+      .day-label .abbr { display: inline; }
 
       .day-solar {
         font-size: 0.7rem;
@@ -720,7 +726,7 @@
           cell.innerHTML = `
             <div class="day-month">${monthDisplay}</div>
             <div class="day-ordinal">${day}${getOrdinalSuffix(day)}</div>
-            <div class="day-label">Solar:</div>
+            <div class="day-label"><span class="full">Solar:</span><span class="abbr">Sol:</span></div>
             <div class="day-solar">${solarDateStr}</div>
           `;
           grid.appendChild(cell);

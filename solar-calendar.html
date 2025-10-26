@@ -331,6 +331,9 @@
       letter-spacing: 0.5px;
     }
 
+    .day-label .full { display: inline; }
+    .day-label .abbr { display: none; }
+
     .day-greg {
       font-size: 0.85rem;
       color: var(--text-secondary);
@@ -428,6 +431,9 @@
       .day-label {
         font-size: 0.6rem;
       }
+
+      .day-label .full { display: none; }
+      .day-label .abbr { display: inline; }
 
       .day-greg {
         font-size: 0.7rem;
@@ -734,7 +740,7 @@
             cell.innerHTML = `
               <div class="day-month">${monthDisplay}</div>
               <div class="day-ordinal">${customDay}${getOrdinalSuffix(customDay)}</div>
-              <div class="day-label">Gregorian:</div>
+              <div class="day-label"><span class="full">Gregorian:</span><span class="abbr">Greg:</span></div>
               <div class="day-greg">${gregDateStr}</div>
             `;
             calendar.appendChild(cell);
