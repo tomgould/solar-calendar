@@ -345,16 +345,17 @@ input[type="number"]:focus {
   padding: 0.5rem;
   cursor: pointer;
   transition: background 0.2s;
-  min-height: 16vh;
+  min-height: 16vh; /* Adjusted for better space */
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow: hidden; /* Prevent content overflow */
 }
 
 .day:hover {
   background: var(--bg-tertiary);
-  z-index: 10;
-  position: relative;
+  z-index: 10; /* Bring hovered day to front */
+  position: relative; /* Needed for z-index */
 }
 
 .day.empty {
@@ -368,25 +369,23 @@ input[type="number"]:focus {
 
 .day.today {
   background: var(--today-bg);
-  border: 2px solid var(--today-border);
+  /* Use box-shadow instead of border to avoid layout shift */
   box-shadow: inset 0 0 0 2px var(--today-border);
-  z-index: 5;
+  z-index: 5; /* Ensure today is above others */
   position: relative;
 }
 
-/* Astronomical Event Day Styling */
-.day.vernal-equinox {
-  box-shadow: inset 0 0 0 3px var(--vernal-color);
-}
-.day.summer-solstice {
-  box-shadow: inset 0 0 0 3px var(--summer-color);
-}
-.day.autumn-equinox {
-  box-shadow: inset 0 0 0 3px var(--autumn-color);
-}
-.day.winter-solstice {
-  box-shadow: inset 0 0 0 3px var(--winter-color);
-}
+/* Astronomical Event Day Styling using box-shadow */
+.day.vernal-equinox { box-shadow: inset 0 0 0 3px var(--vernal-color); }
+.day.summer-solstice { box-shadow: inset 0 0 0 3px var(--summer-color); }
+.day.autumn-equinox { box-shadow: inset 0 0 0 3px var(--autumn-color); }
+.day.winter-solstice { box-shadow: inset 0 0 0 3px var(--winter-color); }
+/* Combine if today is also an event */
+.day.today.vernal-equinox { box-shadow: inset 0 0 0 2px var(--today-border), inset 0 0 0 5px var(--vernal-color); }
+.day.today.summer-solstice { box-shadow: inset 0 0 0 2px var(--today-border), inset 0 0 0 5px var(--summer-color); }
+.day.today.autumn-equinox { box-shadow: inset 0 0 0 2px var(--today-border), inset 0 0 0 5px var(--autumn-color); }
+.day.today.winter-solstice { box-shadow: inset 0 0 0 2px var(--today-border), inset 0 0 0 5px var(--winter-color); }
+
 
 .day-number {
   font-size: 1.1rem;
@@ -413,10 +412,10 @@ input[type="number"]:focus {
   font-size: 0.75rem;
   color: var(--text-secondary);
   font-weight: 600;
-  margin-top: auto;
+  margin-top: auto; /* Push to bottom */
 }
 
-.gregorian-month {
+.gregorian-month { /* Re-using class for day name, consider renaming */
   font-size: 0.7rem;
   color: var(--text-tertiary);
   font-weight: 500;
@@ -427,7 +426,7 @@ input[type="number"]:focus {
   .container {
     padding: 0.25rem;
   }
-  
+
   header {
     padding: 1rem 0.5rem;
     margin-bottom: 0.5rem;
@@ -441,12 +440,12 @@ input[type="number"]:focus {
   .controls {
     gap: 0.5rem;
   }
-  
+
   .nav-controls {
     flex-wrap: wrap;
     gap: 0.25rem;
-    top: 0;
-    border-radius: 0;
+    top: 0; /* Stick to very top on mobile */
+    border-radius: 0; /* Full width */
     padding: 0.25rem;
     box-shadow: var(--card-shadow);
   }
@@ -454,21 +453,22 @@ input[type="number"]:focus {
   .nav-btn {
     padding: 0.6rem 0.5rem;
     font-size: 0.75rem;
-    flex-grow: 1;
+    flex-grow: 1; /* Make buttons fill space */
     justify-content: center;
     border-radius: 6px;
   }
 
   .month-indicator {
-    order: -1; /* Move to top */
+    order: -1; /* Move to top on mobile */
     width: 100%;
     text-align: center;
     font-size: 0.9rem;
     padding: 0.5rem;
+    margin-bottom: 0.25rem;
   }
 
   .astronomical-events {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
     gap: 0.25rem;
     padding: 0.25rem;
     margin-bottom: 0.5rem;
@@ -478,21 +478,30 @@ input[type="number"]:focus {
     padding: 0.5rem;
   }
   .astro-event-title {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
   }
   .astro-event-date {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+  }
+  .astro-event-icon {
+    font-size: 1rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .month.active {
+       gap: 1px; /* Reduce gap further on mobile */
+       border-radius: 8px; /* Slightly smaller radius */
   }
 
   .day {
-    min-height: 12vh;
+    min-height: 12vh; /* Adjust height for smaller screens */
     padding: 0.25rem;
     font-size: 0.7rem;
   }
 
   .header {
     padding: 0.5rem 0.1rem;
-    font-size: 0.7rem;
+    font-size: 0.65rem; /* Smaller header text */
     font-weight: 600;
   }
 
@@ -507,9 +516,40 @@ input[type="number"]:focus {
   }
 
   .gregorian-date {
-    font-size: 0.65rem;
+    font-size: 0.6rem; /* Smaller Gregorian date */
   }
-  .gregorian-month {
-    font-size: 0.6rem;
+  .gregorian-month { /* Day name */
+    font-size: 0.55rem;
   }
+
+  /* Specific Gregorian styles for mobile */
+  .day-ordinal { font-size: 0.9rem; margin-bottom: 0.1rem;}
+  .solar-info { margin-top: 0.2rem; gap: 0.1rem;}
+  .day-label { font-size: 0.55rem; }
+  .day-solar { font-size: 0.6rem; }
+  .solar-month-name { font-weight: 500; }
 }
+
+@media (max-width: 480px) {
+    /* Further adjustments for very small screens */
+    .nav-btn {
+        padding: 0.5rem;
+        font-size: 0.7rem;
+    }
+    .month-indicator {
+        font-size: 0.8rem;
+    }
+    .header {
+        font-size: 0.6rem;
+    }
+    .day {
+        min-height: 11vh;
+    }
+    .day-number, .day-ordinal {
+        font-size: 0.8rem;
+    }
+    .gregorian-date, .day-solar {
+        font-size: 0.55rem;
+    }
+}
+

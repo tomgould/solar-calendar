@@ -97,52 +97,29 @@
   <script src="calendar-processor.js"></script>
   <script>
     const calendarProcessor = new CalendarProcessor();
-    let currentMonth = 0;
-    let selectedYear = new Date().getFullYear();
+    let currentMonth = 0; // 0-11 for Gregorian Months
+    let selectedYear; // Set after data load
 
     function displayAstronomicalEvents() {
+       if (!selectedYear) return;
       const events = calendarProcessor.getAstronomicalEvents(selectedYear);
       const container = document.getElementById('astronomical-events');
-      
+
       const eventData = [
-        {
-          key: 'vernalEquinox',
-          title: '🌱 Vernal Equinox',
-          class: 'vernal',
-          description: 'Spring begins',
-          time: 'Solar New Year'
-        },
-        {
-          key: 'summerSolstice',
-          title: '☀️ Summer Solstice',
-          class: 'summer',
-          description: 'Longest day',
-          time: 'Mid-Summer'
-        },
-        {
-          key: 'autumnEquinox',
-          title: '🍂 Autumn Equinox',
-          class: 'autumn',
-          description: 'Fall begins',
-          time: 'Mid-Fall'
-        },
-        {
-          key: 'winterSolstice',
-          title: '❄️ Winter Solstice',
-          class: 'winter',
-          description: 'Shortest day',
-          time: 'Mid-Winter'
-        }
+        { key: 'vernalEquinox', title: '🌱 Vernal Equinox', class: 'vernal', description: 'Spring begins', time: 'Solar New Year' },
+        { key: 'summerSolstice', title: '☀️ Summer Solstice', class: 'summer', description: 'Longest day', time: 'Mid-Summer' },
+        { key: 'autumnEquinox', title: '🍂 Autumn Equinox', class: 'autumn', description: 'Fall begins', time: 'Mid-Fall' },
+        { key: 'winterSolstice', title: '❄️ Winter Solstice', class: 'winter', description: 'Shortest day', time: 'Mid-Winter' }
       ];
-      
+
       container.innerHTML = eventData.map(event => {
-        const date = events[event.key];
-        if (!date) return '';
-        
+        const date = events[event.key]; // UTC Date object
+        if (!date || isNaN(date.getTime())) return '';
+
         const monthName = calendarProcessor.gregorianMonths[date.getUTCMonth()];
         const day = date.getUTCDate();
         const dayName = calendarProcessor.dayNames[date.getUTCDay()];
-        
+
         return `
           <div class="astro-event ${event.class}" onclick="navigateToEvent('${event.key}')">
             <div class="astro-event-icon">${event.title.split(' ')[0]}</div>
@@ -158,71 +135,77 @@
     }
 
     function navigateToEvent(eventKey) {
+       if (!selectedYear) return;
       const events = calendarProcessor.getAstronomicalEvents(selectedYear);
-      const eventDate = events[eventKey];
-      if (!eventDate) return;
-      
-      currentMonth = eventDate.getUTCMonth();
-      updateDisplay();
-      
+      const eventDate = events[eventKey]; // UTC Date object
+      if (!eventDate || isNaN(eventDate.getTime())) return;
+
+      currentMonth = eventDate.getUTCMonth(); // Set current Gregorian month
+      updateDisplay(); // Update indicator and show correct month grid
+
       // Scroll and highlight the specific day
       setTimeout(() => {
         const eventDateStr = calendarProcessor.toISODateString(eventDate);
-        const dayElement = document.querySelector(`[data-gregorian-date="${eventDateStr}"]`);
+        // Ensure we target the day within the now active month
+        const dayElement = document.querySelector(`.month.active [data-gregorian-date="${eventDateStr}"]`);
         if (dayElement) {
-          dayElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          dayElement.style.animation = 'pulse 1s ease-in-out 3';
+          dayElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+           // Simple highlight effect
+           dayElement.style.transition = 'none';
+           dayElement.style.outline = '3px solid var(--accent-secondary)';
+           dayElement.style.outlineOffset = '-3px';
+           setTimeout(() => {
+              dayElement.style.transition = 'outline 1.5s ease-out';
+              dayElement.style.outline = '0px solid transparent';
+           }, 100);
         }
-      }, 100);
-    }
-
-    function getOrdinalSuffix(day) {
-      const j = day % 10, k = day % 100;
-      if (j == 1 && k != 11) return "st";
-      if (j == 2 && k != 12) return "nd";
-      if (j == 3 && k != 13) return "rd";
-      return "th";
+      }, 100); // Allow time for month visibility change
     }
 
     function generateCalendar() {
+       if (!selectedYear) {
+            console.error("Cannot generate calendar without a selected year.");
+            return;
+       }
       const container = document.getElementById('calendar-container');
-      container.innerHTML = '';
+      container.innerHTML = ''; // Clear previous grid
 
-      const today = new Date();
-      const todayStr = calendarProcessor.toISODateString(today);
+      const today = new Date(); // Local today
+      const todayStr = calendarProcessor.toISODateString(new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()))); // UTC today string
 
-      for (let month = 0; month < 12; month++) {
+      // Generate grid for all 12 Gregorian months
+      for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
         const monthDiv = document.createElement('div');
-        monthDiv.className = 'month';
-        monthDiv.id = `month-${month}`;
+        monthDiv.className = 'month'; // Hidden by default
+        monthDiv.id = `month-${monthIndex}`;
 
-        // Add day headers
-        calendarProcessor.dayNames.forEach(day => {
+        // 1. Add day headers (Sun, Mon, etc.)
+        calendarProcessor.dayNames.forEach(dayName => {
           const header = document.createElement('div');
           header.className = 'header';
-          header.textContent = day;
+          header.textContent = dayName;
           monthDiv.appendChild(header);
         });
 
-        // Calculate days
-        const monthStart = new Date(Date.UTC(selectedYear, month, 1));
-        const daysInMonth = new Date(selectedYear, month + 1, 0).getDate();
-        const startDay = monthStart.getUTCDay(); // 0 = Sun, 1 = Mon...
+        // 2. Calculate offset for the first day of this Gregorian month
+        const monthStartDate = new Date(Date.UTC(selectedYear, monthIndex, 1));
+        const daysInMonth = new Date(selectedYear, monthIndex + 1, 0).getDate(); // Correct way to get days in month
+        const startDayOfWeek = monthStartDate.getUTCDay(); // 0 = Sun, 6 = Sat
 
-        // Empty cells before month starts
-        for (let i = 0; i < startDay; i++) {
+        // Add empty cells for padding
+        for (let i = 0; i < startDayOfWeek; i++) {
           const emptyDay = document.createElement('div');
           emptyDay.className = 'day empty';
           monthDiv.appendChild(emptyDay);
         }
 
-        // Days of the month
-        for (let day = 1; day <= daysInMonth; day++) {
+        // 3. Add day cells for the month
+        for (let dayOfMonth = 1; dayOfMonth <= daysInMonth; dayOfMonth++) {
           const dayDiv = document.createElement('div');
           dayDiv.className = 'day';
-          
-          const gregorianDate = new Date(Date.UTC(selectedYear, month, day));
-          const gregorianDateStr = calendarProcessor.toISODateString(gregorianDate);
+
+          const gregorianDate = new Date(Date.UTC(selectedYear, monthIndex, dayOfMonth)); // Current day as UTC Date
+          const gregorianDateStr = calendarProcessor.toISODateString(gregorianDate); // YYYY-MM-DD
           dayDiv.setAttribute('data-gregorian-date', gregorianDateStr);
 
           // Check if today
@@ -233,27 +216,27 @@
           // Check for astronomical events
           const astroEvent = calendarProcessor.checkAstronomicalEvent(gregorianDate, selectedYear);
           if (astroEvent) {
-            dayDiv.classList.add(astroEvent.class);
+            dayDiv.classList.add(astroEvent.class); // Add class like 'vernal-equinox'
             const badge = document.createElement('div');
             badge.className = 'astro-badge';
             badge.textContent = astroEvent.icon;
             dayDiv.appendChild(badge);
           }
 
-          // Get solar date information
+          // Get corresponding Solar date information
           const solarDate = calendarProcessor.getSolarDateFromGregorian(gregorianDate, selectedYear);
 
-          // Build day content
+          // Build day content: Gregorian day number
           const dayNumber = document.createElement('div');
-          dayNumber.className = 'day-ordinal';
-          dayNumber.textContent = `${day}`; // Removed ordinal for cleaner look ${getOrdinalSuffix(day)}
+          dayNumber.className = 'day-ordinal'; // Using class for styling
+          dayNumber.textContent = `${dayOfMonth}`;
           dayDiv.appendChild(dayNumber);
 
-          // Solar information
+          // Add Solar information if available
           if (solarDate) {
             const solarInfo = document.createElement('div');
             solarInfo.className = 'solar-info';
-            
+
             const label = document.createElement('div');
             label.className = 'day-label';
             label.textContent = 'Solar:';
@@ -266,185 +249,228 @@
               <span class="solar-day-number">${solarDate.day}</span>
             `;
             solarInfo.appendChild(solarDetails);
-
             dayDiv.appendChild(solarInfo);
           }
 
-          // Add click handler for linking
+          // Add click handler for linking to Solar calendar
           dayDiv.style.cursor = 'pointer';
           dayDiv.addEventListener('click', () => {
+            // Pass the Gregorian date string
             window.location.href = `solar-calendar.html?date=${gregorianDateStr}&year=${selectedYear}`;
           });
 
           monthDiv.appendChild(dayDiv);
-        }
+        } // End loop through days of month
 
-        container.appendChild(monthDiv);
-      }
+        container.appendChild(monthDiv); // Append the completed month grid
+      } // End loop through Gregorian months
 
-      displayAstronomicalEvents();
+      updateDisplay(); // Ensure correct month is visible
     }
 
+    // Update visibility and month indicator
     function updateDisplay() {
-      document.querySelectorAll('.month').forEach((month, index) => {
-        month.classList.toggle('active', index === currentMonth);
+       if (!selectedYear) return;
+      document.querySelectorAll('.month').forEach((monthEl, index) => {
+        monthEl.classList.toggle('active', index === currentMonth);
       });
 
       const titleData = calendarProcessor.formatGregorianMonthTitle(currentMonth);
-      document.getElementById('current-month-indicator').innerHTML = `
+      const indicator = document.getElementById('current-month-indicator');
+      indicator.innerHTML = `
         <span class="month-title-main">${titleData.main}</span>
         <span class="month-title-sub">${titleData.sub}</span>
       `;
 
-      displayAstronomicalEvents();
+      displayAstronomicalEvents(); // Refresh events display
     }
 
+    // Navigate Gregorian months, handling year wraps
     function navigateMonth(direction) {
+       if (!selectedYear) return;
       let newMonth = currentMonth + direction;
 
-      if (newMonth < 0) {
-        // Wrap to previous year
-        newMonth = 11;
+      if (newMonth < 0) { // Wrap to previous year
         selectedYear--;
+        if (selectedYear < 1900) selectedYear = 1900;
+        newMonth = 11; // December
         document.getElementById('year-input').value = selectedYear;
         generateCalendar(); // Regenerate for new year
-      } else if (newMonth >= 12) {
-        // Wrap to next year
-        newMonth = 0;
+      } else if (newMonth >= 12) { // Wrap to next year
         selectedYear++;
+        if (selectedYear > 2100) selectedYear = 2100;
+        newMonth = 0; // January
         document.getElementById('year-input').value = selectedYear;
         generateCalendar(); // Regenerate for new year
       }
 
       currentMonth = newMonth;
-      updateDisplay();
+      updateDisplay(); // Show new month
     }
 
+    // Navigate between years
     function navigateYear(direction) {
+       if (!selectedYear) return;
       const yearInput = document.getElementById('year-input');
-      let newYear = parseInt(yearInput.value) + direction;
-      
+      let newYear = selectedYear + direction;
+
       if (newYear < 1900) newYear = 1900;
       if (newYear > 2100) newYear = 2100;
-      
+
       yearInput.value = newYear;
-      updateYear(); // This already handles regeneration
+      updateYear(); // Trigger regeneration
     }
 
+    // Update calendar on year input change
     function updateYear() {
       const yearInput = document.getElementById('year-input');
       let newYear = parseInt(yearInput.value);
 
-      if (newYear < 1900) {
+      if (isNaN(newYear) || newYear < 1900) {
         newYear = 1900;
-        yearInput.value = newYear;
-      }
-      if (newYear > 2100) {
+      } else if (newYear > 2100) {
         newYear = 2100;
-        yearInput.value = newYear;
       }
+       yearInput.value = newYear;
 
-      if (newYear >= 1900 && newYear <= 2100) {
-        selectedYear = newYear;
-        currentMonth = 0; // Reset to first month
-        generateCalendar();
-        updateDisplay();
-      } else {
-        yearInput.value = selectedYear;
+      if (selectedYear !== newYear) {
+          selectedYear = newYear;
+          // currentMonth = 0; // Optionally reset month view
+          generateCalendar();
+          updateDisplay();
       }
     }
 
+    // Theme toggling (same as solar calendar)
     function toggleTheme() {
       const html = document.documentElement;
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      const newTheme = isDark ? 'light' : 'dark';
       html.setAttribute('data-theme', newTheme);
-      
+      localStorage.setItem('theme', newTheme);
+
       const icon = document.getElementById('theme-icon');
       const text = document.getElementById('theme-text');
-      
-      if (newTheme === 'dark') {
-        icon.textContent = '☀️';
-        text.textContent = 'Light Mode';
-      } else {
-        icon.textContent = '🌙';
-        text.textContent = 'Dark Mode';
-      }
-      
-      localStorage.setItem('theme', newTheme);
+      icon.textContent = isDark ? '🌙' : '☀️';
+      text.textContent = isDark ? 'Dark Mode' : 'Light Mode';
     }
 
     function initializeTheme() {
       const savedTheme = localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
-      
+
       const icon = document.getElementById('theme-icon');
       const text = document.getElementById('theme-text');
-      
       if (savedTheme === 'dark') {
         icon.textContent = '☀️';
         text.textContent = 'Light Mode';
+      } else {
+         icon.textContent = '🌙';
+         text.textContent = 'Dark Mode';
       }
     }
 
-    // Handle URL parameters for cross-calendar navigation
+    // Handle URL parameters
     function handleURLParameters() {
       const urlParams = new URLSearchParams(window.location.search);
-      const targetDate = urlParams.get('date');
-      const targetMonth = urlParams.get('month');
+      const targetDate = urlParams.get('date'); // Expecting Gregorian YYYY-MM-DD
+      const targetMonth = urlParams.get('month'); // Expecting Gregorian month index (0-11) - Less common?
       const targetYear = urlParams.get('year');
+
+      let yearToSet = new Date().getFullYear(); // Default
 
       if (targetYear) {
         let year = parseInt(targetYear);
         if (year >= 1900 && year <= 2100) {
-          selectedYear = year;
-          document.getElementById('year-input').value = selectedYear;
+          yearToSet = year;
         }
       }
-      
-      if (targetMonth !== null) {
-        const monthIndex = parseInt(targetMonth);
-        if (monthIndex >= 0 && monthIndex < 12) {
-          currentMonth = monthIndex;
-        }
-      } else if (targetDate) {
-        const date = new Date(targetDate + "T00:00:00Z"); // Treat date as UTC
-        if (!isNaN(date.getTime())) {
-          currentMonth = date.getUTCMonth();
-          selectedYear = date.getUTCFullYear();
-          document.getElementById('year-input').value = selectedYear;
-          
-          setTimeout(() => {
-            const dayElement = document.querySelector(`[data-gregorian-date="${targetDate}"]`);
-            if (dayElement) {
-              dayElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              dayElement.style.animation = 'pulse 1s ease-in-out 3';
-            }
-          }, 500);
-        }
+      selectedYear = yearToSet;
+      document.getElementById('year-input').value = selectedYear;
+
+      let monthToSet = new Date().getMonth(); // Default to current local month
+      let dateToHighlight = null;
+
+       if (targetDate) {
+         // Prioritize date param
+         const dateParts = targetDate.split('-');
+         if (dateParts.length === 3) {
+             const year = parseInt(dateParts[0]);
+             const month = parseInt(dateParts[1]) - 1; // JS month 0-indexed
+             const day = parseInt(dateParts[2]);
+             // Create UTC date to avoid timezone offset issues when setting month/year
+             const gDate = new Date(Date.UTC(year, month, day));
+
+             if (!isNaN(gDate.getTime())) {
+                 // If the date's year matches the determined selectedYear
+                 if (year === selectedYear) {
+                     monthToSet = month; // Set the month from the date
+                     dateToHighlight = targetDate; // Store YYYY-MM-DD
+                 } else {
+                     // If date's year is different, update selectedYear and month
+                     console.warn(`URL date parameter year (${year}) differs from year parameter/default (${selectedYear}). Using date's year.`);
+                     selectedYear = year;
+                     document.getElementById('year-input').value = selectedYear;
+                     monthToSet = month;
+                     dateToHighlight = targetDate;
+                 }
+             }
+         }
+      } else if (targetMonth !== null) {
+          // Fallback to month param if date not present
+          const monthIndex = parseInt(targetMonth);
+          if (monthIndex >= 0 && monthIndex < 12) {
+              monthToSet = monthIndex;
+          }
       }
+
+      currentMonth = monthToSet; // Set the initial month
+
+      return dateToHighlight; // Return date string if highlight needed
     }
 
+    // Initial setup
     document.addEventListener('DOMContentLoaded', async () => {
       initializeTheme();
-      
-      // Load accurate equinox data before building calendar
+
+      // Load essential data first
       await calendarProcessor.loadVernalEquinoxData();
 
+      // Determine initial year/month from URL or defaults
+      const dateToHighlight = handleURLParameters();
+
+      // Setup year input listeners
       const yearInput = document.getElementById('year-input');
-      yearInput.value = selectedYear;
+      yearInput.value = selectedYear; // Ensure input reflects determined year
       yearInput.addEventListener('change', updateYear);
       yearInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-          e.preventDefault(); // Prevent form submission
+          e.preventDefault();
           updateYear();
         }
       });
 
-      handleURLParameters(); // Set year/month/date *before* first generate
+      // Generate the calendar grids
       generateCalendar();
-      updateDisplay();
+      // updateDisplay is called within generateCalendar
+
+      // Highlight specific date from URL if applicable
+      if (dateToHighlight) {
+        setTimeout(() => {
+          const dayElement = document.querySelector(`.month.active [data-gregorian-date="${dateToHighlight}"]`);
+          if (dayElement) {
+            dayElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+             // Simple highlight effect
+             dayElement.style.transition = 'none';
+             dayElement.style.outline = '3px solid var(--accent-secondary)';
+             dayElement.style.outlineOffset = '-3px';
+             setTimeout(() => {
+                dayElement.style.transition = 'outline 1.5s ease-out';
+                dayElement.style.outline = '0px solid transparent';
+             }, 100);
+          }
+        }, 300); // Delay slightly
+      }
     });
   </script>
 </body>
