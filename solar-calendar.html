@@ -245,6 +245,9 @@
       letter-spacing: 0.5px;
     }
 
+    .header .full { display: inline; }
+    .header .abbr { display: none; }
+
     .day {
       background: var(--card-bg);
       padding: 1rem;
@@ -259,6 +262,7 @@
       border: 2px solid var(--border-color);
       transition: var(--transition);
       box-shadow: var(--card-shadow);
+      cursor: pointer;
     }
 
     .day:hover {
@@ -267,10 +271,42 @@
       border-color: var(--accent-primary);
     }
 
+    .day.clickable:hover::after {
+      content: '🔗';
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 0.8rem;
+      opacity: 0.6;
+    }
+
+    .day {
+      position: relative;
+    }
+
     .day-solar {
       font-weight: 700;
       font-size: 1.1rem;
       color: var(--text-primary);
+    }
+
+    .day-month {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .day-month .full { display: inline; }
+    .day-month .abbr { display: none; }
+
+    .day-ordinal {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+      margin: 0.25rem 0;
     }
 
     .day-label {
@@ -286,6 +322,9 @@
       color: var(--text-secondary);
       line-height: 1.4;
     }
+
+    .day-greg .full { display: inline; }
+    .day-greg .abbr { display: none; }
 
     .today {
       background: var(--today-bg) !important;
@@ -338,31 +377,50 @@
       }
 
       .calendar {
-        gap: 0.5rem;
-      }
-
-      .header {
-        padding: 0.5rem;
-        font-size: 0.7rem;
-      }
-
-      .day {
-        padding: 0.75rem;
-        min-height: 100px;
         gap: 0.25rem;
       }
 
-      .day-solar {
-        font-size: 0.95rem;
+      .header {
+        padding: 0.4rem 0.1rem;
+        font-size: 0.65rem;
+        letter-spacing: 0;
       }
 
-      .day-label {
+      .header .full { display: none; }
+      .header .abbr { display: inline; }
+
+      .day {
+        padding: 0.5rem 0.25rem;
+        min-height: 90px;
+        gap: 0.2rem;
+      }
+
+      .day-month {
         font-size: 0.65rem;
       }
 
-      .day-greg {
-        font-size: 0.75rem;
+      .day-month .full { display: none; }
+      .day-month .abbr { display: inline; }
+
+      .day-ordinal {
+        font-size: 1.3rem;
+        margin: 0.1rem 0;
       }
+
+      .day-solar {
+        font-size: 0.85rem;
+      }
+
+      .day-label {
+        font-size: 0.6rem;
+      }
+
+      .day-greg {
+        font-size: 0.7rem;
+      }
+
+      .day-greg .full { display: none; }
+      .day-greg .abbr { display: inline; }
 
       .month h2 {
         font-size: 1.25rem;
@@ -380,17 +438,38 @@
     }
 
     @media (max-width: 480px) {
+      .calendar {
+        gap: 0.2rem;
+      }
+
+      .header {
+        padding: 0.3rem 0.1rem;
+        font-size: 0.6rem;
+      }
+
       .day {
-        min-height: 80px;
-        padding: 0.5rem;
+        min-height: 75px;
+        padding: 0.4rem 0.2rem;
+      }
+
+      .day-month {
+        font-size: 0.6rem;
+      }
+
+      .day-ordinal {
+        font-size: 1.1rem;
       }
 
       .day-solar {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
+      }
+
+      .day-label {
+        font-size: 0.55rem;
       }
 
       .day-greg {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
       }
     }
   </style>
@@ -423,6 +502,7 @@
 <script>
   const customMonths = ["March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January", "February", "Sol"];
   const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const weekdaysAbbr = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const today = new Date();
   let currentMonthIndex = 0;
   let allMonths = [];
@@ -478,6 +558,38 @@
     return "th";
   }
 
+  function getAbbrWeekday(fullWeekday) {
+    const map = {
+      'Monday': 'Mon',
+      'Tuesday': 'Tue',
+      'Wednesday': 'Wed',
+      'Thursday': 'Thu',
+      'Friday': 'Fri',
+      'Saturday': 'Sat',
+      'Sunday': 'Sun'
+    };
+    return map[fullWeekday] || fullWeekday;
+  }
+
+  function getAbbrMonth(fullMonth) {
+    const map = {
+      'January': 'Jan',
+      'February': 'Feb',
+      'March': 'Mar',
+      'April': 'Apr',
+      'May': 'May',
+      'June': 'Jun',
+      'July': 'Jul',
+      'August': 'Aug',
+      'September': 'Sep',
+      'October': 'Oct',
+      'November': 'Nov',
+      'December': 'Dec',
+      'Sol': 'Sol'
+    };
+    return map[fullMonth] || fullMonth;
+  }
+
   function getSpringEquinox(year) {
     if (year > 275000 || year < -271000) { throw new RangeError("Invalid time value for year: " + year); }
     if (year < 1583) return new Date(year, 2, 21);
@@ -526,14 +638,14 @@
         monthDiv.classList.add("month");
         monthDiv.setAttribute('data-month-index', allMonths.length);
         const title = document.createElement("h2");
-        title.textContent = `${monthName}`;
+        title.textContent = `${monthName} ${year}`;
         monthDiv.appendChild(title);
         const calendar = document.createElement("div");
         calendar.classList.add("calendar");
-        weekdays.forEach(day => {
+        weekdays.forEach((day, idx) => {
           const header = document.createElement("div");
           header.classList.add("header");
-          header.textContent = day;
+          header.innerHTML = `<span class="full">${day}</span><span class="abbr">${weekdaysAbbr[idx]}</span>`;
           calendar.appendChild(header);
         });
 
@@ -545,23 +657,38 @@
 
             const solarWeekdayName = weekdays[day];
             const gregWeekdayName = currentDate.toLocaleDateString(undefined, { weekday: 'long' });
+            const gregWeekdayAbbr = getAbbrWeekday(gregWeekdayName);
             const areWeekdaysSame = (solarWeekdayName === gregWeekdayName);
             const customDay = week * 7 + day + 1;
-            const solarDateStr = `${monthName} ${customDay}${getOrdinalSuffix(customDay)}`;
             const gregDay = currentDate.getDate();
             const gregMonthName = currentDate.toLocaleDateString(undefined, { month: 'long' });
-            let gregDateStr = areWeekdaysSame ? "" : `${gregWeekdayName}, `;
-            gregDateStr += `${gregMonthName} ${gregDay}${getOrdinalSuffix(gregDay)}`;
-            if (currentDate.getFullYear() !== year) {
-              gregDateStr += ` (${currentDate.getFullYear()})`;
-            }
+            const gregMonthAbbr = getAbbrMonth(gregMonthName);
+
+            // Build month display with both full and abbreviated versions
+            const monthNameAbbr = getAbbrMonth(monthName);
+            const monthDisplay = `<span class="full">${monthName}</span><span class="abbr">${monthNameAbbr}</span>`;
+
+            // Build date strings with both full and abbreviated versions
+            const gregWeekdayDisplay = areWeekdaysSame ? "" : `<span class="full">${gregWeekdayName}</span><span class="abbr">${gregWeekdayAbbr}</span>, `;
+            const gregMonthDisplay = `<span class="full">${gregMonthName}</span><span class="abbr">${gregMonthAbbr}</span>`;
+            const gregYearDisplay = currentDate.getFullYear() !== year ? ` (${currentDate.getFullYear()})` : '';
+
+            const gregDateStr = `${gregWeekdayDisplay}${gregMonthDisplay} ${gregDay}${getOrdinalSuffix(gregDay)}${gregYearDisplay}`;
 
             if (gregDateStrForCheck === todayStr && year === new Date().getFullYear()) {
               cell.classList.add("today");
             }
 
+            // Add data attribute and click handler for cross-calendar linking
+            cell.classList.add("clickable");
+            cell.setAttribute('data-greg-date', gregDateStrForCheck);
+            cell.addEventListener('click', () => {
+              window.location.href = `gregorian-calendar.html?date=${gregDateStrForCheck}&year=${year}`;
+            });
+
             cell.innerHTML = `
-              <div class="day-solar">${solarDateStr}</div>
+              <div class="day-month">${monthDisplay}</div>
+              <div class="day-ordinal">${customDay}${getOrdinalSuffix(customDay)}</div>
               <div class="day-label">Gregorian:</div>
               <div class="day-greg">${gregDateStr}</div>
             `;
@@ -590,10 +717,30 @@
   }
 
   function scrollToTodayOrFirstMonth() {
+    // Check for URL parameter for cross-calendar navigation
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetDate = urlParams.get('date');
+    const targetYear = urlParams.get('year');
+
     setTimeout(() => {
-      const todayElement = document.querySelector('.today');
-      if (todayElement) {
-        const monthElement = todayElement.closest('.month');
+      let targetElement = null;
+
+      // If there's a date parameter, try to find and highlight that date
+      if (targetDate && targetYear) {
+        targetElement = document.querySelector(`[data-greg-date="${targetDate}"]`);
+        if (targetElement) {
+          targetElement.classList.add('today');
+          targetElement.style.animation = 'pulse 1s ease-in-out 3';
+        }
+      }
+
+      // If no target from URL, look for today
+      if (!targetElement) {
+        targetElement = document.querySelector('.today');
+      }
+
+      if (targetElement) {
+        const monthElement = targetElement.closest('.month');
         if (monthElement) {
           const monthIndex = parseInt(monthElement.getAttribute('data-month-index'));
           currentMonthIndex = monthIndex;
@@ -675,7 +822,19 @@
   });
 
   initTheme();
-  buildCalendar(2025);
+
+  // Check for year parameter in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlYear = urlParams.get('year');
+  const initialYear = urlYear ? parseInt(urlYear, 10) : 2025;
+
+  if (!isNaN(initialYear)) {
+    document.getElementById('year-select').value = initialYear;
+    buildCalendar(initialYear);
+  } else {
+    buildCalendar(2025);
+  }
+
   observeMonths();
 </script>
 </body>
