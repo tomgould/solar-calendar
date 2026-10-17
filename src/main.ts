@@ -420,6 +420,8 @@ async function start(): Promise<void> {
   await readUrl();
   wire();
   render();
+  // Hidden until the first render, so nothing jumps as the calendar fills in
+  $('#main').classList.remove('is-loading');
   window.addEventListener('popstate', async () => {
     try {
       await readUrl();
@@ -436,4 +438,5 @@ async function start(): Promise<void> {
 start().catch((error: unknown) => {
   console.error(error);
   $('#today-line').textContent = 'The calendar couldn’t load. Reload the page to try again.';
+  $('#main').classList.remove('is-loading');
 });
