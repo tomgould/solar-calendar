@@ -13,7 +13,7 @@ import { type SkyEvent, nextSeasonEvent, seasonEvents } from './core/sky';
 import { LEAP_WEEK, MAX_YEAR, MIN_YEAR, MONTHS, daysInMonth, fromSolar, hasLeapWeek, monthSpan, toSolar, yearStart } from './core/solar';
 import { defaultHolidaySetIds, holidaySets } from './holidays/registry';
 import { type FestivalSource, festivalsFrom } from './names/festivals';
-import { DEFAULT_PACK_ID, isPackId, loadAllPacks, loadPack } from './names/registry';
+import { DEFAULT_PACK_ID, PACK_IDS, isPackId, loadAllPacks, loadPack } from './names/registry';
 import type { HolidaySet, NamePack } from './names/schema';
 import { buildIcs } from './feed/ics';
 import { moonPhaseName, moonQuarters } from './sky/moon';
@@ -209,7 +209,8 @@ async function readUrl(): Promise<void> {
   }
   // A list of regions; unset means all of them, and none stores ""
   state.holidays = holidaySets(storage.get('holidays') ?? defaultHolidaySetIds());
-  await loadExtraPacks((storage.get('festivals') ?? '').split(','));
+  // Every pack's festivals show until the viewer unticks some; none stores ""
+  await loadExtraPacks((storage.get('festivals') ?? PACK_IDS.join(',')).split(','));
 }
 
 /** Loads the other packs whose festivals are shown, skipping any that fail (offline, say). */
@@ -220,7 +221,7 @@ async function loadExtraPacks(ids: string[]): Promise<void> {
 
 /** The festivals and holidays shown, as feed parameters: "&festivals=persian&holidays=uk-scotland" */
 function festivalParams(): string {
-  const extras = state.extraPacks.map((pack) => pack.id).join(',');
+  const extras = state.extraPacks.filter((pack) => pack.id !== state.pack.id && pack.festivals?.length).map((pack) => pack.id).join(',');
   const holidays = state.holidays.map((set) => set.id).join(',');
   return `${extras ? `&festivals=${extras}` : ''}${holidays ? `&holidays=${holidays}` : ''}`;
 }
