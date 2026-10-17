@@ -2,6 +2,8 @@
 
 A calendar of 13 identical months. Every month has 28 days, exactly four weeks, so the 1st is always a Monday and the 28th is always a Sunday. The year starts on the first Monday on or after the March equinox, so it stays with the seasons. Gregorian dates are shown alongside every day.
 
+**Try it: [solar-calendar.solar-calendar.workers.dev](https://solar-calendar.solar-calendar.workers.dev)**
+
 ![The month view in December, with Anglo-Saxon month names, England and Wales bank holidays, and the month's festivals listed under the grid](docs/screenshots/month.png)
 
 | Year view, dark mode | Choosing festivals and holidays |
