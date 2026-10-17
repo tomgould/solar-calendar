@@ -15,7 +15,7 @@ import { DEFAULT_PACK_ID, isPackId, loadAllPacks, loadPack } from './names/regis
 import type { NamePack } from './names/schema';
 import { buildIcs } from './feed/ics';
 import { moonPhaseName, moonQuarters } from './sky/moon';
-import { type Place, isPlace, sunTimes } from './sky/sun';
+import { type Place, isPlace, placeTimeZone, sunTimes } from './sky/sun';
 import { renderDayPanel, sunText } from './ui/day-panel';
 import { GoToDate } from './ui/goto';
 import { escapeHtml, gregorianLong, solarLong } from './ui/format';
@@ -119,8 +119,9 @@ function render(focus = false): void {
       // The button is there straight away, so focus can return to it after the dialog
       sun.innerHTML = '<span data-sun-text>Calculating…</span> <button type="button" class="text-button" data-set-location>Change place</button>';
       const text = sun.querySelector('[data-sun-text]')!;
-      sunTimes(selected, place).then((times) => {
-        if (state.selected === selected && sun.isConnected) text.textContent = sunText(times);
+      placeTimeZone(place).then(async (timeZone) => {
+        const times = await sunTimes(selected, place, timeZone);
+        if (state.selected === selected && sun.isConnected) text.textContent = sunText(times, timeZone);
       }).catch(() => {
         if (sun.isConnected) text.textContent = 'Couldn’t load sunrise and sunset. Check your connection.';
       });

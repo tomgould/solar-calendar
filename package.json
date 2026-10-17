@@ -33,6 +33,7 @@
     "@fontsource/noto-sans": "^5.3.0",
     "@fontsource/noto-sans-coptic": "^5.3.0",
     "@fontsource/vazirmatn": "^5.3.0",
+    "@photostructure/tz-lookup": "^11.7.0",
     "astronomy-engine": "^2.1.19"
   },
   "private": true

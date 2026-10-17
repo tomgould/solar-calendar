@@ -15,11 +15,12 @@ export interface DayPanelState {
   next: SkyEvent;
 }
 
-/** "Sunrise 04:43, sunset 21:21 BST. 16 h 38 min of daylight", in the viewer's time zone */
-export function sunText({ rise, set, polar }: SunTimes): string {
+/** "Sunrise 04:43, sunset 21:21 BST. 16 h 38 min of daylight", in the place's time zone if known */
+export function sunText({ rise, set, polar }: SunTimes, timeZone?: string | null): string {
   if (polar) return polar === 'day' ? 'The sun stays up all day' : 'The sun stays down all day';
-  const clock = (ms: number) => new Intl.DateTimeFormat(LOCALE, { hour: '2-digit', minute: '2-digit' }).format(ms);
-  const zone = new Intl.DateTimeFormat(LOCALE, { timeZoneName: 'short' }).formatToParts(rise ?? set ?? 0)
+  const zoneOption = timeZone ? { timeZone } : {};
+  const clock = (ms: number) => new Intl.DateTimeFormat(LOCALE, { hour: '2-digit', minute: '2-digit', ...zoneOption }).format(ms);
+  const zone = new Intl.DateTimeFormat(LOCALE, { timeZoneName: 'short', ...zoneOption }).formatToParts(rise ?? set ?? 0)
     .find((part) => part.type === 'timeZoneName')?.value ?? '';
   const text = `${rise !== null ? `Sunrise ${clock(rise)}` : 'No sunrise'}, ${set !== null ? `sunset ${clock(set)}` : 'no sunset'} ${zone}`.trim();
   if (rise === null || set === null || set <= rise) return text;

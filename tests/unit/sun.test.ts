@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { dayFromCivil } from '../../src/core/days';
-import { isPlace, sunTimes } from '../../src/sky/sun';
+import { isPlace, placeTimeZone, sunTimes, zonedMidnight } from '../../src/sky/sun';
 
 const inLondonTime = async <T>(run: () => Promise<T>): Promise<T> => {
   const saved = process.env.TZ;
@@ -26,6 +26,24 @@ describe('sunrise and sunset', () => {
     const winter = await inLondonTime(() => sunTimes(dayFromCivil(2026, 12, 21), tromso));
     expect(summer).toMatchObject({ rise: null, set: null, polar: 'day' });
     expect(winter).toMatchObject({ rise: null, set: null, polar: 'night' });
+  });
+
+  it('gives a far-away place its own day and time zone', async () => {
+    const sydney = { lat: -33.8688, lon: 151.2093 };
+    const zone = await placeTimeZone(sydney);
+    expect(zone).toBe('Australia/Sydney');
+    // From a London device: published Sydney times on 21 June are 07:00 and 16:54 AEST
+    const times = await inLondonTime(() => sunTimes(dayFromCivil(2026, 6, 21), sydney, zone));
+    const local = (ms: number) => new Intl.DateTimeFormat('en-GB', { timeZone: 'Australia/Sydney', hour: '2-digit', minute: '2-digit' }).format(ms);
+    expect(Math.abs(minutes(local(times.rise!)) - minutes('07:00'))).toBeLessThanOrEqual(3);
+    expect(Math.abs(minutes(local(times.set!)) - minutes('16:54'))).toBeLessThanOrEqual(3);
+    expect(new Intl.DateTimeFormat('en-CA', { timeZone: 'Australia/Sydney' }).format(times.rise!)).toBe('2026-06-21');
+  });
+
+  it('finds midnight in a time zone, across daylight saving', () => {
+    expect(new Date(zonedMidnight(2026, 6, 21, 'Australia/Sydney')).toISOString()).toBe('2026-06-20T14:00:00.000Z');
+    expect(new Date(zonedMidnight(2026, 3, 29, 'Europe/London')).toISOString()).toBe('2026-03-29T00:00:00.000Z');
+    expect(new Date(zonedMidnight(2026, 3, 30, 'Europe/London')).toISOString()).toBe('2026-03-29T23:00:00.000Z');
   });
 
   it('validates stored places', () => {
