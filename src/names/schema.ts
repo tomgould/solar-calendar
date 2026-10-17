@@ -47,6 +47,15 @@ export interface Festival {
   certainty?: Certainty;
   say?: string;
   ipa?: string;
+  /** The first and last Gregorian years it's kept, where that's limited */
+  from?: number;
+  until?: number;
+  /** Years it moved, to a Gregorian month and day that year: { "2020": "05-08" } */
+  moves?: Record<string, string>;
+  /** A day off, such as a bank holiday */
+  bankHoliday?: boolean;
+  /** From this year on, a day off that falls at the weekend gets the next free weekday too */
+  substituteFrom?: number;
 }
 
 export type PackKind = 'historical' | 'modern';
@@ -75,9 +84,25 @@ export interface NamePack {
   sources: { title: string; url: string }[];
 }
 
+/**
+ * A set of public holidays, such as England and Wales's bank holidays: one
+ * JSON file in src/holidays/, shown alongside any month names.
+ */
+export interface HolidaySet {
+  id: string;
+  /** Shown in the menu, such as "England and Wales" */
+  title: string;
+  description: string;
+  lang: string;
+  festivals: Festival[];
+  sources: { title: string; url: string }[];
+}
+
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 const isText = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
+// Language tags go into lang="" attributes, so only allow the BCP 47 shape
+const LANGUAGE_TAG = /^[A-Za-z]{2,8}(-[A-Za-z0-9]{1,8})*$/;
 
 /** Checks a parsed pack file and returns it typed, or throws listing every problem. */
 export function validatePack(data: unknown, source: string): NamePack {
@@ -89,31 +114,12 @@ export function validatePack(data: unknown, source: string): NamePack {
   }
   if (isText(data.id) && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(data.id)) problems.push('"id" must be lowercase words joined by hyphens');
   if (data.kind !== 'historical' && data.kind !== 'modern') problems.push('"kind" must be "historical" or "modern"');
-  if (data.festivals !== undefined) {
-    if (!Array.isArray(data.festivals)) {
-      problems.push('"festivals" must be a list');
-    } else {
-      data.festivals.forEach((festival: unknown, i) => {
-        const where = `festival ${i + 1}`;
-        if (!isObject(festival)) return problems.push(`${where} must be an object`);
-        for (const key of ['name', 'gloss', 'meaning']) if (!isText(festival[key])) problems.push(`${where} needs a "${key}"`);
-        const problem = ruleProblem(festival.when);
-        if (problem) problems.push(`${where} "when" ${problem}`);
-        if (festival.days !== undefined && !(Number.isInteger(festival.days) && (festival.days as number) >= 1 && (festival.days as number) <= 31)) {
-          problems.push(`${where} "days" must be a whole number from 1 to 31`);
-        }
-        if (festival.certainty !== undefined && !CERTAINTIES.includes(festival.certainty as Certainty)) problems.push(`${where} "certainty" must be one of ${CERTAINTIES.join(', ')}`);
-        for (const key of ['say', 'ipa']) if (festival[key] !== undefined && !isText(festival[key])) problems.push(`${where} "${key}" must be text if present`);
-      });
-    }
-  }
+  if (data.festivals !== undefined) festivalProblems(data.festivals, problems);
   for (const key of ['dir', 'originalDir']) {
     if (data[key] !== undefined && data[key] !== 'ltr' && data[key] !== 'rtl') problems.push(`"${key}" must be "ltr" or "rtl"`);
   }
-  // Language tags go into lang="" attributes, so only allow the BCP 47 shape
-  const languageTag = /^[A-Za-z]{2,8}(-[A-Za-z0-9]{1,8})*$/;
-  if (isText(data.lang) && !languageTag.test(data.lang)) problems.push('"lang" must be a language tag such as "la" or "fa-Latn"');
-  if (data.originalLang !== undefined && !(isText(data.originalLang) && languageTag.test(data.originalLang))) {
+  if (isText(data.lang) && !LANGUAGE_TAG.test(data.lang)) problems.push('"lang" must be a language tag such as "la" or "fa-Latn"');
+  if (data.originalLang !== undefined && !(isText(data.originalLang) && LANGUAGE_TAG.test(data.originalLang))) {
     problems.push('"originalLang" must be a language tag such as "fa" if present');
   }
 
@@ -142,12 +148,58 @@ export function validatePack(data: unknown, source: string): NamePack {
     for (const key of ['say', 'ipa']) if (leapWeek[key] !== undefined && !isText(leapWeek[key])) problems.push(`leapWeek "${key}" must be text if present`);
   }
 
-  if (!Array.isArray(data.sources) || data.sources.length === 0) {
-    problems.push('"sources" must list at least one source');
-  } else if (!data.sources.every((s: unknown) => isObject(s) && isText(s.title) && isText(s.url) && s.url.startsWith('https://'))) {
-    problems.push('each source needs a "title" and an https "url"');
-  }
+  sourceProblems(data.sources, problems);
 
   if (problems.length > 0) throw new Error(`${source}:\n  - ${problems.join('\n  - ')}`);
   return data as unknown as NamePack;
+}
+
+/** Checks a parsed holiday set file and returns it typed, or throws listing every problem. */
+export function validateHolidaySet(data: unknown, source: string): HolidaySet {
+  if (!isObject(data)) throw new Error(`${source}: a holiday set must be a JSON object`);
+  const problems: string[] = [];
+  for (const key of ['id', 'title', 'description', 'lang']) {
+    if (!isText(data[key])) problems.push(`"${key}" must be a non-empty string`);
+  }
+  if (isText(data.id) && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(data.id)) problems.push('"id" must be lowercase words joined by hyphens');
+  if (isText(data.lang) && !LANGUAGE_TAG.test(data.lang)) problems.push('"lang" must be a language tag such as "en-GB"');
+  if (!Array.isArray(data.festivals) || data.festivals.length === 0) problems.push('"festivals" must list at least one holiday');
+  else festivalProblems(data.festivals, problems);
+  sourceProblems(data.sources, problems);
+  if (problems.length > 0) throw new Error(`${source}:\n  - ${problems.join('\n  - ')}`);
+  return data as unknown as HolidaySet;
+}
+
+function festivalProblems(festivals: unknown, problems: string[]): void {
+  if (!Array.isArray(festivals)) {
+    problems.push('"festivals" must be a list');
+    return;
+  }
+  const isYear = (value: unknown) => Number.isInteger(value) && (value as number) >= 1 && (value as number) <= 9999;
+  festivals.forEach((festival: unknown, i) => {
+    const where = `festival ${i + 1}`;
+    if (!isObject(festival)) return problems.push(`${where} must be an object`);
+    for (const key of ['name', 'gloss', 'meaning']) if (!isText(festival[key])) problems.push(`${where} needs a "${key}"`);
+    const problem = ruleProblem(festival.when);
+    if (problem) problems.push(`${where} "when" ${problem}`);
+    if (festival.days !== undefined && !(Number.isInteger(festival.days) && (festival.days as number) >= 1 && (festival.days as number) <= 31)) {
+      problems.push(`${where} "days" must be a whole number from 1 to 31`);
+    }
+    if (festival.certainty !== undefined && !CERTAINTIES.includes(festival.certainty as Certainty)) problems.push(`${where} "certainty" must be one of ${CERTAINTIES.join(', ')}`);
+    for (const key of ['say', 'ipa']) if (festival[key] !== undefined && !isText(festival[key])) problems.push(`${where} "${key}" must be text if present`);
+    for (const key of ['from', 'until', 'substituteFrom']) if (festival[key] !== undefined && !isYear(festival[key])) problems.push(`${where} "${key}" must be a year`);
+    if (festival.bankHoliday !== undefined && typeof festival.bankHoliday !== 'boolean') problems.push(`${where} "bankHoliday" must be true or false`);
+    if (festival.moves !== undefined && !(isObject(festival.moves)
+      && Object.entries(festival.moves).every(([year, date]) => /^\d{4}$/.test(year) && ruleProblem({ date: `${year}-${date}` }) === null))) {
+      problems.push(`${where} "moves" must map years to month and day, such as { "2020": "05-08" }`);
+    }
+  });
+}
+
+function sourceProblems(sources: unknown, problems: string[]): void {
+  if (!Array.isArray(sources) || sources.length === 0) {
+    problems.push('"sources" must list at least one source');
+  } else if (!sources.every((s: unknown) => isObject(s) && isText(s.title) && isText(s.url) && s.url.startsWith('https://'))) {
+    problems.push('each source needs a "title" and an https "url"');
+  }
 }

@@ -1,9 +1,11 @@
 import type { DayNumber } from '../core/days';
 import { SKY_EVENT_NAMES, type SkyEvent } from '../core/sky';
 import { toSolar, yearLength } from '../core/solar';
-import type { Festival, NamePack } from '../names/schema';
+import { type FestivalDay, festivalLabel } from '../names/festivals';
+import type { NamePack } from '../names/schema';
 import type { SunTimes } from '../sky/sun';
 import { LOCALE, daysAway, escapeHtml, eventTime, gregorianLong, solarLong } from './format';
+import { festivalKind } from './festivals';
 import { chevron } from './icons';
 import { hearButton } from './speech';
 
@@ -15,8 +17,8 @@ export interface DayPanelState {
   events: SkyEvent[];
   /** The next equinox or solstice after the selected day */
   next: SkyEvent;
-  /** The pack's festivals on the selected day */
-  festivals: Festival[];
+  /** Festivals and holidays on the selected day */
+  festivals: FestivalDay[];
 }
 
 /** "Sunrise 04:43, sunset 21:21 BST. 16 h 38 min of daylight", in the place's time zone if known */
@@ -33,9 +35,18 @@ export function sunText({ rise, set, polar }: SunTimes, timeZone?: string | null
 }
 
 export function renderDayPanel(root: HTMLElement, { selected, today, pack, events, next, festivals }: DayPanelState): void {
-  const festivalRow = festivals.length === 0 ? '' : `<div><dt>${festivals.length > 1 ? 'Festivals' : 'Festival'}</dt><dd>${festivals.map((festival) => `
-    <p class="festival"><strong lang="${escapeHtml(pack.lang)}">${escapeHtml(festival.name)}</strong>, ${escapeHtml(festival.gloss)}.${festival.say ? ` <span class="say"><span class="say-label">Say</span> ${escapeHtml(festival.say)}</span>. ${hearButton(pack, festival)}` : ''}
-    ${escapeHtml(festival.meaning)}</p>`).join('')}</dd></div>`;
+  // One row each for bank holidays, other holidays and festivals; where one comes
+  // from somewhere other than the chosen names, say where
+  const festivalText = (entry: FestivalDay) => {
+    const { festival, source } = entry;
+    return `
+    <p class="festival"><strong lang="${escapeHtml(source.lang)}">${escapeHtml(festivalLabel(entry))}</strong>${source.id === pack.id ? '' : ` <span class="festival-source">(${escapeHtml(source.title)})</span>`}, ${escapeHtml(festival.gloss)}.${festival.say ? ` <span class="say"><span class="say-label">Say</span> ${escapeHtml(festival.say)}</span>. ${hearButton(source, festival)}` : ''}
+    ${escapeHtml(festival.meaning)}</p>`;
+  };
+  const festivalRow = (['Bank holiday', 'Holiday', 'Festival'] as const).map((kind) => {
+    const entries = festivals.filter((entry) => festivalKind(entry) === kind);
+    return entries.length === 0 ? '' : `<div><dt>${kind}${entries.length > 1 ? 's' : ''}</dt><dd>${entries.map(festivalText).join('')}</dd></div>`;
+  }).join('');
   const date = toSolar(selected);
   const nextWhen = selected === today ? daysAway(today, next.day) : `${next.day - selected} days later`;
   // On phones the panel is a sheet along the bottom; the toggle only shows there

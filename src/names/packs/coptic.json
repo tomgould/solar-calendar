@@ -138,9 +138,12 @@
     {
       "name": "Nayrouz",
       "gloss": "Coptic new year",
-      "meaning": "The Coptic new year, 1 Thout. It falls on 11 September, or 12 September in the year before a Gregorian leap year, which a fixed date cannot show, so the date here is one day early in those years.",
+      "meaning": "The Coptic new year, 1 Thout. It falls on 11 September, or 12 September in the year before a Gregorian leap year, until 2100.",
       "when": {
-        "gregorian": "09-11"
+        "coptic": {
+          "month": 1,
+          "day": 1
+        }
       },
       "certainty": "established",
       "say": "nay-ROOZ",
@@ -149,27 +152,30 @@
     {
       "name": "Feast of the Cross",
       "gloss": "feast of the Cross",
-      "meaning": "Held on 17 Thout, most often said to commemorate the finding of the Cross by Empress Helena. Some sources link it to the consecration of the Church of the Resurrection instead. It falls on 27 September, or 28 September in the year before a Gregorian leap year, so the date here is one day early in those years.",
+      "meaning": "Held on 17 Thout, most often said to commemorate the finding of the Cross by Empress Helena. Some sources link it to the consecration of the Church of the Resurrection instead.",
       "when": {
-        "gregorian": "09-27"
+        "coptic": {
+          "month": 1,
+          "day": 17
+        }
       },
       "certainty": "likely"
     },
     {
       "name": "Coptic Christmas",
       "gloss": "Nativity of Christ",
-      "meaning": "The Nativity, usually dated 29 Koiak, which is 25 December in the Julian calendar. It falls on 7 January in the Gregorian calendar until 2100.",
+      "meaning": "The Nativity, on 25 December in the Julian calendar, usually written 29 Koiak. It falls on 7 January in the Gregorian calendar until 2100, then 8 January.",
       "when": {
-        "gregorian": "01-07"
+        "julian": "12-25"
       },
       "certainty": "established"
     },
     {
       "name": "Theophany",
       "gloss": "baptism of Christ",
-      "meaning": "The baptism of Christ, usually dated 11 Tobi and called Eid al-Ghitas in Egypt. It is 6 January in the Julian calendar, which falls on 19 January in the Gregorian calendar until 2100.",
+      "meaning": "The baptism of Christ, called Eid al-Ghitas in Egypt, on 6 January in the Julian calendar, usually written 11 Tobi. It falls on 19 January in the Gregorian calendar until 2100.",
       "when": {
-        "gregorian": "01-19"
+        "julian": "01-06"
       },
       "certainty": "established"
     }

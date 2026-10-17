@@ -140,9 +140,12 @@
     {
       "name": "Nowruz",
       "gloss": "Persian new year",
-      "meaning": "The Persian new year, at the March equinox, and the same anchor as this calendar. The Iranian calendar counts the equinox day as Nowruz only if it falls before noon in Tehran, and otherwise the next day, so the date here is approximate and can be a day early.",
+      "meaning": "The Persian new year, 1 Farvardin, at the March equinox, the same anchor as this calendar. Iran counts the equinox day as Nowruz if the equinox comes before noon in Tehran, and otherwise the next day, which is the rule used here.",
       "when": {
-        "event": "march-equinox"
+        "persian": {
+          "month": 1,
+          "day": 1
+        }
       },
       "certainty": "established",
       "say": "no-ROHZ",
@@ -151,10 +154,12 @@
     {
       "name": "Sizdah Bedar",
       "gloss": "thirteenth-day outing",
-      "meaning": "The 13th day of the Persian new year, spent outdoors with picnics. It is dated here as 12 days after the equinox, so it shares the approximation in the Nowruz date.",
+      "meaning": "The 13th day of the Persian new year, 13 Farvardin, spent outdoors with picnics.",
       "when": {
-        "event": "march-equinox",
-        "offset": 12
+        "persian": {
+          "month": 1,
+          "day": 13
+        }
       },
       "certainty": "established",
       "say": "siz-DAH be-DAHR",
@@ -163,21 +168,28 @@
     {
       "name": "Chaharshanbe Suri",
       "gloss": "Wednesday fire festival",
-      "meaning": "Jumping over bonfires on the eve of the last Wednesday before Nowruz, which is the Tuesday evening. It is dated here as the first Tuesday on or after 13 March. That gives the right day for 2025 to 2032, but is a week out in a few years, such as 2024, when Nowruz falls on a Wednesday 20 March.",
+      "meaning": "Jumping over bonfires on the eve of the last Wednesday of the Persian year, which is the Tuesday evening before it.",
       "when": {
-        "gregorian": "03-13",
-        "weekday": "tuesday"
+        "persian": {
+          "month": 1,
+          "day": 1
+        },
+        "before": "wednesday",
+        "offset": -1
       },
-      "certainty": "likely",
+      "certainty": "established",
       "say": "chah-har-shan-BEH soo-REE",
       "ipa": "tʃɒːhɒːɾʃæmˈbe suˈɾiː"
     },
     {
       "name": "Yalda",
       "gloss": "longest night",
-      "meaning": "Families stay up through the longest night of the year, eating pomegranates and reading poetry. It is held on the night of the December solstice, so here it falls on the solstice date.",
+      "meaning": "Families stay up through the longest night of the year, eating pomegranates and reading poetry. It is the night after 30 Azar, the last day of autumn in the Iranian calendar, at the December solstice.",
       "when": {
-        "event": "december-solstice"
+        "persian": {
+          "month": 9,
+          "day": 30
+        }
       },
       "certainty": "established",
       "say": "yal-DAH",
@@ -186,9 +198,12 @@
     {
       "name": "Mehregan",
       "gloss": "autumn Mithra festival",
-      "meaning": "An ancient autumn harvest festival for Mithra, held on the 16th of Mehr in the Iranian calendar. It is dated here as 8 October, but the Iranian date is 7 October in some years, and other calendars give other days.",
+      "meaning": "An ancient autumn harvest festival for Mithra, held on 16 Mehr in the Iranian calendar. Zoroastrian calendars give other days.",
       "when": {
-        "gregorian": "10-08"
+        "persian": {
+          "month": 7,
+          "day": 16
+        }
       },
       "certainty": "likely",
       "say": "meh-reh-GAHN",
@@ -197,9 +212,12 @@
     {
       "name": "Tirgan",
       "gloss": "midsummer water festival",
-      "meaning": "A summer festival of water, held on the 13th of Tir in the Iranian calendar. It is dated here as 4 July, but the Iranian date is 3 July in some years, and other calendars give other days.",
+      "meaning": "A summer festival of water, held on 13 Tir in the Iranian calendar. Zoroastrian calendars give other days.",
       "when": {
-        "gregorian": "07-04"
+        "persian": {
+          "month": 4,
+          "day": 13
+        }
       },
       "certainty": "likely",
       "say": "teer-GAHN",

@@ -54,6 +54,18 @@ describe('/feed.ics Worker', () => {
     expect(days.some((event) => event.summary === '13 Winterfylleþ 2026')).toBe(true);
   });
 
+  it('adds other packs’ festivals and bank holidays when asked, skipping unknown ones', async () => {
+    const url = new URL('https://example.org/feed.ics?names=gregorian&festivals=persian,nope,gregorian&holidays=uk-england-and-wales');
+    const events = parseEvents(await feedResponse(url, now).text());
+    const on = (date: string) => events.filter((event) => event.startDate.toString() === date).map((event) => event.summary);
+    expect(on('2026-12-25')).toContain('Christmas Day');
+    expect(on('2027-03-21')).toContain('Nowruz');
+    // Boxing Day 2026 is a Saturday, so Monday 28 December is the day off
+    expect(on('2026-12-28')).toContain('Boxing Day (substitute day)');
+    expect(events.some((event) => /-uk-england-and-wales-boxing-day-substitute@/.test(event.uid))).toBe(true);
+    expect(new Set(events.map((event) => event.uid)).size).toBe(events.length);
+  });
+
   it('falls back to the default pack for an unknown one', async () => {
     const text = await feedResponse(new URL('https://example.org/feed.ics?names=nope'), now).text();
     expect(text).toContain('SUMMARY:13 October 2026');

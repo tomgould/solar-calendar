@@ -1,7 +1,7 @@
 import { type DayNumber, civilFromDay } from '../core/days';
 import { SKY_EVENT_NAMES, seasonEvents } from '../core/sky';
 import { DAYS_PER_MONTH, LEAP_WEEK, MAX_YEAR, MIN_YEAR, fromSolar, monthsInYear, yearLength, yearStart } from '../core/solar';
-import { festivalsBetween } from '../names/festivals';
+import { type FestivalDay, festivalLabel } from '../names/festivals';
 import type { NamePack } from '../names/schema';
 import { WEEKDAYS, escapeHtml, eventTime, forDisplayFont, gregorianDate, gregorianLong, gregorianShort, hueClass, monthGloss, monthName } from './format';
 
@@ -9,6 +9,8 @@ export interface YearViewState {
   year: number;
   today: DayNumber;
   pack: NamePack;
+  /** Festivals and holidays on each day of the year, from every source shown */
+  festivals: FestivalDay[];
 }
 
 /**
@@ -23,7 +25,7 @@ export class YearView {
     });
   }
 
-  render({ year, today, pack }: YearViewState): void {
+  render({ year, today, pack, festivals }: YearViewState): void {
     const start = yearStart(year);
     const length = yearLength(year);
     const months = monthsInYear(year);
@@ -39,9 +41,7 @@ export class YearView {
       `<th scope="col" class="${hueClass(i + 1)}" ${lang}>${escapeHtml(forDisplayFont(monthName(pack, i + 1)))}</th>`).join('')}</tr></thead>`;
 
     const festivalNames = new Map<DayNumber, string[]>();
-    for (const { day, festival } of festivalsBetween(pack, start, start + length - 1)) {
-      festivalNames.set(day, [...(festivalNames.get(day) ?? []), festival.name]);
-    }
+    for (const entry of festivals) festivalNames.set(entry.day, [...(festivalNames.get(entry.day) ?? []), festivalLabel(entry)]);
     const rows = Array.from({ length: DAYS_PER_MONTH }, (_, r) => {
       const dayOfMonth = r + 1;
       const cells = Array.from({ length: months }, (_, m) => {

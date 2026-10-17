@@ -3,8 +3,8 @@ import { SKY_EVENT_NAMES, type SkyEvent } from '../core/sky';
 import { LEAP_WEEK, daysInMonth, fromSolar, monthsInYear, toSolar } from '../core/solar';
 import type { NamePack } from '../names/schema';
 import { WEEKDAYS, escapeHtml, forDisplayFont, gregorianLong, gregorianShort, hueClass, monthGloss, monthName, solarLong } from './format';
-import type { FestivalDay } from '../names/festivals';
-import { EVENT_ICONS, FESTIVAL_ICON } from './icons';
+import { type FestivalDay, festivalLabel } from '../names/festivals';
+import { EVENT_ICONS, FESTIVAL_ICON, HOLIDAY_ICON } from './icons';
 import { hearButton } from './speech';
 
 export interface MonthViewState {
@@ -96,8 +96,8 @@ export class MonthView {
 
     const eventsByDay = new Map<DayNumber, SkyEvent[]>();
     for (const event of events) eventsByDay.set(event.day, [...(eventsByDay.get(event.day) ?? []), event]);
-    const festivalsByDay = new Map<DayNumber, string[]>();
-    for (const { day, festival } of festivals) festivalsByDay.set(day, [...(festivalsByDay.get(day) ?? []), festival.name]);
+    const festivalsByDay = new Map<DayNumber, FestivalDay[]>();
+    for (const entry of festivals) festivalsByDay.set(entry.day, [...(festivalsByDay.get(entry.day) ?? []), entry]);
 
     this.rows.forEach((row, index) => { row.hidden = index * 7 >= length; });
     this.cells.forEach((cell, index) => {
@@ -111,7 +111,9 @@ export class MonthView {
 
       const dayEvents = eventsByDay.get(day) ?? [];
       const dayFestivals = festivalsByDay.get(day) ?? [];
-      cell.querySelector('.marks')!.innerHTML = (dayFestivals.length > 0 ? FESTIVAL_ICON : '')
+      // A flag for a day off, a star for any other festival or holiday
+      cell.querySelector('.marks')!.innerHTML = (dayFestivals.some((entry) => entry.dayOff) ? HOLIDAY_ICON : '')
+        + (dayFestivals.some((entry) => !entry.dayOff) ? FESTIVAL_ICON : '')
         + dayEvents.map((event) => EVENT_ICONS[event.kind] ?? '').join('');
       if (day === today) cell.setAttribute('aria-current', 'date');
       else cell.removeAttribute('aria-current');
@@ -121,7 +123,7 @@ export class MonthView {
         solarLong(pack, toSolar(day)),
         gregorianLong(day),
         day === today ? 'today' : '',
-        ...dayFestivals,
+        ...dayFestivals.map((entry) => (entry.dayOff ? `${festivalLabel(entry)}, bank holiday` : festivalLabel(entry))),
         ...dayEvents.map((event) => SKY_EVENT_NAMES[event.kind]),
       ].filter(Boolean).join(', ');
     });
