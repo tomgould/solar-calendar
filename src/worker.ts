@@ -16,8 +16,7 @@ import { type NamePack, validatePack } from './names/schema';
 
 // Bundled into the Worker, unlike the app, which loads packs on demand
 const packs = new Map(
-  Object.entries(import.meta.glob<unknown>('./names/packs/*.json', { eager: true, import: 'default' }))
-    .filter(([path]) => !path.slice(path.lastIndexOf('/') + 1).startsWith('_'))
+  Object.entries(import.meta.glob<unknown>(['./names/packs/*.json', '!./names/packs/_*.json'], { eager: true, import: 'default' }))
     .map(([path, data]) => {
       const pack: NamePack = validatePack(data, path);
       return [pack.id, pack];
