@@ -18,13 +18,13 @@
     {
       "name": "2 January",
       "gloss": "the second day of the year",
-      "meaning": "A Scottish bank holiday, giving two days for the New Year. When it falls at a weekend, a weekday is given in its place.",
+      "meaning": "A Scottish bank holiday since 1973, giving two days for the New Year. When it falls at a weekend, a weekday is given in its place.",
       "when": {
         "gregorian": "01-02"
       },
-      "from": 1974,
+      "from": 1973,
       "bankHoliday": true,
-      "substituteFrom": 1974
+      "substituteFrom": 1973
     },
     {
       "name": "Good Friday",
@@ -40,7 +40,7 @@
     {
       "name": "Easter Sunday",
       "gloss": "feast of the resurrection",
-      "meaning": "The Christian feast of the resurrection, on the Sunday after the church's full moon on or after 21 March, so between 22 March and 25 April. It isn't a bank holiday, being a Sunday.",
+      "meaning": "The Christian feast of the resurrection, on the Sunday after the church’s full moon on or after 21 March, so between 22 March and 25 April. It isn’t a bank holiday, being a Sunday.",
       "when": {
         "easter": true
       }
@@ -48,12 +48,12 @@
     {
       "name": "Early May bank holiday",
       "gloss": "first Monday in May",
-      "meaning": "Added in 1978. It moved to Friday 8 May in 2020 for the 75th anniversary of VE Day, and to Monday 8 May in 1995 for the 50th.",
+      "meaning": "A Scottish bank holiday since 1871. England, Wales and Northern Ireland only got theirs in 1978. It moved to Monday 8 May in 1995 for the 50th anniversary of VE Day, and to Friday 8 May in 2020 for the 75th.",
       "when": {
         "gregorian": "05-01",
         "weekday": "monday"
       },
-      "from": 1978,
+      "from": 1871,
       "moves": {
         "1995": "05-08",
         "2020": "05-08"
@@ -63,12 +63,12 @@
     {
       "name": "Spring bank holiday",
       "gloss": "last Monday in May",
-      "meaning": "The last Monday in May. It moved into June for Elizabeth II’s Golden, Diamond and Platinum Jubilees.",
+      "meaning": "The last Monday in May, a Scottish bank holiday since 1978. It moved into June for Elizabeth II’s Golden, Diamond and Platinum Jubilees.",
       "when": {
         "gregorian": "05-25",
         "weekday": "monday"
       },
-      "from": 1971,
+      "from": 1978,
       "moves": {
         "2002": "06-04",
         "2012": "06-04",
@@ -112,20 +112,30 @@
     {
       "name": "Boxing Day",
       "gloss": "the day after Christmas",
-      "meaning": "A bank holiday in Scotland since 1974. When it falls at a weekend, a weekday is given in its place.",
+      "meaning": "A bank holiday in Scotland since 1973. When it falls at a weekend, a weekday is given in its place.",
       "when": {
         "gregorian": "12-26"
       },
-      "from": 1974,
+      "from": 1973,
       "bankHoliday": true,
-      "substituteFrom": 1974
+      "substituteFrom": 1973
+    },
+    {
+      "name": "Royal wedding bank holiday",
+      "gloss": "Anne and Mark Phillips",
+      "meaning": "An extra bank holiday for the wedding of Princess Anne and Mark Phillips.",
+      "when": {
+        "date": "1973-11-14"
+      },
+      "certainty": "likely",
+      "bankHoliday": true
     },
     {
       "name": "Silver Jubilee bank holiday",
       "gloss": "25 years of Elizabeth II",
-      "meaning": "An extra bank holiday for the Queen’s Silver Jubilee.",
+      "meaning": "An extra bank holiday for the Queen’s Silver Jubilee. England, Wales and Northern Ireland had theirs a day later.",
       "when": {
-        "date": "1977-06-07"
+        "date": "1977-06-06"
       },
       "bankHoliday": true
     },
@@ -227,6 +237,22 @@
     {
       "title": "St Andrew’s Day Bank Holiday (Scotland) Act 2007",
       "url": "https://www.legislation.gov.uk/asp/2007/2"
+    },
+    {
+      "title": "Hansard: Bank Holidays, written answer, 8 December 1976",
+      "url": "https://api.parliament.uk/historic-hansard/written-answers/1976/dec/08/bank-holidays"
+    },
+    {
+      "title": "Edinburgh Gazette, 21 January 1977: Silver Jubilee proclamation",
+      "url": "https://www.thegazette.co.uk/Edinburgh/issue/20015/page/75"
+    },
+    {
+      "title": "Edinburgh Gazette, 5 August 1977: bank holidays for 1978",
+      "url": "https://www.thegazette.co.uk/Edinburgh/issue/20127/page/891"
+    },
+    {
+      "title": "Edinburgh Gazette, 28 November 2000: Scottish Golden Jubilee holidays",
+      "url": "https://www.thegazette.co.uk/Edinburgh/issue/24921/page/2551"
     }
   ]
 }
