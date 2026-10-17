@@ -35,7 +35,7 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
 - UK bank holidays and Easter for England and Wales, Scotland and Northern Ireland, all on by default and each can be turned off, kept in step with GOV.UK by a weekly check.
 - Go to a date: type a date in either calendar to find it in the other.
 - Sunrise, sunset and hours of daylight for your location, in its own time zone. A first-visit notice explains why it asks, with a "No thanks"; the location stays in your browser.
-- Add to your calendar: download a year as an .ics file, or subscribe to a feed that stays up to date.
+- Add to calendar, from the month or year view: one button subscribes Google Calendar, another opens Apple Calendar or Outlook, and the feed stays up to date. Or download a single year as an .ics file.
 - Works offline after the first visit, and can be installed as an app.
 - Dark mode, keyboard navigation, and a phone layout that keeps the selected day in a sheet along the bottom.
 
