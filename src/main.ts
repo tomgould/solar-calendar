@@ -170,7 +170,6 @@ function render(focus = false): void {
     const [first, last] = [yearStart(date.year), yearStart(date.year + 1) - 1];
     yearView.render({ year: date.year, today, pack, festivals: festivalsFrom(festivalSources(), first, last) });
     renderYearFestivals($('#year-festivals'), festivalsFrom(festivalSources(), first, last, true), pack, date.year);
-    renderCalendarApps(date.year, pack);
   }
   restoreFocus();
 
@@ -226,12 +225,16 @@ function festivalParams(): string {
   return `${extras ? `&festivals=${extras}` : ''}${holidays ? `&holidays=${holidays}` : ''}`;
 }
 
-// "Add to your calendar": a one-year download, and the subscription feed
+// "Add to your calendar": the subscription feed for Google, Apple and other
+// calendar apps, and a one-year download
 function renderCalendarApps(year: number, pack: NamePack): void {
   const feed = new URL(`/feed.ics?names=${pack.id}${festivalParams()}`, location.origin).href;
+  const webcal = feed.replace(/^https?:/, 'webcal:');
   $('#download-ics').textContent = `Download solar ${year} (.ics)`;
   $<HTMLInputElement>('#feed-url').value = feed;
-  $<HTMLAnchorElement>('#open-feed').href = feed.replace(/^https?:/, 'webcal:');
+  $<HTMLAnchorElement>('#open-feed').href = webcal;
+  // Google's own "add calendar" page, with the feed filled in
+  $<HTMLAnchorElement>('#add-google').href = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcal)}`;
 }
 
 function downloadYear(): void {
@@ -437,6 +440,17 @@ function wire(): void {
   // Printing shows whichever view is on screen
   $('#print-year').addEventListener('click', () => window.print());
   $('#print-month').addEventListener('click', () => window.print());
+  const calendarDialog = $<HTMLDialogElement>('#calendar-dialog');
+  for (const button of document.querySelectorAll('[data-add-to-calendar]')) {
+    button.addEventListener('click', () => {
+      renderCalendarApps(toSolar(state.selected).year, state.pack);
+      $('#feed-status').textContent = '';
+      calendarDialog.showModal();
+    });
+  }
+  calendarDialog.addEventListener('click', (event) => {
+    if (event.target === calendarDialog || (event.target as Element).closest('[data-close]')) calendarDialog.close();
+  });
   $('#download-ics').addEventListener('click', downloadYear);
   $('#copy-feed').addEventListener('click', async () => {
     try {
