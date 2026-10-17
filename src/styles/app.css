@@ -125,7 +125,7 @@ a { color: inherit; text-underline-offset: 3px; }
   background: var(--surface); cursor: pointer;
 }
 .button:hover { border-color: var(--ink); }
-.button[aria-pressed='true'] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.button[aria-pressed='true'], .button-strong { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 
 .segmented { display: inline-flex; border: 1px solid var(--rule-strong); border-radius: var(--radius); overflow: hidden; }
 .segmented button { min-height: 34px; padding: 6px 14px; border: 0; background: var(--surface); cursor: pointer; }
@@ -168,6 +168,13 @@ a { color: inherit; text-underline-offset: 3px; }
 }
 
 .today-line { margin: var(--space-5) 0 var(--space-5); max-width: 62ch; font-size: var(--step-1); }
+.location-notice {
+  max-width: 62ch; margin: 0 0 var(--space-6); padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--rule-strong); border-left-width: 6px; border-radius: var(--radius); background: var(--surface);
+}
+.location-notice p { margin: var(--space-2) 0 var(--space-3); }
+.location-notice .status:empty { display: none; }
+.notice-title { margin: 0; font: 700 var(--step-1) / 1.3 var(--font-text); }
 
 /* Month view -------------------------------------------------------------- */
 
@@ -477,7 +484,7 @@ a.button { display: inline-flex; align-items: center; color: inherit; text-decor
   }
   body { font-size: 9pt; }
   .page { max-width: none; padding: 0; }
-  .masthead, .today-line, .about-calendar, .steps, .skip-link, .strip, .side, .text-button, .hear, .calendar-apps { display: none !important; }
+  .masthead, .today-line, .location-notice, .about-calendar, .steps, .skip-link, .strip, .side, .text-button, .hear, .calendar-apps { display: none !important; }
   .print-only { display: block; }
 
   .month-head { margin-bottom: 4mm; }

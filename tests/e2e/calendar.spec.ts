@@ -294,12 +294,36 @@ test('downloads the year and offers a subscription feed', async ({ page }) => {
 
   // The feed is served by the built Worker bundle
   const feedUrl = await page.locator('#feed-url').inputValue();
-  // On UK time, England and Wales bank holidays are on by default
-  expect(feedUrl).toMatch(/\/feed\.ics\?names=anglo-saxon(&holidays=uk-england-and-wales)?$/);
+  // Every region's bank holidays are on by default
+  expect(feedUrl).toMatch(/\/feed\.ics\?names=anglo-saxon&holidays=uk-england-and-wales,uk-northern-ireland,uk-scotland$/);
   await expect(page.locator('#open-feed')).toHaveAttribute('href', /^webcal:/);
   const feed = await page.request.get(feedUrl);
   expect(feed.headers()['content-type']).toBe('text/calendar; charset=utf-8');
   expect(await feed.text()).toContain('X-WR-CALNAME:Solar calendar (Anglo-Saxon)');
+});
+
+test('asks for the location on a first visit, explaining why, with a way to say no', async ({ page, context }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'Location emulation, one project');
+  const notice = page.locator('#location-notice');
+  await page.goto('./?date=2026-06-21&names=gregorian');
+  await expect(notice).toBeVisible();
+  await expect(notice).toContainText('never sent anywhere');
+  await notice.getByRole('button', { name: 'No thanks' }).click();
+  await expect(notice).toBeHidden();
+  await expect(page.locator('#month-title')).toBeFocused();
+  await page.reload();
+  await expect(page.locator('#month-name')).toHaveText('June');
+  await expect(notice).toBeHidden();
+
+  // Saying yes stores the place, rounded, and shows the times straight away
+  await page.evaluate(() => localStorage.removeItem('locationPrompt'));
+  await context.grantPermissions(['geolocation']);
+  await context.setGeolocation({ latitude: 51.5074, longitude: -0.1278 });
+  await page.reload();
+  await notice.getByRole('button', { name: 'Use my location' }).click();
+  await expect(notice).toBeHidden();
+  await expect(page.locator('#day-panel [data-sun]')).toContainText(/Sunrise 04:4\d, sunset 21:2\d BST/);
+  expect(await page.evaluate(() => localStorage.getItem('location'))).toBe('{"lat":51.51,"lon":-0.13}');
 });
 
 test('shows sunrise and sunset once a location is set', async ({ page, context }, testInfo) => {
