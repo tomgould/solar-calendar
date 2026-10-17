@@ -252,6 +252,33 @@ a { color: inherit; text-underline-offset: 3px; }
 .facts div { padding-top: var(--space-2); border-top: 1px solid var(--rule); }
 .facts dt { color: var(--muted); font-size: var(--step--1); }
 .facts dd { margin: 2px 0 0; }
+.sheet-toggle { display: none; }
+
+/* On phones the selected day rides along the bottom of the screen, so it stays
+   in view while picking days; its details open upwards */
+@media (max-width: 979.98px) {
+  html { scroll-padding-bottom: 120px; }
+  .page { padding-bottom: calc(var(--space-8) + 96px); }
+  .day {
+    position: fixed; inset: auto 0 0; z-index: 10; max-width: 44rem; margin-inline: auto;
+    max-height: min(75dvh, 40rem); overflow-y: auto; overscroll-behavior: contain;
+    padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
+    border-top-width: 4px; border-radius: 12px 12px 0 0;
+    background: var(--surface); box-shadow: 0 -6px 24px rgb(0 0 0 / 0.18);
+  }
+  .day-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  .day .day-title { font-size: var(--step-2); }
+  .day .day-greg { margin-bottom: 0; }
+  .sheet-toggle {
+    display: inline-flex; flex: none; align-items: center; gap: var(--space-1); min-height: 44px; padding: 0 var(--space-3);
+    border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer;
+  }
+  .sheet-toggle svg { transform: rotate(-90deg); transition: transform 180ms ease-out; }
+  .day.is-open .sheet-toggle svg { transform: rotate(90deg); }
+  .day:not(.is-open) .day-details { display: none; }
+  .day.is-open .day-details { margin-top: var(--space-4); animation: sheet-open 180ms ease-out; }
+}
+@keyframes sheet-open { from { opacity: 0; transform: translateY(12px); } }
 .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-top: var(--space-5); }
 .status { color: var(--muted); font-size: var(--step--1); }
 
@@ -396,7 +423,8 @@ a.button { display: inline-flex; align-items: center; color: inherit; text-decor
 /* Motion and print -------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .grid, .strip .bar { transition: none; }
+  .grid, .strip .bar, .sheet-toggle svg { transition: none; }
+  .day.is-open .day-details { animation: none; }
 }
 
 .print-only { display: none; }

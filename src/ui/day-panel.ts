@@ -4,6 +4,8 @@ import { toSolar, yearLength } from '../core/solar';
 import type { Festival, NamePack } from '../names/schema';
 import type { SunTimes } from '../sky/sun';
 import { LOCALE, daysAway, escapeHtml, eventTime, gregorianLong, solarLong } from './format';
+import { chevron } from './icons';
+import { hearButton } from './speech';
 
 export interface DayPanelState {
   selected: DayNumber;
@@ -32,13 +34,21 @@ export function sunText({ rise, set, polar }: SunTimes, timeZone?: string | null
 
 export function renderDayPanel(root: HTMLElement, { selected, today, pack, events, next, festivals }: DayPanelState): void {
   const festivalRow = festivals.length === 0 ? '' : `<div><dt>${festivals.length > 1 ? 'Festivals' : 'Festival'}</dt><dd>${festivals.map((festival) => `
-    <p class="festival"><strong lang="${escapeHtml(pack.lang)}">${escapeHtml(festival.name)}</strong>, ${escapeHtml(festival.gloss)}.${festival.say ? ` <span class="say"><span class="say-label">Say</span> ${escapeHtml(festival.say)}</span>.` : ''}
+    <p class="festival"><strong lang="${escapeHtml(pack.lang)}">${escapeHtml(festival.name)}</strong>, ${escapeHtml(festival.gloss)}.${festival.say ? ` <span class="say"><span class="say-label">Say</span> ${escapeHtml(festival.say)}</span>. ${hearButton(pack, festival)}` : ''}
     ${escapeHtml(festival.meaning)}</p>`).join('')}</dd></div>`;
   const date = toSolar(selected);
   const nextWhen = selected === today ? daysAway(today, next.day) : `${next.day - selected} days later`;
+  // On phones the panel is a sheet along the bottom; the toggle only shows there
+  const open = root.classList.contains('is-open');
   root.innerHTML = `
-    <h2 class="day-title" lang="${pack.lang}">${escapeHtml(solarLong(pack, date))}</h2>
-    <p class="day-greg">${gregorianLong(selected)}${selected === today ? '<span class="badge">Today</span>' : ''}</p>
+    <div class="day-head">
+      <div>
+        <h2 class="day-title" lang="${pack.lang}">${escapeHtml(solarLong(pack, date))}</h2>
+        <p class="day-greg">${gregorianLong(selected)}${selected === today ? '<span class="badge">Today</span>' : ''}</p>
+      </div>
+      <button type="button" class="sheet-toggle" data-sheet-toggle aria-expanded="${open}" aria-controls="day-details">Details ${chevron('right')}</button>
+    </div>
+    <div class="day-details" id="day-details">
     <dl class="facts">
       ${festivalRow}
       <div><dt>Day of the year</dt><dd>${date.dayOfYear} of ${yearLength(date.year)}</dd></div>
@@ -50,5 +60,6 @@ export function renderDayPanel(root: HTMLElement, { selected, today, pack, event
     <div class="actions">
       <button type="button" class="button" data-copy-link>Copy link to this day</button>
       <span class="status" role="status" data-copy-status></span>
+    </div>
     </div>`;
 }

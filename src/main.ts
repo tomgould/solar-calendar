@@ -384,7 +384,27 @@ function wire(): void {
     if (event.target === dialog || (event.target as Element).closest('[data-close]')) dialog.close();
   });
 
-  $('#day-panel').addEventListener('click', async (event) => {
+  // On phones the day panel is a sheet that opens upwards; Escape folds it away
+  const dayPanel = $('#day-panel');
+  const openSheet = (open: boolean) => {
+    dayPanel.classList.toggle('is-open', open);
+    dayPanel.querySelector('[data-sheet-toggle]')?.setAttribute('aria-expanded', String(open));
+  };
+  dayPanel.addEventListener('click', (event) => {
+    if ((event.target as Element).closest('[data-sheet-toggle]')) openSheet(!dayPanel.classList.contains('is-open'));
+  });
+  dayPanel.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || !dayPanel.classList.contains('is-open')) return;
+    openSheet(false);
+    dayPanel.querySelector<HTMLElement>('[data-sheet-toggle]')?.focus();
+  });
+  // Tabbing on to the page behind folds it away, so it can't hide what has focus
+  dayPanel.addEventListener('focusout', (event) => {
+    const to = event.relatedTarget as Element | null;
+    if (to && !dayPanel.contains(to) && !to.closest('#grid-body, dialog')) openSheet(false);
+  });
+
+  dayPanel.addEventListener('click', async (event) => {
     if (!(event.target as Element).closest('[data-copy-link]')) return;
     const status = $('#day-panel [data-copy-status]');
     try {
