@@ -1,17 +1,17 @@
 {
   "name": "solar-calendar",
   "version": "1.0.0",
-  "description": "Solar calendar converter and display",
+  "description": "A calendar of 13 identical 28-day months, with the year starting at the spring equinox",
   "scripts": {
-    "test": "playwright test",
-    "test:ui": "playwright test --ui",
-    "test:headed": "playwright test --headed",
-    "test:report": "playwright show-report",
+    "test": "npm run test:unit && npm run test:e2e",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "tsc && tsc -p tests/unit",
-    "test:unit": "vitest run"
+    "typecheck": "tsc && tsc -p tests",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
@@ -22,5 +22,6 @@
   },
   "dependencies": {
     "astronomy-engine": "^2.1.19"
-  }
+  },
+  "private": true
 }
