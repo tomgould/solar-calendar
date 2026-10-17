@@ -94,6 +94,16 @@
       "notes": "Optional: for example where a 13th name comes from"
     }
   ],
+  "festivals": [
+    {
+      "name": "Optional: a festival of this culture. See docs/name-packs.md for the date rules",
+      "gloss": "two to four words",
+      "meaning": "One to three sentences: what it marks and how it was kept.",
+      "when": { "event": "march-equinox", "offset": 0 },
+      "days": 1,
+      "certainty": "likely"
+    }
+  ],
   "sources": [
     {
       "title": "A source you checked",

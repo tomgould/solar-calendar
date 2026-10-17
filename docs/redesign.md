@@ -420,11 +420,11 @@ The site is static files plus one dynamic URL: the ICS feed, which calendar apps
 
 ### Phase 6: extras (requested 17 Oct 2026, before launch)
 
-- [ ] Festivals per pack: `festivals` in the pack format (rules: an equinox or solstice, a Gregorian date with an optional weekday, or a solar date, plus an offset and a length in days). Shown as marks in the grid, in the day panel, the meaning dialog, the printed month and the ICS feed. Engine and schema done; content being researched.
-- [ ] "Hear it" buttons: the browser's speech synthesis. Use a native voice where the device has one (Icelandic, Persian), otherwise read the respelling with an English voice.
-- [ ] Names menu grouped by the pack's `kind` (done in data: historical or modern).
-- [ ] Sunrise and sunset in the place's own time zone, through an offline time-zone lookup by coordinates.
-- [ ] A southern-hemisphere Nature pack (`nature-south`). The northern pack is now titled "Nature (northern hemisphere)".
-- [ ] A slide-up day panel on phones.
-- [ ] Lighthouse audit, then README screenshots.
+- [x] Festivals per pack: `festivals` in the pack format (rules: an equinox or solstice, a Gregorian date with an optional weekday, or a solar date, plus an offset and a length in days). Shown as marks in the grid, in the day panel, the meaning dialog, the printed month and the ICS feed. Content for eight packs, fact-checked.
+- [x] "Hear it" buttons: the browser's speech synthesis. Use a native voice where the device has one (Icelandic, Persian), otherwise read the respelling with an English voice.
+- [x] Names menu grouped by the pack's `kind` (historical or modern).
+- [x] Sunrise and sunset in the place's own time zone, through an offline time-zone lookup by coordinates.
+- [x] A southern-hemisphere Nature pack (`nature-south`). The northern pack is now titled "Nature (northern hemisphere)".
+- [x] A slide-up day panel on phones.
+- [x] Lighthouse audit, then README screenshots. On the built site: 98 performance on mobile and 100 on desktop, 100 for accessibility, best practices and SEO. Fixes: `<main>` hidden until the first render (layout shift 0.48 to 0.001), `scrollbar-gutter: stable`, a deferred `registerSW.js`, and `robots.txt`.
 

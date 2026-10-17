@@ -35,11 +35,15 @@ npx playwright test --project=chromium -g "leap"    # one e2e test, one project
   - The core only knows month numbers; names come from packs in the UI.
   - Pack ids appear in URLs (`?names=`), so never rename one.
   - `DEFAULT_PACK_ID` in `registry.ts` is `gregorian`.
-  - There are 11 packs. Add new ones from `_template.json`, following `docs/name-packs.md`. `tests/unit/fonts.test.ts` reads the real font files and fails if a pack uses a letter the fonts lack: Big Shoulders for `name`, Andika for other text. `original` is exempt, because it may be in another script.
+  - There are 12 packs, each with a `kind` (`historical` or `modern`) that groups the names menu. Add new ones from `_template.json`, following `docs/name-packs.md`. `tests/unit/fonts.test.ts` reads the real font files and fails if a pack uses a letter the fonts lack: Big Shoulders for `name`, Andika for other text. `original` is exempt, because it may be in another script.
+- **Festivals:** a pack's optional `festivals` each have a date rule (`src/core/festivals.ts`): an equinox or solstice, a Gregorian `MM-DD` with an optional weekday, or a solar month and day, each with an optional `offset` and a length in `days`. `src/names/festivals.ts` lists them for a range of days. They show as a star in the grid, a dot in the year table, in the day panel, the meaning dialog and the ICS feed.
+- **"Hear it":** `src/ui/speech.ts` uses the browser's speech synthesis. A voice for the name's language reads it (Persian from the `original` script); otherwise an English voice reads the `say` respelling. Romanised tags such as `fa-Latn` never get a native voice. Buttons appear only where `say` exists and the browser can speak.
 - **`src/sky/moon.ts`** dynamically imports astronomy-engine, so its 43 KB gzipped stays out of the main bundle. Quarter names appear only on the day the quarter happens, matching the grid marks.
 - **`src/ui/`:**
   - `MonthView` builds its 28 cells once and only updates labels, marks and the month colour when the month changes.
   - `YearView` is a 28-row by 13-column table (14 columns in a leap-week year). It shrinks long month names to fit rather than breaking them, and re-measures after web fonts load.
+  - On screens narrower than 980px the day panel is a sheet fixed to the bottom; its Details button (`aria-expanded`) opens the rest, and Escape or tabbing away closes it.
+  - `<main>` starts with `is-loading` (hidden) and `start()` removes it after the first render, so the page doesn't shift as it fills in.
   - `main.ts` holds state (selected day number, view, pack) and keeps the URL in step (`?date=YYYY-MM-DD&names=…&view=year`).
 - **Styles** live in `src/styles/app.css`.
   - Tokens sit on `:root`, and the dark theme is redefined under `prefers-color-scheme` (guarded by `:not([data-theme='light'])`) and under `[data-theme='dark']`.
@@ -52,11 +56,11 @@ npx playwright test --project=chromium -g "leap"    # one e2e test, one project
   - `src/worker.ts` serves `/feed.ics` and bundles every pack with an eager `import.meta.glob`. It is built by `vite.worker.config.mts`, because wrangler's bundler can't do the glob.
   - `wrangler.jsonc` routes only `/feed.ics` to it (`run_worker_first`).
   - The dev server (source) and the preview server (built bundle) both answer `/feed.ics` through a plugin in `vite.config.mts`, so the e2e tests cover the real Worker.
-- **Sun:** `src/sky/sun.ts` uses astronomy-engine's `SearchRiseSet` for the local day, and handles polar day and night. The place lives in `localStorage.location`, either from geolocation rounded to 2 decimals or typed in. `_headers` allows `geolocation=(self)`.
+- **Sun:** `src/sky/sun.ts` uses astronomy-engine's `SearchRiseSet` for the place's own day, in the place's time zone from `@photostructure/tz-lookup` (lazy-loaded), and handles polar day and night. The place lives in `localStorage.location`, either from geolocation rounded to 2 decimals or typed in. `_headers` allows `geolocation=(self)`.
 - **Lazy loads:** every lazy load (packs, the moon, the sun) has a `.catch` that shows a message, so a failed import never surfaces as an unhandled rejection.
 - **Offline:** `vite-plugin-pwa` precaches the app, all packs, astronomy-engine and the Latin-script fonts.
   - It uses `clientsClaim`, so the first visit already works offline.
-  - Registration is the external `registerSW.js`, so the CSP holds.
+  - Registration is the external, deferred `registerSW.js`, so the CSP holds and it doesn't block the first paint.
   - The PWA icons in `public/icons/` were rendered once from the favicon design.
   - The CSP e2e test blocks service workers. Otherwise they answer requests before `page.route` can add the policy.
 - **Converter:** `src/ui/goto.ts` shows the selected day in both forms. It only skips the field being typed in.
