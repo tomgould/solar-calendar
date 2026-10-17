@@ -1,0 +1,109 @@
+{
+  "id": "nature-south",
+  "kind": "modern",
+  "title": "Nature (southern hemisphere)",
+  "description": "Plain English names for what the seasons do in the southern hemisphere, from Gold in early autumn to Vintage in late summer",
+  "culture": "Modern invention, after the French Republican calendar",
+  "era": "Today",
+  "lang": "en",
+  "origin": "This is the southern companion to the Nature pack, and the names are a modern invention. It describes the year in Australia, New Zealand, southern Africa and southern South America, where the seasons run opposite to Europe: Dark holds the June solstice and Light holds the December solstice. The two packs cannot mirror each other exactly, because 13 is odd. Light, Dark, Heat, Frost, Snow, Mist, Ember, Bud, Bloom, Meadow, Harvest and Vintage are reused where they fit the season, and shift by about six or seven months. Gold is the extra name, in the place of Thaw in the northern pack, because a southern thaw would fall in late winter and Gold suits the start of autumn, and Vintage comes last, because the southern grape harvest runs from February to April. Seasons in the tropical north are wet and dry, not four, so these names fit the temperate south best.",
+  "leapWeek": {
+    "name": "Leap week",
+    "gloss": "the extra week",
+    "meaning": "A spare week at the end of the year, about one year in six, which keeps the seasons in step with the calendar. It falls around the March equinox, in early autumn, while the vintage is ending."
+  },
+  "months": [
+    {
+      "name": "Gold",
+      "gloss": "autumn colours",
+      "meaning": "Vines and poplars turn yellow in the cooler wine regions, the days shorten and the first cool nights come. In the tropical north of Australia the wet season is ending.",
+      "certainty": "established"
+    },
+    {
+      "name": "Ember",
+      "gloss": "glowing leaves",
+      "meaning": "Autumn colour peaks in the Victorian highlands, Tasmania and Central Otago, and the first frosts arrive inland. Grapes are in, and the air smells of woodsmoke.",
+      "certainty": "established"
+    },
+    {
+      "name": "Mist",
+      "gloss": "winter fog",
+      "meaning": "Fog and low cloud lie in the valleys, and winter rain starts in the Western Cape. In the tropical north and on the South African highveld, the dry season is under way.",
+      "certainty": "established"
+    },
+    {
+      "name": "Dark",
+      "gloss": "shortest days",
+      "meaning": "The shortest days of the year, with Melbourne getting under ten hours of daylight. The June solstice, around 21 June, falls in this month.",
+      "certainty": "established"
+    },
+    {
+      "name": "Frost",
+      "gloss": "hard frosts",
+      "meaning": "Among the coldest weeks, with hard frosts inland and the Australian and Andean alps filling with snow. Winter-flowering plants such as aloes and wattles begin to bloom.",
+      "certainty": "established"
+    },
+    {
+      "name": "Snow",
+      "gloss": "alpine snow",
+      "meaning": "Snow is deepest in the Snowy Mountains, the Southern Alps and the Andes, and the ski season is well under way. The days lengthen noticeably.",
+      "certainty": "established"
+    },
+    {
+      "name": "Bud",
+      "gloss": "spring buds",
+      "meaning": "Vines break bud, wattle blossoms and lambs are born in New Zealand and Australia. The September equinox, around 23 September, falls in this month.",
+      "certainty": "established"
+    },
+    {
+      "name": "Bloom",
+      "gloss": "spring flowers",
+      "meaning": "Jacarandas flower in Pretoria and Brisbane, and gardens and wild flowers are at their best. The rains of the summer-rainfall regions of southern Africa begin.",
+      "certainty": "established"
+    },
+    {
+      "name": "Meadow",
+      "gloss": "growing grassland",
+      "meaning": "Pastures grow fastest in New Zealand and Argentina, and hay is cut as the weather settles. Wet-season storms build in the tropical north.",
+      "certainty": "established"
+    },
+    {
+      "name": "Light",
+      "gloss": "longest days",
+      "meaning": "The longest days of the year, with Melbourne getting over fourteen hours of daylight, and Ushuaia far more. The December solstice, around 21 December, falls in this month.",
+      "certainty": "established"
+    },
+    {
+      "name": "Heat",
+      "gloss": "high summer",
+      "meaning": "The hottest weeks of the year across southern Australia, southern Africa and Argentina, with bushfire danger on the dry southern coasts. Afternoon thunderstorms are common on the highveld.",
+      "certainty": "established"
+    },
+    {
+      "name": "Harvest",
+      "gloss": "gathering the crop",
+      "meaning": "Stone fruit and berries are picked and the last wheat is cut in the cooler south. Picking of early grapes begins, mainly for sparkling wine.",
+      "certainty": "established"
+    },
+    {
+      "name": "Vintage",
+      "gloss": "grape picking",
+      "meaning": "The main grape harvest in Australia, New Zealand, South Africa, Chile and Argentina, which runs from February to April. The first cool mornings of autumn come near the end.",
+      "certainty": "established"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Season (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Season"
+    },
+    {
+      "title": "Harvest (wine) (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Harvest_(wine)"
+    },
+    {
+      "title": "French Republican calendar (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/French_Republican_calendar"
+    }
+  ]
+}

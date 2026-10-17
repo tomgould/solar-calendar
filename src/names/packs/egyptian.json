@@ -1,0 +1,213 @@
+{
+  "id": "egyptian",
+  "kind": "historical",
+  "title": "Ancient Egyptian",
+  "description": "The three seasons of the ancient Egyptian civil year, with the epagomenal days stretched into a month",
+  "culture": "Ancient Egypt",
+  "era": "Old Kingdom to Ptolemaic period",
+  "lang": "egy-Latn",
+  "origin": "The Egyptian civil calendar had three seasons of four months, each of 30 days, plus five extra days at the end of the year, 365 in all. Egyptologists number the months, such as Akhet I, because the names used in daily life came from festivals. The year had no leap day, so it drifted against the seasons and the star Sirius until the Canopus decree tried to add one. Ancient Egypt never had a 13th month: here the five extra days, Heriu Renpet, are stretched to a full month, and the order is rotated to start with Shemu so that the extra days fall between the harvest and the flood.",
+  "pronunciation": "Egyptologists' conventional pronunciation: Egyptian writing left out the vowels, so the e sounds are inserted by modern convention and the real ancient vowels are unknown. Stress is also a convention. The Roman numeral is read as an English number, such as one for I.",
+  "leapWeek": {
+    "name": "Leap week",
+    "gloss": "the extra week",
+    "meaning": "The civil calendar had no leap day, so it slipped by about one day every four years. In 238 BC the Canopus decree of Ptolemy III ordered a sixth extra day every fourth year, but the priests resisted and it was dropped. Augustus finally made it stick in 26 or 25 BC. This calendar adds a whole week instead."
+  },
+  "months": [
+    {
+      "name": "Shemu I",
+      "gloss": "first month of harvest",
+      "meaning": "The first month of Shemu, the harvest season, when the Nile was low and the grain was cut. It was the ninth month of the civil year. Months came to be named after festivals, but Egyptologists number them by season.",
+      "certainty": "established",
+      "say": "SHEH-moo wun",
+      "ipa": "ˈʃemu wʌn"
+    },
+    {
+      "name": "Shemu II",
+      "gloss": "second month of harvest",
+      "meaning": "The second month of Shemu, the harvest season. Egyptologists number the months within each season.",
+      "certainty": "established",
+      "say": "SHEH-moo too",
+      "ipa": "ˈʃemu tuː"
+    },
+    {
+      "name": "Shemu III",
+      "gloss": "third month of harvest",
+      "meaning": "The third month of Shemu, the harvest season.",
+      "certainty": "established",
+      "say": "SHEH-moo three",
+      "ipa": "ˈʃemu θriː"
+    },
+    {
+      "name": "Shemu IV",
+      "gloss": "fourth month of harvest",
+      "meaning": "The last month of Shemu, and of the civil year. Its Greek name, Mesore, comes from Mesut Ra, \"birth of Ra\". It was also called Wep Renpet, \"opening of the year\".",
+      "certainty": "established",
+      "say": "SHEH-moo for",
+      "ipa": "ˈʃemu fɔː"
+    },
+    {
+      "name": "Heriu Renpet",
+      "original": "ḥryw rnpt",
+      "gloss": "those upon the year",
+      "meaning": "The five extra days at the end of the civil year, celebrated as the birthdays of Osiris, Horus, Set, Isis and Nephthys, and considered dangerous. Egyptians treated them as outside the year proper.",
+      "certainty": "established",
+      "notes": "The 13th month. In Egypt it was only five days long; here it is stretched to 28. It sits where the real extra days fell, between the last Shemu month and Akhet I, the month of the Sirius flood.",
+      "say": "HEH-ree-oo REN-pet",
+      "ipa": "ˈheɾiu ˈɾenpet"
+    },
+    {
+      "name": "Akhet I",
+      "gloss": "first month of flood",
+      "meaning": "The first month of Akhet, the inundation, when the Nile flooded the fields. In the ideal calendar the year began here, with the rising of Sirius.",
+      "certainty": "established",
+      "say": "AH-khet wun",
+      "ipa": "ˈaxet wʌn"
+    },
+    {
+      "name": "Akhet II",
+      "gloss": "second month of flood",
+      "meaning": "The second month of Akhet, the inundation season.",
+      "certainty": "established",
+      "say": "AH-khet too",
+      "ipa": "ˈaxet tuː"
+    },
+    {
+      "name": "Akhet III",
+      "gloss": "third month of flood",
+      "meaning": "The third month of Akhet, the inundation season.",
+      "certainty": "established",
+      "say": "AH-khet three",
+      "ipa": "ˈaxet θriː"
+    },
+    {
+      "name": "Akhet IV",
+      "gloss": "fourth month of flood",
+      "meaning": "The last month of Akhet, the inundation season.",
+      "certainty": "established",
+      "say": "AH-khet for",
+      "ipa": "ˈaxet fɔː"
+    },
+    {
+      "name": "Peret I",
+      "gloss": "first month of growth",
+      "meaning": "The first month of Peret, the season of emergence or growth, when the land came out of the floodwater and was sown.",
+      "certainty": "established",
+      "say": "PEH-ret wun",
+      "ipa": "ˈpeɾet wʌn"
+    },
+    {
+      "name": "Peret II",
+      "gloss": "second month of growth",
+      "meaning": "The second month of Peret, the season of emergence or growth.",
+      "certainty": "established",
+      "say": "PEH-ret too",
+      "ipa": "ˈpeɾet tuː"
+    },
+    {
+      "name": "Peret III",
+      "gloss": "third month of growth",
+      "meaning": "The third month of Peret, the season of emergence or growth.",
+      "certainty": "established",
+      "say": "PEH-ret three",
+      "ipa": "ˈpeɾet θriː"
+    },
+    {
+      "name": "Peret IV",
+      "gloss": "fourth month of growth",
+      "meaning": "The last month of Peret, the season of emergence or growth, just before the harvest.",
+      "certainty": "established",
+      "say": "PEH-ret for",
+      "ipa": "ˈpeɾet fɔː"
+    }
+  ],
+  "festivals": [
+    {
+      "name": "Wepet Renpet",
+      "gloss": "opening of the year",
+      "meaning": "The Egyptian new year, at the start of the flood season and tied to the rising of Sirius and the Nile flood. It falls on the first day of Akhet I here. This follows the idealised civil calendar, not historical dates.",
+      "when": {
+        "solar": {
+          "month": 6,
+          "day": 1
+        }
+      },
+      "certainty": "established",
+      "say": "WEH-pet REN-pet",
+      "ipa": "ˈwepet ˈɾenpet"
+    },
+    {
+      "name": "Birthdays of the gods",
+      "gloss": "the five extra days",
+      "meaning": "The five epagomenal days at the end of the civil year, celebrated as the birthdays of Osiris, Horus, Set, Isis and Nephthys. They are dated here as the first five days of Heriu Renpet, in the idealised civil calendar, not historical dates.",
+      "when": {
+        "solar": {
+          "month": 5,
+          "day": 1
+        }
+      },
+      "days": 5,
+      "certainty": "established"
+    },
+    {
+      "name": "Opet",
+      "gloss": "Theban river festival",
+      "meaning": "The great Theban festival in which the statues of Amun, Mut and Khonsu sailed to Luxor. It began on II Akhet 15 under Thutmose III and lasted 11 days, though it later grew to 27. It is dated here by that early rule, in the idealised civil calendar, not historical dates.",
+      "when": {
+        "solar": {
+          "month": 7,
+          "day": 15
+        }
+      },
+      "days": 11,
+      "certainty": "likely",
+      "say": "OH-pet",
+      "ipa": "ˈopet"
+    },
+    {
+      "name": "Khoiak mysteries",
+      "gloss": "Osiris mourning rites",
+      "meaning": "A festival of Osiris in the fourth month of Akhet (Khoiak), with rites of mourning that ended in the raising of the djed pillar. Sources give different lengths. The longest form ran from the 12th to the 30th of the month, and it is cut here to days 12 to 28 to fit a 28-day month, in the idealised civil calendar, not historical dates.",
+      "when": {
+        "solar": {
+          "month": 9,
+          "day": 12
+        }
+      },
+      "days": 17,
+      "certainty": "uncertain",
+      "say": "KOY-ak",
+      "ipa": "ˈkoiak"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Egyptian calendar (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Egyptian_calendar"
+    },
+    {
+      "title": "Telling time in ancient Egypt (Metropolitan Museum of Art)",
+      "url": "https://www.metmuseum.org/essays/telling-time-in-ancient-egypt"
+    },
+    {
+      "title": "Intercalary month, Egypt (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Intercalary_month_(Egypt)"
+    },
+    {
+      "title": "Egyptian calendar: Akhet, Peret, Shemu, Heriu Renpet (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Egyptian_calendar"
+    },
+    {
+      "title": "Opet Festival (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Opet_Festival"
+    },
+    {
+      "title": "Khoiak (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Khoiak"
+    },
+    {
+      "title": "Festivals in Ancient Egypt (World History Encyclopedia)",
+      "url": "https://www.worldhistory.org/article/1032/festivals-in-ancient-egypt/"
+    }
+  ]
+}

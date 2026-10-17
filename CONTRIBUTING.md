@@ -7,10 +7,9 @@ We welcome ideas, improvements, and collaboration from developers, designers, ti
 
 ## 🛠️ Ways You Can Contribute
 
+- 🏷️ Add a month name pack (one JSON file in `src/names/packs/`, see the README)
 - ✨ Improve design, layout, or mobile responsiveness
-- 🔍 Add more country holiday support
-- 🔧 Refactor or optimize the JavaScript
-- 📦 Integrate APIs or alternative data sources
+- 🔍 Add festivals and holidays
 - 🧪 Add tests or validation tools
 - 📝 Improve documentation or translations
 
@@ -20,11 +19,13 @@ We welcome ideas, improvements, and collaboration from developers, designers, ti
 
 Please follow these conventions when contributing:
 
-- Write clean, readable HTML, CSS, and JS
+- Write clean, readable TypeScript, HTML, and CSS
+- Do date arithmetic on day numbers (`src/core/days.ts`), never on `Date` objects
+- Cite a source for every month name meaning, and mark disputed ones as uncertain
 - Use descriptive commit messages
 - Prefer semantic HTML
 - Keep styling responsive and accessible
-- Don’t break existing functionality 😅
+- Run `npm run typecheck` and `npm test` before opening a pull request 😅
 
 ---
 
@@ -36,7 +37,13 @@ Please follow these conventions when contributing:
    cd solar-calendar
    ```
 
-2. Open `solar-calendar.html` or `gregorian-calendar.html` in your browser — no build tools required!
+2. Install and start the dev server:
+   ```bash
+   npm install
+   npm run dev
+   ```
+
+3. Open http://localhost:5173 in your browser.
 
 ---
 

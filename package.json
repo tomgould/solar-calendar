@@ -1,14 +1,42 @@
 {
   "name": "solar-calendar",
   "version": "1.0.0",
-  "description": "Solar calendar converter and display",
+  "description": "A calendar of 13 identical 28-day months, with the year starting at the spring equinox",
   "scripts": {
-    "test": "playwright test",
-    "test:ui": "playwright test --ui",
-    "test:headed": "playwright test --headed",
-    "test:report": "playwright show-report"
+    "test": "npm run test:unit && npm run test:e2e",
+    "dev": "vite",
+    "build": "vite build && vite build --config vite.worker.config.mts",
+    "preview": "vite preview",
+    "typecheck": "tsc && tsc -p tsconfig.node.json && tsc -p tests",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report",
+    "deploy": "npm run build && wrangler deploy",
+    "holidays:update": "node scripts/update-holidays.mjs",
+    "holidays:check": "npm run holidays:update && vitest run tests/unit/holidays.test.ts"
   },
   "devDependencies": {
-    "@playwright/test": "^1.52.0"
-  }
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.52.0",
+    "@types/fontkit": "^2.0.9",
+    "@types/node": "^22.20.5",
+    "fontkit": "^2.0.4",
+    "ical.js": "^2.2.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vite-plugin-pwa": "^2.0.0",
+    "vitest": "^5.0.5",
+    "wrangler": "^4.151.1"
+  },
+  "dependencies": {
+    "@fontsource-variable/big-shoulders": "^5.3.0",
+    "@fontsource/andika": "^5.3.0",
+    "@fontsource/noto-sans": "^5.3.0",
+    "@fontsource/noto-sans-coptic": "^5.3.0",
+    "@fontsource/vazirmatn": "^5.3.0",
+    "@photostructure/tz-lookup": "^11.7.0",
+    "astronomy-engine": "^2.1.19"
+  },
+  "private": true
 }

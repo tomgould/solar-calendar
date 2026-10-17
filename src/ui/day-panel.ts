@@ -1,0 +1,76 @@
+import type { DayNumber } from '../core/days';
+import { SKY_EVENT_NAMES, type SkyEvent } from '../core/sky';
+import { toSolar, yearLength } from '../core/solar';
+import { type FestivalDay, festivalLabel } from '../names/festivals';
+import type { NamePack } from '../names/schema';
+import type { SunTimes } from '../sky/sun';
+import { LOCALE, daysAway, escapeHtml, eventTime, gregorianLong, solarLong } from './format';
+import { festivalKind, sourceTitle } from './festivals';
+import { chevron } from './icons';
+import { hearButton } from './speech';
+
+export interface DayPanelState {
+  selected: DayNumber;
+  today: DayNumber;
+  pack: NamePack;
+  /** Sky events on the selected day */
+  events: SkyEvent[];
+  /** The next equinox or solstice after the selected day */
+  next: SkyEvent;
+  /** Festivals and holidays on the selected day */
+  festivals: FestivalDay[];
+}
+
+/** "Sunrise 04:43, sunset 21:21 BST. 16 h 38 min of daylight", in the place's time zone if known */
+export function sunText({ rise, set, polar }: SunTimes, timeZone?: string | null): string {
+  if (polar) return polar === 'day' ? 'The sun stays up all day' : 'The sun stays down all day';
+  const zoneOption = timeZone ? { timeZone } : {};
+  const clock = (ms: number) => new Intl.DateTimeFormat(LOCALE, { hour: '2-digit', minute: '2-digit', ...zoneOption }).format(ms);
+  const zone = new Intl.DateTimeFormat(LOCALE, { timeZoneName: 'short', ...zoneOption }).formatToParts(rise ?? set ?? 0)
+    .find((part) => part.type === 'timeZoneName')?.value ?? '';
+  const text = `${rise !== null ? `Sunrise ${clock(rise)}` : 'No sunrise'}, ${set !== null ? `sunset ${clock(set)}` : 'no sunset'} ${zone}`.trim();
+  if (rise === null || set === null || set <= rise) return text;
+  const minutes = Math.round((set - rise) / 60_000);
+  return `${text}. ${Math.floor(minutes / 60)} h ${minutes % 60} min of daylight`;
+}
+
+export function renderDayPanel(root: HTMLElement, { selected, today, pack, events, next, festivals }: DayPanelState): void {
+  // One row each for bank holidays, other holidays and festivals; where one comes
+  // from somewhere other than the chosen names, say where
+  const festivalText = (entry: FestivalDay) => {
+    const { festival, source } = entry;
+    return `
+    <p class="festival"><strong lang="${escapeHtml(source.lang)}">${escapeHtml(festivalLabel(entry))}</strong>${source.id === pack.id ? '' : ` <span class="festival-source">(${escapeHtml(sourceTitle(entry))})</span>`}, ${escapeHtml(festival.gloss)}.${festival.say ? ` <span class="say"><span class="say-label">Say</span> ${escapeHtml(festival.say)}</span>. ${hearButton(source, festival)}` : ''}
+    ${escapeHtml(festival.meaning)}</p>`;
+  };
+  const festivalRow = (['Bank holiday', 'Holiday', 'Festival'] as const).map((kind) => {
+    const entries = festivals.filter((entry) => festivalKind(entry) === kind);
+    return entries.length === 0 ? '' : `<div><dt>${kind}${entries.length > 1 ? 's' : ''}</dt><dd>${entries.map(festivalText).join('')}</dd></div>`;
+  }).join('');
+  const date = toSolar(selected);
+  const nextWhen = selected === today ? daysAway(today, next.day) : `${next.day - selected} days later`;
+  // On phones the panel is a sheet along the bottom; the toggle only shows there
+  const open = root.classList.contains('is-open');
+  root.innerHTML = `
+    <div class="day-head">
+      <div>
+        <h2 class="day-title" lang="${pack.lang}">${escapeHtml(solarLong(pack, date))}</h2>
+        <p class="day-greg">${gregorianLong(selected)}${selected === today ? '<span class="badge">Today</span>' : ''}</p>
+      </div>
+      <button type="button" class="sheet-toggle" data-sheet-toggle aria-expanded="${open}" aria-controls="day-details">Details ${chevron('right')}</button>
+    </div>
+    <div class="day-details" id="day-details">
+    <dl class="facts">
+      ${festivalRow}
+      <div><dt>Day of the year</dt><dd>${date.dayOfYear} of ${yearLength(date.year)}</dd></div>
+      <div><dt>Moon</dt><dd data-moon>&nbsp;</dd></div>
+      <div><dt>Sunrise and sunset</dt><dd data-sun>&nbsp;</dd></div>
+      ${events.length > 0 ? `<div><dt>On this day</dt><dd>${events.map((event) => `${SKY_EVENT_NAMES[event.kind]} at ${eventTime(event.instant, false)}`).join('<br>')}</dd></div>` : ''}
+      <div><dt>Next equinox or solstice</dt><dd>${SKY_EVENT_NAMES[next.kind]}, ${eventTime(next.instant)}, ${nextWhen}</dd></div>
+    </dl>
+    <div class="actions">
+      <button type="button" class="button" data-copy-link>Copy link to this day</button>
+      <span class="status" role="status" data-copy-status></span>
+    </div>
+    </div>`;
+}

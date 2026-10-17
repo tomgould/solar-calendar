@@ -1,0 +1,209 @@
+{
+  "id": "old-norse",
+  "kind": "historical",
+  "title": "Old Norse",
+  "description": "The old Icelandic month names, from a calendar with a 364-day year and a leap week",
+  "culture": "Medieval Iceland",
+  "era": "10th to 13th century",
+  "lang": "is",
+  "origin": "These are the month names of the old Icelandic calendar, kept in Icelandic almanacs for centuries. The year had 364 days, which is 52 whole weeks, and a leap week called sumarauki was added in some years to keep the seasons in step. That is the same rule this calendar uses, though Iceland put its leap week in midsummer and this calendar puts it at the end of the year. Months 1 to 4 and 10 to 13 land within about ten days of their historical season, and months 5 to 9 run between one and three weeks early. Snorri Sturluson listed the names, with alternatives, in the Edda around 1220.",
+  "pronunciation": "Modern Icelandic, which is how Icelanders say these month names today; medieval Old Norse sounded somewhat different. We are confident of the Icelandic sounds, but the respellings are approximate because English has no matching vowels for ö, y and the final -ur.",
+  "leapWeek": {
+    "name": "Sumarauki",
+    "gloss": "summer addition",
+    "meaning": "The Icelandic leap week. Iceland's year was exactly 52 weeks, 364 days, and in some years a whole week was added in summer, after the third summer month, to keep the calendar in line with the seasons. Here it comes at the end of the year instead.",
+    "say": "SUU-mar-oy-ki",
+    "ipa": "ˈsʏːmarˌœyːcɪ"
+  },
+  "months": [
+    {
+      "name": "Einmánuður",
+      "gloss": "lone month",
+      "meaning": "The last month of the Icelandic winter, whose name is usually read as lone or single month. Why it was called that is not settled.",
+      "certainty": "likely",
+      "say": "AYN-mow-nuh-dhur",
+      "ipa": "ˈeinˌmauːnʏðʏr"
+    },
+    {
+      "name": "Harpa",
+      "gloss": "first summer month",
+      "meaning": "The first month of summer, whose first day is still marked in Iceland as the first day of summer. The name looks like a woman's name, perhaps of a forgotten goddess, but its origin is not known. Snorri's Edda gives Gaukmánuður, cuckoo month, and Sáðtíð, sowing time, as other names for it.",
+      "certainty": "uncertain",
+      "say": "HAHR-pa",
+      "ipa": "ˈharpa"
+    },
+    {
+      "name": "Skerpla",
+      "gloss": "second summer month",
+      "meaning": "The second summer month. It also looks like a woman's name, but its origin is unknown. Snorri's Edda gives Eggtíð and Stekktíð, egg time and lamb-pen time, as other names for it.",
+      "certainty": "uncertain",
+      "say": "SKER-pla",
+      "ipa": "ˈskɛrpla"
+    },
+    {
+      "name": "Sólmánuður",
+      "gloss": "sun month",
+      "meaning": "Sun month, the third month of summer, around midsummer. Snorri's Edda also gives Selmánuður, shieling month.",
+      "certainty": "established",
+      "say": "SOHL-mow-nuh-dhur",
+      "ipa": "ˈsouːlˌmauːnʏðʏr"
+    },
+    {
+      "name": "Heyannir",
+      "gloss": "hay-work month",
+      "meaning": "The month of haymaking, when farmers cut and dried the hay that would feed their animals through winter.",
+      "certainty": "established",
+      "say": "HAY-a-nir",
+      "ipa": "ˈheiːanːɪr"
+    },
+    {
+      "name": "Tvímánuður",
+      "gloss": "two month",
+      "meaning": "Usually read as two month, but sources differ on whether it means second month or a month with two months of summer left, so the sense is not settled. Snorri's Edda calls this period Kornskurðarmánuður, grain-cutting month.",
+      "certainty": "uncertain",
+      "say": "TVEE-mow-nuh-dhur",
+      "ipa": "ˈtviːˌmauːnʏðʏr"
+    },
+    {
+      "name": "Haustmánuður",
+      "gloss": "autumn month",
+      "meaning": "The first month of autumn, from haust, autumn.",
+      "certainty": "established",
+      "say": "HOYST-mow-nuh-dhur",
+      "ipa": "ˈhœystˌmauːnʏðʏr"
+    },
+    {
+      "name": "Gormánuður",
+      "gloss": "slaughter month",
+      "meaning": "Usually read as slaughter month, when livestock that could not be fed through winter were killed. Some sources read it as the month of Gór instead. It is the first month of winter and is well attested in medieval sources.",
+      "certainty": "likely",
+      "say": "KOR-mow-nuh-dhur",
+      "ipa": "ˈkɔrˌmauːnʏðʏr"
+    },
+    {
+      "name": "Frermánuður",
+      "gloss": "frost month",
+      "meaning": "Frost month, from frer, frost. Snorri's Edda lists Frermánuður for the period that later sources call Ýlir, so it is another name for the same time, not a separate Icelandic month.",
+      "certainty": "likely",
+      "notes": "The 13th month. Iceland had 12 months, so Snorri's name for the Ýlir period is placed here, one slot before Ýlir.",
+      "say": "FRER-mow-nuh-dhur",
+      "ipa": "ˈfrɛrˌmauːnʏðʏr"
+    },
+    {
+      "name": "Ýlir",
+      "gloss": "Yule month",
+      "meaning": "The month around Yule, the midwinter feast, usually read as Yule month. The name is well attested in medieval sources, though its exact form is debated.",
+      "certainty": "likely",
+      "say": "EE-lir",
+      "ipa": "ˈiːlɪr"
+    },
+    {
+      "name": "Mörsugur",
+      "gloss": "fat-sucking month",
+      "meaning": "Usually read as fat-sucking month, from mör, suet or marrow, and sjúga, to suck. An older name for the same month, Jólmánuður (Yule month), is recorded, and Snorri's Edda calls the period Hrútmánuður, ram month.",
+      "certainty": "likely",
+      "say": "MUR-suh-ghur",
+      "ipa": "ˈmœrˌsʏːɣʏr"
+    },
+    {
+      "name": "Þorri",
+      "gloss": "Thorri's month",
+      "meaning": "The deep midwinter month, still marked in Iceland by the Þorrablót feast. It is glossed as frozen-snow month, but the origin of the name is debated. Orkneyinga saga tells of a king Þorri who held a midwinter sacrifice and gave the month its name, which looks like a story made to explain it.",
+      "certainty": "uncertain",
+      "say": "THOR-ri",
+      "ipa": "ˈθɔrːɪ"
+    },
+    {
+      "name": "Góa",
+      "original": "Gói, Góa",
+      "gloss": "Góa's month",
+      "meaning": "The last full month of winter. Medieval sources have the masculine form Gói, and the modern Góa came later. Orkneyinga saga makes Gói the daughter of the king Þorri and says the months were named after them, which looks like a story made to explain the names.",
+      "certainty": "uncertain",
+      "say": "KOH-a",
+      "ipa": "ˈkouːa"
+    }
+  ],
+  "festivals": [
+    {
+      "name": "Bóndadagur (Þorrablót)",
+      "gloss": "first day of Þorri",
+      "meaning": "The first day of the month Þorri, kept in Iceland as Husband's Day and the start of the midwinter Þorrablót feasts. The date rule is the Friday from 19 to 25 January in the Gregorian calendar. A midwinter sacrifice called Þorrablót is mentioned in medieval sources, but the modern feasts were revived in the 1800s.",
+      "when": {
+        "gregorian": "01-19",
+        "weekday": "friday"
+      },
+      "certainty": "established",
+      "say": "BOHN-dah-dah-ghur",
+      "ipa": "ˈpountaˌtaɣʏr"
+    },
+    {
+      "name": "Konudagur",
+      "gloss": "first day of Góa",
+      "meaning": "The first day of Góa, kept in Iceland as Women's Day. It falls on the Sunday from 18 to 24 February in the Gregorian calendar.",
+      "when": {
+        "gregorian": "02-18",
+        "weekday": "sunday"
+      },
+      "certainty": "established",
+      "say": "KOH-nuh-dah-ghur",
+      "ipa": "ˈkʰɔːnʏˌtaɣʏr"
+    },
+    {
+      "name": "Sumardagurinn fyrsti",
+      "gloss": "first day of summer",
+      "meaning": "The first day of summer in the old Icelandic calendar, a public holiday in Iceland. It falls on the Thursday from 19 to 25 April in the Gregorian calendar.",
+      "when": {
+        "gregorian": "04-19",
+        "weekday": "thursday"
+      },
+      "certainty": "established",
+      "say": "SUU-mahr-dah-ghuh-rin FIR-sti",
+      "ipa": "ˈsʏːmarˌtaɣʏrɪn ˈfɪrsti"
+    },
+    {
+      "name": "Fyrsti vetrardagur",
+      "gloss": "first day of winter",
+      "meaning": "The first day of winter in the old Icelandic calendar, when the winter half of the year began. It falls on the Saturday from 21 to 27 October in the Gregorian calendar.",
+      "when": {
+        "gregorian": "10-21",
+        "weekday": "saturday"
+      },
+      "certainty": "established",
+      "say": "FIR-sti VEH-trar-dah-ghur",
+      "ipa": "ˈfɪrsti ˈvɛːtrarˌtaɣʏr"
+    },
+    {
+      "name": "Jól",
+      "gloss": "midwinter feast",
+      "meaning": "The Norse midwinter feast, which Snorri Sturluson says King Hákon the Good moved to coincide with Christmas. Here it is dated to the December solstice by modern convention, since the sources do not fix a day.",
+      "when": {
+        "event": "december-solstice"
+      },
+      "certainty": "likely",
+      "say": "YOHL",
+      "ipa": "ˈjouːl"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Icelandic calendar (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Icelandic_calendar"
+    },
+    {
+      "title": "The Icelandic calendar (Svante Janson)",
+      "url": "https://www2.math.uu.se/~svantejs/papers/calendars/iceland.pdf"
+    },
+    {
+      "title": "Icelandic phonology (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Icelandic_phonology"
+    },
+    {
+      "title": "Public holidays in Iceland (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Public_holidays_in_Iceland"
+    },
+    {
+      "title": "Bóndadagur, Konudagur and Fyrsti vetrardagur dates (Norden)",
+      "url": "https://www.norden.org/is/info-norden/helgidagar-islandi"
+    }
+  ]
+}
