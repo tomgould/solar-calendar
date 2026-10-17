@@ -3,12 +3,13 @@ import { DEFAULT_PACK_ID } from '../names/registry';
 import { SKY_EVENT_NAMES } from '../core/sky';
 import { type Festival, type NamePack, type PackKind, RESPELLING_KEY } from '../names/schema';
 import { escapeHtml, forDisplayFont, hueClass } from './format';
+import { hearButton } from './speech';
 
 const certaintyText = { established: 'Meaning well established', likely: 'Meaning likely', uncertain: 'Meaning uncertain' };
 
 /** "Say WIN-ter-fil-leth /ˈwintərˌfylːeθ/", or nothing for names without one */
-const sayLine = (say?: string, ipa?: string) => (say
-  ? `<p class="about-say"><span class="say-label">Say</span> <strong>${escapeHtml(say)}</strong>${ipa ? ` <span class="ipa">/${escapeHtml(ipa)}/</span>` : ''}</p>`
+const sayLine = (pack: NamePack, entry: { name: string; original?: string; say?: string; ipa?: string }) => (entry.say
+  ? `<p class="about-say"><span class="say-label">Say</span> <strong>${escapeHtml(entry.say)}</strong>${entry.ipa ? ` <span class="ipa">/${escapeHtml(entry.ipa)}/</span>` : ''} ${hearButton(pack, entry)}</p>`
   : '');
 
 const GROUPS: [PackKind, string][] = [['historical', 'From history'], ['modern', 'Modern inventions']];
@@ -67,7 +68,7 @@ export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, cur
       <div>
         <h3 class="about-name" ${lang}>${escapeHtml(forDisplayFont(month.name))}</h3>
         <p class="about-gloss">${escapeHtml(month.gloss)}${month.original ? `. Also written <span ${originalLang}>${escapeHtml(month.original)}</span>` : ''}</p>
-        ${sayLine(month.say, month.ipa)}
+        ${sayLine(pack, month)}
         <p>${escapeHtml(month.meaning)}</p>
         ${month.notes ? `<p class="about-note">${escapeHtml(month.notes)}</p>` : ''}
         <p class="certainty">${certaintyText[month.certainty]}</p>
@@ -98,7 +99,7 @@ export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, cur
           <div>
             <h3 class="about-name" ${lang}>${escapeHtml(forDisplayFont(pack.leapWeek.name))}</h3>
             <p class="about-gloss">${escapeHtml(pack.leapWeek.gloss)}</p>
-            ${sayLine(pack.leapWeek.say, pack.leapWeek.ipa)}
+            ${sayLine(pack, pack.leapWeek)}
             <p>${escapeHtml(pack.leapWeek.meaning)}</p>
           </div>
         </li>
@@ -109,7 +110,7 @@ export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, cur
         <li>
           <h4 class="about-festival-name" ${lang}>${escapeHtml(forDisplayFont(festival.name))}</h4>
           <p class="about-gloss">${escapeHtml(festival.gloss)}</p>
-          ${sayLine(festival.say, festival.ipa)}
+          ${sayLine(pack, festival)}
           <p class="about-when">${escapeHtml(describeWhen(festival, pack))}</p>
           <p>${escapeHtml(festival.meaning)}</p>
           ${festival.certainty ? `<p class="certainty">${certaintyText[festival.certainty].replace('Meaning', 'Date and meaning')}</p>` : ''}
