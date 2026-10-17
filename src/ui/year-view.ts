@@ -53,6 +53,8 @@ export class YearView {
     }).join('');
     this.root.querySelector('#almanac')!.innerHTML = `${head}<tbody>${rows}</tbody>`;
     this.fitHeaders();
+    // Widths change once the display font arrives, so measure again then
+    void document.fonts.ready.then(() => this.fitHeaders());
 
     this.root.querySelector('#year-seasons')!.innerHTML = seasonEvents(start, start + length - 1)
       .map((event) => `<li><span class="event-name">${SKY_EVENT_NAMES[event.kind]}</span> ${eventTime(event.instant)}</li>`)
@@ -67,6 +69,8 @@ export class YearView {
   /** Shrink month names that don't fit their column, rather than breaking them mid-word. */
   private fitHeaders(): void {
     for (const header of this.root.querySelectorAll<HTMLElement>('.almanac thead th[lang]')) {
+      header.style.fontSize = '';
+      header.style.overflowWrap = '';
       for (let size = 16; header.scrollWidth > header.clientWidth && size > 11; size--) {
         header.style.fontSize = `${size - 1}px`;
       }

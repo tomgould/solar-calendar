@@ -33,7 +33,7 @@ export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, cur
   dialog.innerHTML = `
     <div class="about-head">
       <div>
-        <h2 id="about-title">${escapeHtml(pack.title)} month names</h2>
+        <h2 id="about-title">${escapeHtml(pack.title)}</h2>
         <p class="about-era">${escapeHtml(pack.culture)}, ${escapeHtml(pack.era)}</p>
       </div>
       <button type="button" class="button" data-close>Close</button>

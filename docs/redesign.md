@@ -59,7 +59,7 @@ These matter most, because a calendar that is sometimes a day or a week out is w
 | Stack | TypeScript, Vite, no UI framework, static output (confirmed) |
 | Equinox day | Taken in UTC (confirmed) |
 | Hosting | Cloudflare, on your personal account (confirmed). Code stays on GitHub at `tomgould/solar-calendar`, with a small Worker for the ICS feed. See section 6. |
-| `RealTime.php` and the equinox JSON | Remove. The core computes everything in the browser. |
+| The original app | Removed on 17 Oct 2026, ahead of phase 5 and at your request: the old pages, CSS, JS, equinox JSON, `RealTime.php`, PDFs and old tests. Git history keeps them. |
 
 ## 3. Design direction: perennial grid
 
@@ -326,7 +326,7 @@ tests/e2e/     Playwright, with webServer = vite preview
 - **All dates are integer day numbers.** A `Date` object is only used to read "now" and to format times. That removes the timezone and clock-change bugs at the root.
 - **Equinoxes and solstices are computed.** Meeus takes microseconds and is accurate to about a minute, so there's no JSON, no fetch and no fallback. The supported range is 1600 to 2400, where delta-T is well modelled. 1000 to 3000 is possible but less exact.
 - **Sun and moon extras** (rise and set times, moon phases) come from `astronomy-engine`, lazy-loaded only when the day panel needs them. Check its size and licence before adopting it. The core stays small.
-- **URLs** use query parameters, so any static host works. `?date=YYYY-MM-DD` is the canonical day link. Small stubs at `solar-calendar.html` and `gregorian-calendar.html` redirect old links.
+- **URLs** use query parameters, so any static host works. `?date=YYYY-MM-DD` is the canonical day link. The old page URLs aren't kept. If an old domain still gets traffic, a Cloudflare redirect rule can send it to the new site.
 - **Theme:** a tiny inline script in `<head>` sets the theme before the page paints, and the OS setting is the default.
 - **Accessibility:** follows the WAI-ARIA date-grid pattern. Arrow keys move by day, Page Up and Page Down by month, and focus moves with a roving tabindex. Today gets `aria-current="date"`, and each cell's accessible name gives both dates. axe runs in the e2e tests.
 
@@ -394,11 +394,11 @@ Each month has:
 ### Phases (one PR each, on a `redesign` branch)
 
 0. **Prototype** (built 17 Oct 2026 on the `redesign` branch). A minimal core (days, astro, solar), plus static month view, year view and day panel in light and dark, at desktop and mobile sizes, with real dates. It includes the name-pack switcher and the meaning panel, with two packs. Screenshots for sign-off. You confirm the typefaces and the default pack here.
-1. **Core library.** Built test-first with the unit tests above.
-2. **App shell.** Vite and TypeScript, tokens, theme, router, month view opening on today, day panel and keyboard navigation. e2e with `webServer` and the time-zone matrix.
-3. **Year view, converter and print styles,** plus the old-URL redirects. Print output is checked with Playwright's PDF export, which also replaces the hand-made PDFs. Every name pack gets its full meanings, each checked against its sources. The pack template and `docs/name-packs.md` land in this phase too.
+1. **Core library** (done 17 Oct 2026). Built with the unit tests above. astronomy-engine stands in for the published table, and agrees to within 2 minutes.
+2. **App shell.** Vite and TypeScript, tokens, theme, router, month view opening on today, day panel and keyboard navigation. e2e with `webServer` and the time-zone matrix (set up early, during the cleanup).
+3. **Year view, converter and print styles.** Print output is checked with Playwright's PDF export, which also replaces the hand-made PDFs. Every name pack gets its full meanings, each checked against its sources. The pack template and `docs/name-packs.md` land in this phase too.
 4. **Extras.** Sun and moon data (location is opt-in and stored only in the browser), ICS download per year plus a subscribable feed, and the offline PWA.
-5. **Cleanup.** Remove the old pages, CSS, JSON, `RealTime.php` and PDFs. Rewrite the README to explain the calendar, update `CLAUDE.md`, and deploy.
+5. **Launch.** Deploy to Cloudflare. The cleanup planned for this phase was done early: the original app was removed, and the README and `CLAUDE.md` were rewritten, on 17 Oct 2026.
 
 ## 6. Hosting
 
@@ -408,7 +408,7 @@ The site is static files plus one dynamic URL: the ICS feed, which calendar apps
 |---|---|---|
 | **Cloudflare** (recommended) | Free tier, global CDN, HTTPS, a preview URL for every PR, deploys from GitHub. A small Worker can build `/feed.ics` on request from the same TypeScript core, so the feed never goes stale. | Another account and dashboard to manage (you already use Cloudflare). |
 | GitHub Pages | Free and simplest; the repo is already there | Static only. The feed would have to be pre-built for a fixed range and refreshed by a scheduled Action. No PR previews. |
-| Fasthosts | Already paid for. PHP could generate the feed. | Shared hosting: FTP-style deploys, no CDN, no previews, and PHP would mean a second copy of the date logic, which is the problem `RealTime.php` has today. |
+| Fasthosts | Already paid for. PHP could generate the feed. | Shared hosting: FTP-style deploys, no CDN, no previews, and PHP would mean a second copy of the date logic, which was the problem with the original `RealTime.php`. |
 | AWS (S3 + CloudFront + Lambda) | Very capable | Far more setup and cost than this needs |
 
 **Recommendation:** keep the code on GitHub and use GitHub Actions for tests. Deploy to Cloudflare, either as Workers with static assets or as Pages (check Cloudflare's current guidance when setting up), with a custom domain. Fasthosts isn't needed for this project.
