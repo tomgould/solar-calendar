@@ -77,16 +77,20 @@ export function buildIcs({ pack, extra = [], from, to, now }: IcsOptions): strin
 
   for (let day = from; day <= to; day++) {
     const date = toSolar(day);
-    const description = date.month === LEAP_WEEK
-      ? `${monthName(pack, date.month)}: ${monthGloss(pack, date.month)}. Day ${date.dayOfYear} of ${yearLength(date.year)}.`
-      : `Month ${date.month} of 13, ${monthName(pack, date.month)}: ${monthGloss(pack, date.month)}. Day ${date.dayOfYear} of ${yearLength(date.year)}.`;
+    // In a Gregorian calendar app the solar date needs marking as such, or
+    // "1 January" on 28 December looks like a mistake; the year, which also
+    // differs from January to March, is left to the description
+    const summary = `☀ ${date.month === LEAP_WEEK ? `${pack.leapWeek.name}, day ${date.day}` : `${date.day} ${monthName(pack, date.month)}`}`;
+    const description = `Solar date: ${solarLong(pack, date)}. ${date.month === LEAP_WEEK
+      ? `${monthName(pack, date.month)}: ${monthGloss(pack, date.month)}.`
+      : `Month ${date.month} of 13, ${monthName(pack, date.month)}: ${monthGloss(pack, date.month)}.`} Day ${date.dayOfYear} of ${yearLength(date.year)}.`;
     lines.push(
       'BEGIN:VEVENT',
       `UID:${dateValue(day)}-${pack.id}@solar-calendar`,
       `DTSTAMP:${stamp}`,
       `DTSTART;VALUE=DATE:${dateValue(day)}`,
       `DTEND;VALUE=DATE:${dateValue(day + 1)}`,
-      `SUMMARY:${escapeText(solarLong(pack, date))}`,
+      `SUMMARY:${escapeText(summary)}`,
       `DESCRIPTION:${escapeText(description)}`,
       'TRANSP:TRANSPARENT',
       'END:VEVENT',

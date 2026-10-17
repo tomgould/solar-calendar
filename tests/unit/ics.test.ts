@@ -1,5 +1,6 @@
 import ICAL from 'ical.js';
 import { describe, expect, it } from 'vitest';
+import { dayFromCivil } from '../../src/core/days';
 import { yearStart } from '../../src/core/solar';
 import { buildIcs, escapeText, foldLine } from '../../src/feed/ics';
 import type { NamePack } from '../../src/names/schema';
@@ -36,7 +37,8 @@ describe('ICS text', () => {
     const festivals = events.filter((event) => /^\d{8}-anglo-saxon-.+@/.test(event.uid)).map((event) => event.summary);
     expect(festivals.length).toBeGreaterThan(0);
     const today = days.find((event) => event.startDate.toString() === '2026-10-17')!;
-    expect(today.summary).toBe('13 Winterfylleþ 2026');
+    expect(today.summary).toBe('☀ 13 Winterfylleþ');
+    expect(today.description).toMatch(/^Solar date: 13 Winterfylleþ 2026\. Month 8 of 13/);
     expect(today.description).toContain('winter full moon');
 
     const sky = events.filter((event) => !event.startDate.isDate).map((event) => event.summary);
@@ -51,7 +53,7 @@ describe('/feed.ics Worker', () => {
     const days = parseEvents(await response.text()).filter((event) => /^\d{8}-anglo-saxon@/.test(event.uid));
     expect(days[0].startDate.toString()).toBe('2025-03-24');
     expect(days.at(-1)!.startDate.toString()).toBe('2028-03-19');
-    expect(days.some((event) => event.summary === '13 Winterfylleþ 2026')).toBe(true);
+    expect(days.some((event) => event.summary === '☀ 13 Winterfylleþ')).toBe(true);
   });
 
   it('adds other packs’ festivals and bank holidays when asked, skipping unknown ones', async () => {
@@ -66,8 +68,26 @@ describe('/feed.ics Worker', () => {
     expect(new Set(events.map((event) => event.uid)).size).toBe(events.length);
   });
 
+  it('marks solar dates so they aren’t mistaken for Gregorian ones', async () => {
+    // Around New Year 2027 with Gregorian names: solar January starts on 28 December
+    const url = new URL('https://example.org/feed.ics?names=gregorian&holidays=uk-scotland');
+    const events = parseEvents(await feedResponse(url, now).text());
+    const on = (date: string) => events.filter((event) => event.startDate.toString() === date).map((event) => event.summary).sort();
+    expect(on('2026-12-28')).toEqual(['Boxing Day (substitute day)', '☀ 1 January']);
+    expect(events.find((event) => event.summary === '☀ 1 January' && event.startDate.toString() === '2026-12-28')!.description)
+      .toMatch(/^Solar date: 1 January 2026\./);
+    // Scotland's 2 January holiday is named as a holiday, here on a Saturday with Monday off
+    expect(on('2027-01-02')).toEqual(['2 January bank holiday', '☀ 6 January']);
+    expect(on('2027-01-04')).toEqual(['2 January bank holiday (substitute day)', '☀ 8 January']);
+  });
+
+  it('names leap week days in the feed', () => {
+    const text = buildIcs({ pack, from: dayFromCivil(2029, 3, 19), to: dayFromCivil(2029, 3, 19), now });
+    expect(parseEvents(text).map((event) => event.summary)).toContain(`☀ ${pack.leapWeek.name}, day 1`);
+  });
+
   it('falls back to the default pack for an unknown one', async () => {
     const text = await feedResponse(new URL('https://example.org/feed.ics?names=nope'), now).text();
-    expect(text).toContain('SUMMARY:13 October 2026');
+    expect(text).toContain('SUMMARY:☀ 13 October');
   });
 });
