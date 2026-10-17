@@ -1,6 +1,7 @@
 {
   "id": "nature",
-  "title": "Nature",
+  "kind": "modern",
+  "title": "Nature (northern hemisphere)",
   "description": "Plain English names for what the seasons do, from Bud in spring to Thaw at the end of winter",
   "culture": "Modern invention, after the French Republican calendar",
   "era": "Today",

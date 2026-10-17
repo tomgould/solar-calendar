@@ -1,5 +1,6 @@
 {
   "id": "latin-numbers",
+  "kind": "modern",
   "title": "Latin numbers",
   "description": "The months counted in Latin, from Primus to Tertius Decimus, the way the Romans counted theirs",
   "culture": "Modern invention, in Latin",
