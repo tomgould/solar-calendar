@@ -88,9 +88,26 @@ function monthEvents(year: number, month: number): SkyEvent[] {
   return [...seasonEvents(first, last), ...(moonCache.get(key) ?? [])];
 }
 
+/**
+ * Rewriting the day panel or the "Say" line drops focus from the control in it,
+ * which happens when moon data arrives. This puts focus back on the control in
+ * the same place, unless something else has taken it.
+ */
+function keepFocusInPlace(): () => void {
+  const active = document.activeElement;
+  const container = active?.closest<HTMLElement>('#day-panel, #month-say');
+  if (!(active instanceof HTMLElement) || !container) return () => {};
+  const controls = () => [...container.querySelectorAll<HTMLElement>('button, a[href], input, select')];
+  const index = controls().indexOf(active);
+  return () => {
+    if (index >= 0 && (document.activeElement === null || document.activeElement === document.body)) controls()[index]?.focus();
+  };
+}
+
 function render(focus = false): void {
   const { selected, today, pack, view } = state;
   const date = toSolar(selected);
+  const restoreFocus = keepFocusInPlace();
 
   $('#today-line').innerHTML = `Today is <strong lang="${pack.lang}">${escapeHtml(solarLong(pack, toSolar(today)))}</strong>. In the Gregorian calendar it’s ${gregorianLong(today)}.`;
   $('#names-current').textContent = pack.title;
@@ -138,6 +155,7 @@ function render(focus = false): void {
     yearView.render({ year: date.year, today, pack });
     renderCalendarApps(date.year, pack);
   }
+  restoreFocus();
 
   document.title = `${solarLong(pack, date)}, solar calendar`;
   syncUrl(view === 'year' ? `year ${date.year}` : `month ${date.year}-${date.month}`);
@@ -398,10 +416,13 @@ function wire(): void {
     openSheet(false);
     dayPanel.querySelector<HTMLElement>('[data-sheet-toggle]')?.focus();
   });
-  // Tabbing on to the page behind folds it away, so it can't hide what has focus
-  dayPanel.addEventListener('focusout', (event) => {
-    const to = event.relatedTarget as Element | null;
-    if (to && !dayPanel.contains(to) && !to.closest('#grid-body, dialog')) openSheet(false);
+  // Keyboard focus moving to the page behind folds it away, so it can't hide what
+  // has focus. Tapping a day keeps it open: the tapped day is above it
+  document.addEventListener('focusin', (event) => {
+    const to = event.target as Element;
+    if (!dayPanel.classList.contains('is-open') || dayPanel.contains(to) || to.closest('dialog')) return;
+    if (to.closest('#grid-body') && !to.matches(':focus-visible')) return;
+    openSheet(false);
   });
 
   dayPanel.addEventListener('click', async (event) => {
