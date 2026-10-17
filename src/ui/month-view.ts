@@ -78,7 +78,11 @@ export class MonthView {
     const name = this.root.querySelector<HTMLElement>('#month-name')!;
     name.textContent = monthName(pack, date.month);
     name.lang = pack.lang;
+    this.root.querySelector('#month-year')!.textContent = String(date.year);
     this.root.querySelector('#month-gloss')!.textContent = monthGloss(pack, date.month);
+    // Printed under the grid
+    const meaning = date.month === LEAP_WEEK ? pack.leapWeek.meaning : pack.months[date.month - 1].meaning;
+    this.root.querySelector('#month-meaning')!.textContent = `${monthName(pack, date.month)}: ${meaning}`;
     this.root.querySelector('#month-place')!.textContent = date.month === LEAP_WEEK
       ? `The leap week, ${gregorianShort(first)} to ${gregorianShort(first + 6, true)}`
       : `Month ${date.month} of 13, ${gregorianShort(first)} to ${gregorianShort(first + 27, true)}`;

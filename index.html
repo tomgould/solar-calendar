@@ -22,9 +22,10 @@
         </div>
         <button type="button" class="button" id="names-button" popovertarget="names-menu"><span class="narrow-only">Names</span><span class="wide-only">Month names: <span id="names-current"></span></span></button>
       </div>
-      <button type="button" class="button theme-button" id="theme-button" aria-pressed="false" aria-label="Dark mode">
-        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M13.6 10.3A6 6 0 0 1 5.7 2.4a6 6 0 1 0 7.9 7.9z" fill="currentColor"/></svg>
-        <span class="wide-only" aria-hidden="true">Dark mode</span>
+      <!-- Shows the mode it switches to: moon and "Dark mode", or sun and "Light mode" -->
+      <button type="button" class="button theme-button" id="theme-button" aria-label="Dark mode">
+        <span class="theme-icon" aria-hidden="true"></span>
+        <span class="theme-label wide-only" aria-hidden="true">Dark mode</span>
       </button>
     </header>
 
@@ -37,11 +38,11 @@
     <main id="main">
       <p class="today-line" id="today-line"></p>
 
-      <section id="month-view" class="month" aria-labelledby="month-name">
+      <section id="month-view" class="month" aria-labelledby="month-title">
         <nav class="strip" aria-label="Months of this year"><ol id="month-strip"></ol></nav>
         <div class="month-head">
           <div>
-            <h1 id="month-name" class="month-name"></h1>
+            <h1 id="month-title" class="month-name"><span id="month-name"></span> <span class="month-year" id="month-year"></span></h1>
             <p class="month-meta">
               <span id="month-gloss" class="gloss"></span>
               <span id="month-place"></span>
@@ -51,15 +52,17 @@
           <div class="steps">
             <button type="button" class="step" id="prev-month" aria-label="Previous month"></button>
             <button type="button" class="step" id="next-month" aria-label="Next month"></button>
+            <button type="button" class="button" id="print-month">Print month</button>
           </div>
         </div>
         <div class="month-body">
-          <table class="grid" role="grid" aria-labelledby="month-name">
+          <table class="grid" role="grid" aria-labelledby="month-title">
             <thead><tr id="grid-head"></tr></thead>
             <tbody id="grid-body"></tbody>
           </table>
           <aside class="day" id="day-panel" aria-label="Selected day"></aside>
         </div>
+        <p class="print-only month-meaning" id="month-meaning"></p>
       </section>
 
       <section id="year-view" class="year" aria-labelledby="year-title" hidden>

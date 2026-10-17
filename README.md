@@ -13,8 +13,9 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
 - Opens on today, with the date in both calendars.
 - Month view: the numbers 1 to 28 never move, and only the Gregorian dates change from month to month. Equinoxes, solstices, and new and full moons are marked.
 - Day details: day of the year, moon phase, and the next equinox or solstice in your local time.
-- Year view: every day of the year in one table, one row per day of the month, which prints on a single A4 page.
-- Month name packs: switch between sets of month names, such as the original names or the Anglo-Saxon months recorded by Bede, and read what each name means.
+- Year view: every day of the year in one table, one row per day of the month.
+- Printing: a month or the whole year, each on a single A4 page, in light colours whatever the screen theme.
+- Month name packs: switch between sets of month names, such as the Gregorian names or the Anglo-Saxon months recorded by Bede, and read what each name means.
 - Dark mode, keyboard navigation and phone layouts.
 
 ## Development

@@ -33,7 +33,7 @@ npx playwright test --project=chromium -g "leap"    # one e2e test, one project
   - Every `packs/*.json` file is picked up by `import.meta.glob`, lazy-loaded as its own chunk, and checked by `schema.ts`. The file name must equal the `id`, and files starting with `_` are skipped.
   - The core only knows month numbers; names come from packs in the UI.
   - Pack ids appear in URLs (`?names=`), so never rename one.
-  - `DEFAULT_PACK_ID` in `registry.ts` is `original`.
+  - `DEFAULT_PACK_ID` in `registry.ts` is `gregorian`.
 - **`src/sky/moon.ts`** dynamically imports astronomy-engine, so its 43 KB gzipped stays out of the main bundle. Quarter names appear only on the day the quarter happens, matching the grid marks.
 - **`src/ui/`:**
   - `MonthView` builds its 28 cells once and only updates labels, marks and the month colour when the month changes.
@@ -46,3 +46,4 @@ npx playwright test --project=chromium -g "leap"    # one e2e test, one project
 - **No inline scripts or `style` attributes.** `public/_headers` sends a strict Content-Security-Policy (`script-src 'self'; style-src 'self'`), and an e2e test runs the app under it. Set styles through classes or the CSSOM (`element.style`), never `style="…"` in HTML strings. The theme is applied before first paint by `public/theme.js`, a plain file Vite copies as-is.
 - **Hosting:** Cloudflare Workers with static assets (`wrangler.jsonc` serves `dist/`). Everything in `public/` (`_headers`, `theme.js`, `favicon.svg`) is copied to `dist/` unchanged. `.github/workflows/ci.yml` runs the type check, unit tests and e2e tests on every push and pull request.
 - **History:** changing view, year or month pushes a history entry; days within a month replace it. The `popstate` handler re-reads the URL.
+- **Printing:** prints whichever view is on screen, on one A4 landscape page. The print block in `app.css` forces light tokens using a selector that matches the dark rules' specificity. The e2e test generates a PDF in Chromium and checks that it has exactly one page; if you change month or year layout, keep that test passing.
