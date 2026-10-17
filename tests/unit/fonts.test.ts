@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import * as fontkit from 'fontkit';
 import { describe, expect, it } from 'vitest';
 import type { NamePack } from '../../src/names/schema';
+import { forDisplayFont } from '../../src/ui/format';
 
 // Characters the self-hosted fonts really contain, read from the font files
 function coverage(dir: string, file: RegExp): Set<number> {
@@ -15,7 +16,11 @@ function coverage(dir: string, file: RegExp): Set<number> {
 }
 
 const display = coverage('node_modules/@fontsource-variable/big-shoulders/files', /opsz-normal\.woff2$/);
-const text = coverage('node_modules/@fontsource/andika/files', /-400-normal\.woff2$/);
+// Andika, plus Noto Sans for the Greek letters Andika lacks (θ in IPA, for example)
+const text = new Set([
+  ...coverage('node_modules/@fontsource/andika/files', /-400-normal\.woff2$/),
+  ...coverage('node_modules/@fontsource/noto-sans/files', /^noto-sans-greek-400-normal\.woff2$/),
+]);
 // Original forms may also use the script fonts loaded for them
 const scripts = new Set([
   ...coverage('node_modules/@fontsource/vazirmatn/files', /^vazirmatn-arabic-400-normal\.woff2$/),
@@ -36,8 +41,9 @@ describe('fonts cover every pack', () => {
   });
 
   it.each(packs)('%s: month names are all in the display font (Big Shoulders)', (_, pack) => {
-    // Big Shoulders lacks ǣ, for example, so a display name writes Æ and keeps ǣ for "original"
-    expect(missing([...pack.months.map((month) => month.name), pack.leapWeek.name], display)).toEqual([]);
+    // Names are shown decomposed (forDisplayFont), so Ǣ only needs Æ and a combining macron
+    const names = [...pack.months.map((month) => month.name), pack.leapWeek.name].map(forDisplayFont);
+    expect(missing(names, display)).toEqual([]);
   });
 
   it.each(packs)('%s: all other text is in the body font (Andika)', (_, pack) => {

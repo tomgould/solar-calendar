@@ -2,7 +2,7 @@ import { type DayNumber, civilFromDay } from '../core/days';
 import { SKY_EVENT_NAMES, type SkyEvent } from '../core/sky';
 import { LEAP_WEEK, daysInMonth, fromSolar, monthsInYear, toSolar } from '../core/solar';
 import type { NamePack } from '../names/schema';
-import { WEEKDAYS, escapeHtml, gregorianLong, gregorianShort, hueClass, monthGloss, monthName, solarLong } from './format';
+import { WEEKDAYS, escapeHtml, forDisplayFont, gregorianLong, gregorianShort, hueClass, monthGloss, monthName, solarLong } from './format';
 import { EVENT_ICONS } from './icons';
 
 export interface MonthViewState {
@@ -76,7 +76,7 @@ export class MonthView {
     this.root.classList.remove(...[...this.root.classList].filter((name) => name.startsWith('hue-')));
     this.root.classList.add(hueClass(date.month));
     const name = this.root.querySelector<HTMLElement>('#month-name')!;
-    name.textContent = monthName(pack, date.month);
+    name.textContent = forDisplayFont(monthName(pack, date.month));
     name.lang = pack.lang;
     this.root.querySelector('#month-year')!.textContent = String(date.year);
     this.root.querySelector('#month-gloss')!.textContent = monthGloss(pack, date.month);
