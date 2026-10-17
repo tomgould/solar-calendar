@@ -29,7 +29,7 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
   - from history: Gregorian, Anglo-Saxon (recorded by Bede), Old Norse, Roman, Gaulish, Persian, ancient Egyptian and Coptic
   - modern inventions: Nature for each hemisphere, Latin numbers and Sky
 - Pronunciation: a respelling and IPA for every name that isn't English, and a button that reads it aloud.
-- Festivals: the historical packs (apart from Gregorian) mark their own festivals, such as Nowruz or Þorrablót, and Sky marks the meteor showers. Show festivals from several packs at once, listed under each month and year.
+- Festivals: the historical packs (apart from Gregorian) mark their own festivals, such as Nowruz or Þorrablót, and Sky marks the meteor showers. Every pack's festivals show at once by default, listed under each month and year, and each pack can be turned off.
 - UK bank holidays and Easter for England and Wales, Scotland and Northern Ireland, all on by default and each can be turned off, kept in step with GOV.UK by a weekly check.
 - Go to a date: type a date in either calendar to find it in the other.
 - Sunrise, sunset and hours of daylight for your location, in its own time zone. A first-visit notice explains why it asks, with a "No thanks"; the location stays in your browser.
