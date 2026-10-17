@@ -21,7 +21,7 @@
     {
       "name": "Þrimilce",
       "gloss": "three milkings",
-      "meaning": "Bede's Thrimilchi: the month when the spring grass was so good that cows could be milked three times a day.",
+      "meaning": "Bede's Thrimilchi: the month when cows were milked three times a day.",
       "certainty": "established"
     },
     {
@@ -95,7 +95,13 @@
     }
   ],
   "sources": [
-    { "title": "Germanic calendar (Wikipedia)", "url": "https://en.wikipedia.org/wiki/Germanic_calendar" },
-    { "title": "Bede on Yule (Roger Pearse)", "url": "https://roger-pearse.com/weblog/2012/01/20/bede-on-yule" }
+    {
+      "title": "Germanic calendar (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Germanic_calendar"
+    },
+    {
+      "title": "Bede on Yule (Roger Pearse)",
+      "url": "https://roger-pearse.com/weblog/2012/01/20/bede-on-yule"
+    }
   ]
 }

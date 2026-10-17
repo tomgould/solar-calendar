@@ -1,0 +1,106 @@
+{
+  "id": "old-norse",
+  "title": "Old Norse",
+  "description": "The old Icelandic month names, from a calendar with a 364-day year and a leap week",
+  "culture": "Medieval Iceland",
+  "era": "10th to 13th century",
+  "lang": "is",
+  "origin": "These are the month names of the old Icelandic calendar, kept in Icelandic almanacs for centuries. The year had 364 days, which is 52 whole weeks, and a leap week called sumarauki was added in some years to keep the seasons in step. That is the same rule this calendar uses, though Iceland put its leap week in midsummer and this calendar puts it at the end of the year. Months 1 to 4 and 10 to 13 land within about ten days of their historical season, and months 5 to 9 run between one and three weeks early. Snorri Sturluson listed the names, with alternatives, in the Edda around 1220.",
+  "leapWeek": {
+    "name": "Sumarauki",
+    "gloss": "summer addition",
+    "meaning": "The Icelandic leap week. Iceland's year was exactly 52 weeks, 364 days, and in some years a whole week was added in summer, after the third summer month, to keep the calendar in line with the seasons. Here it comes at the end of the year instead."
+  },
+  "months": [
+    {
+      "name": "Einmánuður",
+      "gloss": "lone month",
+      "meaning": "The last month of the Icelandic winter, whose name is usually read as lone or single month. Why it was called that is not settled.",
+      "certainty": "likely"
+    },
+    {
+      "name": "Harpa",
+      "gloss": "first summer month",
+      "meaning": "The first month of summer, whose first day is still marked in Iceland as the first day of summer. The name looks like a woman's name, perhaps of a forgotten goddess, but its origin is not known. Snorri's Edda gives Gaukmánuður, cuckoo month, and Sáðtíð, sowing time, as other names for it.",
+      "certainty": "uncertain"
+    },
+    {
+      "name": "Skerpla",
+      "gloss": "second summer month",
+      "meaning": "The second summer month. It also looks like a woman's name, but its origin is unknown. Snorri's Edda gives Eggtíð and Stekktíð, egg time and lamb-pen time, as other names for it.",
+      "certainty": "uncertain"
+    },
+    {
+      "name": "Sólmánuður",
+      "gloss": "sun month",
+      "meaning": "Sun month, the third month of summer, around midsummer. Snorri's Edda also gives Selmánuður, shieling month.",
+      "certainty": "established"
+    },
+    {
+      "name": "Heyannir",
+      "gloss": "hay-work month",
+      "meaning": "The month of haymaking, when farmers cut and dried the hay that would feed their animals through winter.",
+      "certainty": "established"
+    },
+    {
+      "name": "Tvímánuður",
+      "gloss": "two month",
+      "meaning": "Usually read as two month, but sources differ on whether it means second month or a month with two months of summer left, so the sense is not settled. Snorri's Edda calls this period Kornskurðarmánuður, grain-cutting month.",
+      "certainty": "uncertain"
+    },
+    {
+      "name": "Haustmánuður",
+      "gloss": "autumn month",
+      "meaning": "The first month of autumn, from haust, autumn.",
+      "certainty": "established"
+    },
+    {
+      "name": "Gormánuður",
+      "gloss": "slaughter month",
+      "meaning": "Usually read as slaughter month, when livestock that could not be fed through winter were killed. Some sources read it as the month of Gór instead. It is the first month of winter and is well attested in medieval sources.",
+      "certainty": "likely"
+    },
+    {
+      "name": "Frermánuður",
+      "gloss": "frost month",
+      "meaning": "Frost month, from frer, frost. Snorri's Edda lists Frermánuður for the period that later sources call Ýlir, so it is another name for the same time, not a separate Icelandic month.",
+      "certainty": "likely",
+      "notes": "The 13th month. Iceland had 12 months, so Snorri's name for the Ýlir period is placed here, one slot before Ýlir."
+    },
+    {
+      "name": "Ýlir",
+      "gloss": "Yule month",
+      "meaning": "The month around Yule, the midwinter feast, usually read as Yule month. The name is well attested in medieval sources, though its exact form is debated.",
+      "certainty": "likely"
+    },
+    {
+      "name": "Mörsugur",
+      "gloss": "fat-sucking month",
+      "meaning": "Usually read as fat-sucking month, from mör, suet or marrow, and sjúga, to suck. An older name for the same month, Jólmánuður (Yule month), is recorded, and Snorri's Edda calls the period Hrútmánuður, ram month.",
+      "certainty": "likely"
+    },
+    {
+      "name": "Þorri",
+      "gloss": "Thorri's month",
+      "meaning": "The deep midwinter month, still marked in Iceland by the Þorrablót feast. It is glossed as frozen-snow month, but the origin of the name is debated. Orkneyinga saga tells of a king Þorri who held a midwinter sacrifice and gave the month its name, which looks like a story made to explain it.",
+      "certainty": "uncertain"
+    },
+    {
+      "name": "Góa",
+      "original": "Gói, Góa",
+      "gloss": "Góa's month",
+      "meaning": "The last full month of winter. Medieval sources have the masculine form Gói, and the modern Góa came later. Orkneyinga saga makes Gói the daughter of the king Þorri and says the months were named after them, which looks like a story made to explain the names.",
+      "certainty": "uncertain"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Icelandic calendar (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Icelandic_calendar"
+    },
+    {
+      "title": "The Icelandic calendar (Svante Janson)",
+      "url": "https://www2.math.uu.se/~svantejs/papers/calendars/iceland.pdf"
+    }
+  ]
+}

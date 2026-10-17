@@ -1,0 +1,127 @@
+{
+  "id": "persian",
+  "title": "Persian",
+  "description": "The Solar Hijri month names, from the Avestan spirits of the Zoroastrian year, with the Old Persian Bāgayādiš as the 13th",
+  "culture": "Iran and the Zoroastrian tradition",
+  "era": "Achaemenid to modern times",
+  "lang": "fa-Latn",
+  "originalLang": "fa",
+  "originalDir": "rtl",
+  "origin": "Neither the Persians nor the Zoroastrians ever had a regular 13-month calendar: the Old Persian calendar was lunisolar with twelve months and an occasional extra month, and the Zoroastrian and modern Solar Hijri calendars have twelve months plus a few extra days. The twelve Solar Hijri names come from the Avestan names of Zoroastrian divinities and ideas, and have changed little over time. The Persian year starts at the March equinox (Nowruz), the same anchor as this calendar. The 13th name, Bāgayādiš, is borrowed from the Old Persian calendar, where it fell in September and October, so that it sits at the autumn equinox here.",
+  "leapWeek": {
+    "name": "Gatha days",
+    "gloss": "the five extra days",
+    "meaning": "In the Zoroastrian calendar the five Gatha days are the extra days at the very end of the year, just before Nowruz, and are named after the five Gathas, the hymns attributed to Zoroaster. Here they stand for the 7-day leap week."
+  },
+  "months": [
+    {
+      "name": "Farvardin",
+      "original": "فروردین",
+      "gloss": "guardian spirits",
+      "meaning": "From Avestan Fravashinam, the fravashis: the guardian spirits, or souls of the righteous. The month is the time of remembering the dead and of Nowruz.",
+      "certainty": "established"
+    },
+    {
+      "name": "Ordibehesht",
+      "original": "اردیبهشت",
+      "gloss": "best truth",
+      "meaning": "From Avestan Asha Vahishta, \"best truth\" or \"best righteousness\", one of the divine beings who attend Ahura Mazda. In the Gathas it is linked with fire.",
+      "certainty": "established"
+    },
+    {
+      "name": "Khordad",
+      "original": "خرداد",
+      "gloss": "wholeness",
+      "meaning": "From Avestan Haurvatat, \"wholeness\" or \"perfection\", a divine being linked with water.",
+      "certainty": "established"
+    },
+    {
+      "name": "Tir",
+      "original": "تیر",
+      "gloss": "the star Sirius",
+      "meaning": "From Avestan Tishtrya, the star usually identified with Sirius, which Zoroastrian tradition links with bringing the rains.",
+      "certainty": "likely"
+    },
+    {
+      "name": "Mordad",
+      "original": "مرداد",
+      "gloss": "immortality",
+      "meaning": "From Avestan Ameretat, \"immortality\", a divine being linked with plants.",
+      "certainty": "established"
+    },
+    {
+      "name": "Shahrivar",
+      "original": "شهریور",
+      "gloss": "desirable dominion",
+      "meaning": "From Avestan Khshathra Vairya, \"desirable dominion\" or \"chosen power\". Later tradition makes this divine being the guardian of metals.",
+      "certainty": "established"
+    },
+    {
+      "name": "Bāgayādiš",
+      "gloss": "worship of the god",
+      "meaning": "The seventh month of the Old Persian calendar, one of the names given in Darius I's Behistun inscription. It means the month of the worship of baga, \"the god\", perhaps Mithra, but scholars are not certain which god is meant.",
+      "certainty": "uncertain",
+      "notes": "The 13th month. It is an Old Persian name, not a modern Persian one. It fell in September and October, which matches slot 7 at the autumn equinox, but the old calendar was lunisolar, so the match is approximate."
+    },
+    {
+      "name": "Mehr",
+      "original": "مهر",
+      "gloss": "covenant, Mithra",
+      "meaning": "From Avestan Mithra, the divinity of covenants and contracts. The word mithra means \"covenant\" or \"agreement\", and the god guards both.",
+      "certainty": "established"
+    },
+    {
+      "name": "Aban",
+      "original": "آبان",
+      "gloss": "the waters",
+      "meaning": "From Avestan Apam, \"of the waters\", the month dedicated to the waters. Tradition connects it with Apam Napat, \"son of the waters\", and with the water goddess Anahita, though the month name itself says only \"of the waters\".",
+      "certainty": "established"
+    },
+    {
+      "name": "Azar",
+      "original": "آذر",
+      "gloss": "fire",
+      "meaning": "From Avestan Atar, \"fire\", the sacred fire of Zoroastrian worship, called the son of Ahura Mazda in the Avesta.",
+      "certainty": "established"
+    },
+    {
+      "name": "Dey",
+      "original": "دی",
+      "gloss": "the Creator",
+      "meaning": "From Avestan Dathush, \"creator\", Ahura Mazda's stock epithet, so the month is named for him without using his name.",
+      "certainty": "established"
+    },
+    {
+      "name": "Bahman",
+      "original": "بهمن",
+      "gloss": "good mind",
+      "meaning": "From Avestan Vohu Manah, \"good mind\" or \"good purpose\", one of the divine beings who attend Ahura Mazda and the one linked with cattle.",
+      "certainty": "established"
+    },
+    {
+      "name": "Esfand",
+      "original": "اسفند",
+      "gloss": "holy devotion",
+      "meaning": "From Avestan Spenta Armaiti, \"holy devotion\" or \"holy humility\", the divine being linked with the earth.",
+      "certainty": "established"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Zoroastrian calendar (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Zoroastrian_calendar"
+    },
+    {
+      "title": "Old Persian calendar (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Old_Persian_calendar"
+    },
+    {
+      "title": "Amesha Spenta (Encyclopaedia Iranica)",
+      "url": "https://www.iranicaonline.org/articles/amesa-spenta"
+    },
+    {
+      "title": "Iranian calendars (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Iranian_calendars"
+    }
+  ]
+}

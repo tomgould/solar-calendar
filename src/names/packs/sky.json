@@ -1,0 +1,125 @@
+{
+  "id": "sky",
+  "title": "Sky",
+  "description": "The 13 constellations the sun passes in front of along the ecliptic, from Pisces to Aquarius",
+  "culture": "Modern invention, from Greek and Roman star lore",
+  "era": "Today",
+  "lang": "la",
+  "origin": "This is astronomy, not astrology. The names are the 13 constellations that the sun actually passes in front of, as the International Astronomical Union draws their boundaries. The spans are unequal: the sun is in Scorpius for only about a week and in Virgo for about six weeks, while every month here is 28 days. Precession has also shifted the constellations since the zodiac signs were fixed about 2,000 years ago, so the sun is in a constellation about a month later than the sign of the same name. The slots here follow the constellations only roughly, and drift by a few days from year to year.",
+  "leapWeek": {
+    "name": "Leap week",
+    "gloss": "the extra week",
+    "meaning": "A spare week at the end of the year, about one year in six. The sun's real path doesn't divide into equal weeks, so this one is only for the calendar."
+  },
+  "months": [
+    {
+      "name": "Pisces",
+      "gloss": "the fishes",
+      "meaning": "Latin for the fishes. In one Greek and Roman tale Aphrodite and her son Eros escaped the monster Typhon by turning into fish, and in some versions the two were tied together.",
+      "certainty": "established",
+      "notes": "The sun is in Pisces from about 11 March to 18 April, so this slot is a good match, 27 of its 28 days in 2026. It begins 12 days after the sun enters."
+    },
+    {
+      "name": "Aries",
+      "gloss": "the ram",
+      "meaning": "Latin for the ram. In Greek myth it is the ram with the golden fleece, which Jason and the Argonauts set out to find.",
+      "certainty": "established",
+      "notes": "The sun is in Aries from about 18 April to 13 May. The slot runs 20 April to 17 May, so it is a good match, about four days late at the end."
+    },
+    {
+      "name": "Taurus",
+      "gloss": "the bull",
+      "meaning": "Latin for the bull. In Greek myth it is usually said to be Zeus in disguise, when he carried off Europa.",
+      "certainty": "established",
+      "notes": "The sun is in Taurus from about 13 May to 21 June. The slot runs 18 May to 14 June, so it sits inside the real span, which is longer than a calendar month, and ends a week early."
+    },
+    {
+      "name": "Gemini",
+      "gloss": "the twins",
+      "meaning": "Latin for the twins. They are Castor and Pollux, the Dioscuri of Greek myth, who were set in the sky together.",
+      "certainty": "established",
+      "notes": "The sun is in Gemini from about 21 June to 20 July. The slot runs 15 June to 12 July, so it is about a week early: the first six days are still Taurus."
+    },
+    {
+      "name": "Cancer",
+      "gloss": "the crab",
+      "meaning": "Latin for the crab. In one Greek tale it bit Heracles on the foot while he fought the Hydra, and Hera set it among the stars for the attempt.",
+      "certainty": "established",
+      "notes": "The sun is in Cancer from about 20 July to 10 August. The slot runs 13 July to 9 August, so it is about a week early, but the span is short and the match is fair. It is the faintest of the zodiac constellations."
+    },
+    {
+      "name": "Leo",
+      "gloss": "the lion",
+      "meaning": "Latin for the lion. In Greek myth it is usually said to be the Nemean lion that Heracles killed as the first of his labours.",
+      "certainty": "established",
+      "notes": "The sun is in Leo from about 10 August to 16 September. The slot runs 10 August to 6 September, so it starts exactly right and ends about ten days early."
+    },
+    {
+      "name": "Virgo",
+      "gloss": "the maiden",
+      "meaning": "Latin for the maiden. She is usually identified with Dike or Astraea, goddess of justice, though some writers made her Demeter, goddess of the harvest.",
+      "certainty": "likely",
+      "notes": "The sun is in Virgo from about 16 September to 30 October. The slot runs 7 September to 4 October, so the first nine days are still Leo, and the slot misses the last four weeks of Virgo."
+    },
+    {
+      "name": "Libra",
+      "gloss": "the scales",
+      "meaning": "Latin for the scales. The Greeks saw this area as the claws of the neighbouring scorpion, and by the first century BC the Romans were calling it the scales, often linked with justice.",
+      "certainty": "likely",
+      "notes": "The sun is in Libra from about 30 October to 23 November. The slot runs 5 October to 1 November, so it is a poor match: the sun is in Virgo for all but the last three days. It is about three to four weeks early."
+    },
+    {
+      "name": "Scorpius",
+      "gloss": "the scorpion",
+      "meaning": "Latin for the scorpion. In Greek myth it stung the hunter Orion to death, and the two were set on opposite sides of the sky, so Orion sets as Scorpius rises.",
+      "certainty": "established",
+      "notes": "The sun is in Scorpius for only about six days, from 23 to 29 November. The slot runs 2 to 29 November, so it is a poor match: the sun is in Libra for the first three weeks."
+    },
+    {
+      "name": "Ophiuchus",
+      "gloss": "the serpent bearer",
+      "meaning": "Greek for the serpent bearer, usually drawn as a man holding a snake. He is often identified with Asclepius, the god of healing.",
+      "certainty": "established",
+      "notes": "The sun is in Ophiuchus from about 29 November to 17 December. The slot runs 30 November to 27 December, so the first 18 days match well, and the last 10 are already Sagittarius, which holds the December solstice."
+    },
+    {
+      "name": "Sagittarius",
+      "gloss": "the archer",
+      "meaning": "Latin for the archer. He is shown as a centaur drawing a bow. Greek writers disagreed about him: Eratosthenes called him the satyr Crotus, inventor of archery, and the link to the centaur Chiron is a later mix-up.",
+      "certainty": "uncertain",
+      "notes": "The sun is in Sagittarius from about 17 December to 20 January. The slot runs 28 December to 24 January, so it is a good match, with the last four days already Capricornus."
+    },
+    {
+      "name": "Capricornus",
+      "gloss": "the sea goat",
+      "meaning": "Latin for goat-horned. It is a creature with a goat's head and a fish's tail, linked in Greek myth to the god Pan, who in one tale half-turned into a fish while escaping Typhon.",
+      "certainty": "likely",
+      "notes": "The sun is in Capricornus from about 20 January to 16 February. The slot runs 25 January to 21 February, so it is a good match, about five days late."
+    },
+    {
+      "name": "Aquarius",
+      "gloss": "the water bearer",
+      "meaning": "Latin for the water bearer. He is usually identified with Ganymede, the Trojan boy who poured the gods' wine, though Germanicus made him Deucalion, who survived the Greek flood.",
+      "certainty": "likely",
+      "notes": "The sun is in Aquarius from about 16 February to 11 March. The slot runs 22 February to 21 March, so it is a fair match: the last ten days are already Pisces. It is the 13th month."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Zodiac: sun dates in IAU constellations (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Zodiac"
+    },
+    {
+      "title": "Hyginus, Astronomica book 2 (Theoi)",
+      "url": "https://www.theoi.com/Text/HyginusAstronomica2.html"
+    },
+    {
+      "title": "Ophiuchus (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Ophiuchus"
+    },
+    {
+      "title": "Scorpius (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Scorpius"
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "id": "latin-numbers",
+  "title": "Latin numbers",
+  "description": "The months counted in Latin, from Primus to Tertius Decimus, the way the Romans counted theirs",
+  "culture": "Modern invention, in Latin",
+  "era": "Today",
+  "lang": "la",
+  "origin": "These names are a modern invention: Latin ordinal numbers, first to thirteenth, in the masculine to agree with mensis, month, as Roman month names did. The Romans counted months the same way: their year began in March, which is why September, October, November and December mean seventh, eighth, ninth and tenth. This calendar also starts in March, so Septimus to Decimus land almost exactly on September to December.",
+  "leapWeek": {
+    "name": "Leap week",
+    "gloss": "the extra week",
+    "meaning": "A spare week after Tertius Decimus, about one year in six, which keeps the count in step with the equinox."
+  },
+  "months": [
+    {
+      "name": "Primus",
+      "gloss": "the first",
+      "meaning": "Latin for first. Like the early Roman year, this calendar begins in March.",
+      "certainty": "established"
+    },
+    {
+      "name": "Secundus",
+      "gloss": "the second",
+      "meaning": "Latin for second.",
+      "certainty": "established"
+    },
+    {
+      "name": "Tertius",
+      "gloss": "the third",
+      "meaning": "Latin for third.",
+      "certainty": "established"
+    },
+    {
+      "name": "Quartus",
+      "gloss": "the fourth",
+      "meaning": "Latin for fourth.",
+      "certainty": "established"
+    },
+    {
+      "name": "Quintus",
+      "gloss": "the fifth",
+      "meaning": "Latin for fifth. The Romans called the fifth month Quintilis, which later became July.",
+      "certainty": "established"
+    },
+    {
+      "name": "Sextus",
+      "gloss": "the sixth",
+      "meaning": "Latin for sixth. The Romans called the sixth month Sextilis, which later became August.",
+      "certainty": "established"
+    },
+    {
+      "name": "Septimus",
+      "gloss": "the seventh",
+      "meaning": "Latin for seventh, as in September, the seventh month of the March-based Roman year.",
+      "certainty": "established",
+      "notes": "Runs 7 Sep to 4 Oct in 2026, almost exactly September."
+    },
+    {
+      "name": "Octavus",
+      "gloss": "the eighth",
+      "meaning": "Latin for eighth, as in October.",
+      "certainty": "established"
+    },
+    {
+      "name": "Nonus",
+      "gloss": "the ninth",
+      "meaning": "Latin for ninth, as in November. The Roman nones, a day in each month, got their name from the same word.",
+      "certainty": "established"
+    },
+    {
+      "name": "Decimus",
+      "gloss": "the tenth",
+      "meaning": "Latin for tenth, as in December. It holds the December solstice.",
+      "certainty": "established"
+    },
+    {
+      "name": "Undecimus",
+      "gloss": "the eleventh",
+      "meaning": "Latin for eleventh. In the March-based Roman year, January was the eleventh month.",
+      "certainty": "established"
+    },
+    {
+      "name": "Duodecimus",
+      "gloss": "the twelfth",
+      "meaning": "Latin for twelfth. In the March-based Roman year, February was the twelfth and last month.",
+      "certainty": "established"
+    },
+    {
+      "name": "Tertius Decimus",
+      "gloss": "the thirteenth",
+      "meaning": "Latin for thirteenth, literally third and tenth, the form classical writers used.",
+      "certainty": "established",
+      "notes": "The 13th month."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Roman calendar (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Roman_calendar"
+    },
+    {
+      "title": "Plutarch, Life of Numa (LacusCurtius)",
+      "url": "https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Plutarch/Lives/Numa*.html"
+    },
+    {
+      "title": "decimus (Wiktionary)",
+      "url": "https://en.wiktionary.org/wiki/decimus"
+    }
+  ]
+}

@@ -90,12 +90,12 @@ Month names are from set B for illustration only.
 ```
 Desktop, opens on today
 Solar calendar                                  2026 < >   Today   Year
-Today is Octava 13, 2026. Saturday 17 October 2026.
+Today is Octavus 13, 2026. Saturday 17 October 2026.
 
 [ ][ ][ ][ ][ ][ ][ ][#][ ][ ][ ][ ][ ]   13 month swatches; also the month nav
-<  Octava, month 8 of 13, 5 Oct to 1 Nov 2026  >
+<  Octavus, month 8 of 13, 5 Oct to 1 Nov 2026  >
 
-  Mon    Tue    Wed    Thu    Fri    Sat    Sun       | Octava 13, 2026
+  Mon    Tue    Wed    Thu    Fri    Sat    Sun       | Octavus 13, 2026
  +------+------+------+------+------+------+------+   | Saturday 17 October 2026
  |  1   |  2   |  3   |  4   |  5   |  6   |  7   |   | Day 209 of 364
  | 5 Oct|    6 |    7 |    8 |    9 |   10 |   11 |   | Sunrise, sunset (your location)
@@ -114,7 +114,7 @@ Today is Octava 13, 2026. Saturday 17 October 2026.
 ```
 Year view (screen and print, A4/Letter landscape)
 Solar year 2026: 23 Mar 2026 to 21 Mar 2027, 364 days          [Print]
-         Prima   Secunda  Tertia  ...  Tredecima  (Leap week)
+         Primus   Secundus  Tertius  ...  Tertius Decimus  (Leap week)
  1 Mon   23 Mar  20 Apr   18 May  ...  22 Feb     (19 Mar)
  2 Tue   24      21       19      ...  23
  ...
@@ -282,22 +282,22 @@ Neither had a regular 13-month calendar.
 
 | # | Span (2026) | A. Nature | B. Latin numbers | C. Sky |
 |---|---|---|---|---|
-| 1 | 23 Mar to 19 Apr | Bud | Prima | Pisces |
-| 2 | 20 Apr to 17 May | Bloom | Secunda | Aries |
-| 3 | 18 May to 14 Jun | Meadow | Tertia | Taurus |
-| 4 | 15 Jun to 12 Jul | Light | Quarta | Gemini |
-| 5 | 13 Jul to 9 Aug | Heat | Quinta | Cancer |
-| 6 | 10 Aug to 6 Sep | Harvest | Sexta | Leo |
-| 7 | 7 Sep to 4 Oct | Vintage | Septima | Virgo |
-| 8 | 5 Oct to 1 Nov | Ember | Octava | Libra |
-| 9 | 2 Nov to 29 Nov | Mist | Nona | Scorpius |
-| 10 | 30 Nov to 27 Dec | Dark | Decima | Ophiuchus |
-| 11 | 28 Dec to 24 Jan | Frost | Undecima | Sagittarius |
-| 12 | 25 Jan to 21 Feb | Snow | Duodecima | Capricornus |
-| 13 | 22 Feb to 21 Mar | Thaw | Tredecima | Aquarius |
+| 1 | 23 Mar to 19 Apr | Bud | Primus | Pisces |
+| 2 | 20 Apr to 17 May | Bloom | Secundus | Aries |
+| 3 | 18 May to 14 Jun | Meadow | Tertius | Taurus |
+| 4 | 15 Jun to 12 Jul | Light | Quartus | Gemini |
+| 5 | 13 Jul to 9 Aug | Heat | Quintus | Cancer |
+| 6 | 10 Aug to 6 Sep | Harvest | Sextus | Leo |
+| 7 | 7 Sep to 4 Oct | Vintage | Septimus | Virgo |
+| 8 | 5 Oct to 1 Nov | Ember | Octavus | Libra |
+| 9 | 2 Nov to 29 Nov | Mist | Nonus | Scorpius |
+| 10 | 30 Nov to 27 Dec | Dark | Decimus | Ophiuchus |
+| 11 | 28 Dec to 24 Jan | Frost | Undecimus | Sagittarius |
+| 12 | 25 Jan to 21 Feb | Snow | Duodecimus | Capricornus |
+| 13 | 22 Feb to 21 Mar | Thaw | Tertius Decimus | Aquarius |
 
 - **A. Nature:** easy to remember, and "Light" and "Dark" hold the solstices. It assumes northern-hemisphere seasons.
-- **B. Latin numbers:** the position is in the name, and there's a nice story. The Roman year began in March, which is why September means "seventh". This calendar also starts in March, so Septima to Decima land almost exactly on September to December.
+- **B. Latin numbers:** the position is in the name, and there's a nice story. (Corrected on 17 Oct 2026 to masculine forms, which agree with *mensis*, month, as Roman month names did; *tredecimus* isn't classical, so 13 is Tertius Decimus.) The Roman year began in March, which is why September means "seventh". This calendar also starts in March, so Septimus to Decimus land almost exactly on September to December.
 - **C. Sky:** the sun really does cross 13 constellations along the ecliptic, and these names track roughly where it is, within a few weeks. The downside is the association with astrology.
 
 In the invented sets, the leap week is called "Leap week".
