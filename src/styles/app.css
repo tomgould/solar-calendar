@@ -156,7 +156,7 @@ a { color: inherit; text-underline-offset: 3px; }
   font: 800 var(--step-3) / 1 var(--font-display); letter-spacing: 0.01em; text-decoration: none;
 }
 .controls { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
-.theme-button, .festivals-button { display: inline-flex; align-items: center; gap: 6px; }
+.theme-button, .festivals-button, .calendar-button { display: inline-flex; align-items: center; gap: 6px; }
 .narrow-only { display: none; }
 
 /* Phones: the wordmark and theme toggle share a row, the controls get their own */
