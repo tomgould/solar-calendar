@@ -1,6 +1,7 @@
 import { type DayNumber, civilFromDay } from '../core/days';
 import { SKY_EVENT_NAMES, seasonEvents } from '../core/sky';
 import { LEAP_WEEK, toSolar, yearLength } from '../core/solar';
+import { festivalOccurrences } from '../names/festivals';
 import type { NamePack } from '../names/schema';
 import { monthGloss, monthName, solarLong } from '../ui/format';
 
@@ -85,6 +86,22 @@ export function buildIcs({ pack, from, to, now }: IcsOptions): string {
       `DTEND;VALUE=DATE:${dateValue(day + 1)}`,
       `SUMMARY:${escapeText(solarLong(pack, date))}`,
       `DESCRIPTION:${escapeText(description)}`,
+      'TRANSP:TRANSPARENT',
+      'END:VEVENT',
+    );
+  }
+
+  // The pack's festivals, one event per occurrence, spanning its days
+  for (const { day, festival } of festivalOccurrences(pack, from, to)) {
+    const slug = festival.name.normalize('NFD').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase();
+    lines.push(
+      'BEGIN:VEVENT',
+      `UID:${dateValue(day)}-${pack.id}-${slug}@solar-calendar`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART;VALUE=DATE:${dateValue(day)}`,
+      `DTEND;VALUE=DATE:${dateValue(day + (festival.days ?? 1))}`,
+      `SUMMARY:${escapeText(festival.name)}`,
+      `DESCRIPTION:${escapeText(`${festival.gloss}. ${festival.meaning}`)}`,
       'TRANSP:TRANSPARENT',
       'END:VEVENT',
     );

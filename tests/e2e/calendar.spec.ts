@@ -81,6 +81,21 @@ test('shows how to say each name', async ({ page }) => {
   await expect(page.locator('#month-say')).toBeHidden();
 });
 
+test('marks festivals and explains them', async ({ page }) => {
+  // Þorrablót: the first Friday on or after 19 January, 23 January in 2026
+  await page.goto('./?date=2026-01-23&names=old-norse');
+  await expect(page.locator(selectedCell)).toHaveAccessibleName(/Bóndadagur \(Þorrablót\)/);
+  await expect(page.locator('#day-panel')).toContainText('Bóndadagur (Þorrablót)');
+  await page.locator('#about-name').click();
+  await expect(page.locator('#about-dialog .about-festivals')).toContainText('The first Friday on or after 19 January');
+  await page.keyboard.press('Escape');
+
+  // The menu groups packs, history first
+  await page.locator('#names-button').click();
+  await expect(page.locator('.pack-group legend')).toHaveText(['From history', 'Modern inventions']);
+  await expect(page.locator('.pack-group').first().locator('.pack-title').first()).toHaveText('Gregorian names');
+});
+
 test('ends a 371-day year with a leap week', async ({ page }) => {
   await page.goto('./?date=2029-03-21&names=gregorian');
   await expect(page.locator('#month-name')).toHaveText('Leap week');

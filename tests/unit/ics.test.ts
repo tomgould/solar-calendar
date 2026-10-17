@@ -30,8 +30,11 @@ describe('ICS text', () => {
     expect(text.split('\r\n').every((line) => new TextEncoder().encode(line).length <= 75)).toBe(true);
 
     const events = parseEvents(text);
-    const days = events.filter((event) => event.startDate.isDate);
+    // Day events have IDs like 20261017-anglo-saxon@solar-calendar; festivals add their name
+    const days = events.filter((event) => /^\d{8}-anglo-saxon@/.test(event.uid));
     expect(days).toHaveLength(364);
+    const festivals = events.filter((event) => /^\d{8}-anglo-saxon-.+@/.test(event.uid)).map((event) => event.summary);
+    expect(festivals.length).toBeGreaterThan(0);
     const today = days.find((event) => event.startDate.toString() === '2026-10-17')!;
     expect(today.summary).toBe('13 Winterfylleþ 2026');
     expect(today.description).toContain('winter full moon');
@@ -45,7 +48,7 @@ describe('/feed.ics Worker', () => {
   it('serves last solar year to next, as a calendar', async () => {
     const response = feedResponse(new URL('https://example.org/feed.ics?names=anglo-saxon'), now);
     expect(response.headers.get('Content-Type')).toBe('text/calendar; charset=utf-8');
-    const days = parseEvents(await response.text()).filter((event) => event.startDate.isDate);
+    const days = parseEvents(await response.text()).filter((event) => /^\d{8}-anglo-saxon@/.test(event.uid));
     expect(days[0].startDate.toString()).toBe('2025-03-24');
     expect(days.at(-1)!.startDate.toString()).toBe('2028-03-19');
     expect(days.some((event) => event.summary === '13 Winterfylleþ 2026')).toBe(true);
