@@ -17,7 +17,8 @@ export default defineConfig({
   webServer: {
     command: `npm run build && npx vite preview --port ${PORT} --strictPort --host 127.0.0.1`,
     url: `http://127.0.0.1:${PORT}/`,
-    reuseExistingServer: !process.env.CI,
+    // Always a fresh build: a leftover preview server would test stale files
+    reuseExistingServer: false,
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'], ...london } },

@@ -23,6 +23,7 @@
     "ical.js": "^2.2.1",
     "typescript": "^7.0.2",
     "vite": "^8.3.4",
+    "vite-plugin-pwa": "^2.0.0",
     "vitest": "^5.0.5",
     "wrangler": "^4.151.1"
   },
