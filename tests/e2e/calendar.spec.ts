@@ -318,7 +318,7 @@ test('adds the calendar to Google and other calendar apps, or downloads a year',
   for await (const chunk of (await download.createReadStream())!) chunks.push(chunk as Buffer);
   const file = Buffer.concat(chunks).toString('utf8');
   expect(file.startsWith('BEGIN:VCALENDAR\r\n')).toBe(true);
-  expect(file).toContain('SUMMARY:13 Winterfylleþ 2026');
+  expect(file).toContain('SUMMARY:☀ 13 Winterfylleþ');
   await dialog.getByRole('button', { name: 'Close' }).click();
   await expect(dialog).toBeHidden();
 
