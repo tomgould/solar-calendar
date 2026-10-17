@@ -33,3 +33,23 @@ Put each name in the slot closest to its historical season. Most traditions have
 - **`meaning`:** one to three plain sentences in British English.
 - **Fonts:** `name` is shown in the display font, Big Shoulders, which lacks a few letters such as `ǣ`. Use the nearest plain form in `name`, and put the exact spelling or script in `original`. For an original in another script, set `originalLang`, and `originalDir: "rtl"` for right-to-left scripts. Other scripts use system fonts.
 - **Ids:** an `id` appears in shared links and feed URLs, so don't rename a pack once it's published.
+
+## Pronunciation
+
+Packs whose names aren't English need pronunciations. They take three fields:
+- **`say`** on every month (all 13 or none), and on the leap week if its name isn't English. It's a respelling for English speakers, such as `WIN-ter-fil-leth`.
+- **`ipa`:** the same sound in the International Phonetic Alphabet, without slashes. Optional, but give it where you can.
+- **`pronunciation`** on the pack: one or two sentences on which pronunciation you've given and how sure it is. For example, modern Icelandic, classical Latin as reconstructed, or Egyptologists' convention, where the vowels are a modern guess.
+
+Respellings use hyphens between syllables, with the stressed syllable in capitals. Use these sounds (the same key is shown in the app, from `RESPELLING_KEY` in `src/names/schema.ts`):
+
+| Write | As in | Write | As in | Write | As in |
+|---|---|---|---|---|---|
+| a | cat | o | hot | th | thin |
+| ah | father | oh | go | dh | this |
+| air | hair | oo | food | kh | Scottish loch |
+| ay | day | uu | foot | gh | a softer kh, as in Dutch g |
+| e | bed | ow | now | zh | vision |
+| ee | see | oy | boy | ng | sing |
+| i | sit | u | cup | y | yes |
+| eye | eye | ur | fur | uh | the a in about |

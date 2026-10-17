@@ -16,6 +16,11 @@ function coverage(dir: string, file: RegExp): Set<number> {
 
 const display = coverage('node_modules/@fontsource-variable/big-shoulders/files', /opsz-normal\.woff2$/);
 const text = coverage('node_modules/@fontsource/andika/files', /-400-normal\.woff2$/);
+// Original forms may also use the script fonts loaded for them
+const scripts = new Set([
+  ...coverage('node_modules/@fontsource/vazirmatn/files', /^vazirmatn-arabic-400-normal\.woff2$/),
+  ...coverage('node_modules/@fontsource/noto-sans-coptic/files', /^noto-sans-coptic-coptic-400-normal\.woff2$/),
+]);
 
 const packs = Object.entries(import.meta.glob<NamePack>('../../src/names/packs/*.json', { eager: true, import: 'default' }))
   .map(([path, pack]) => [path.slice(path.lastIndexOf('/') + 1), pack] as [string, NamePack])
@@ -36,9 +41,14 @@ describe('fonts cover every pack', () => {
   });
 
   it.each(packs)('%s: all other text is in the body font (Andika)', (_, pack) => {
-    // "original" may be in another script (Persian, Coptic), which falls back to system fonts
-    const strings = [pack.title, pack.description, pack.origin, pack.leapWeek.gloss, pack.leapWeek.meaning,
-      ...pack.months.flatMap((month) => [month.name, month.gloss, month.meaning, month.notes])];
+    const strings = [pack.title, pack.description, pack.origin, pack.pronunciation,
+      pack.leapWeek.gloss, pack.leapWeek.meaning, pack.leapWeek.say, pack.leapWeek.ipa,
+      ...pack.months.flatMap((month) => [month.name, month.gloss, month.meaning, month.notes, month.say, month.ipa])];
     expect(missing(strings, text)).toEqual([]);
+  });
+
+  it.each(packs)('%s: original forms are in Andika or a script font (Vazirmatn, Noto Sans Coptic)', (_, pack) => {
+    const either = new Set([...text, ...scripts]);
+    expect(missing(pack.months.map((month) => month.original), either)).toEqual([]);
   });
 });

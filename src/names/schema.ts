@@ -18,7 +18,21 @@ export interface PackMonth {
   /** How sure scholars are of the meaning */
   certainty: Certainty;
   notes?: string;
+  /** Respelling for English speakers, stressed syllable in capitals: "WIN-ter-fil-leth" */
+  say?: string;
+  /** The same in the International Phonetic Alphabet, without slashes */
+  ipa?: string;
 }
+
+/** The respelling key shown with pronunciations; docs/name-packs.md has the same table. */
+export const RESPELLING_KEY: readonly [string, string][] = [
+  ['CAPITALS', 'the stressed syllable'],
+  ['a', 'cat'], ['ah', 'father'], ['air', 'hair'], ['ay', 'day'], ['e', 'bed'], ['ee', 'see'],
+  ['i', 'sit'], ['eye', 'eye'], ['o', 'hot'], ['oh', 'go'], ['oo', 'food'], ['uu', 'foot'],
+  ['ow', 'now'], ['oy', 'boy'], ['u', 'cup'], ['ur', 'fur'], ['uh', 'the a in about'],
+  ['th', 'thin'], ['dh', 'this'], ['kh', 'Scottish loch'], ['gh', 'a softer kh, as in Dutch g'],
+  ['zh', 'vision'], ['ng', 'sing'], ['y', 'yes'],
+];
 
 export interface NamePack {
   id: string;
@@ -33,7 +47,9 @@ export interface NamePack {
   originalLang?: string;
   originalDir?: 'ltr' | 'rtl';
   origin: string;
-  leapWeek: { name: string; gloss: string; meaning: string };
+  /** How the names are pronounced and how sure that is; required if any month has "say" */
+  pronunciation?: string;
+  leapWeek: { name: string; gloss: string; meaning: string; say?: string; ipa?: string };
   months: PackMonth[];
   sources: { title: string; url: string }[];
 }
@@ -74,8 +90,16 @@ export function validatePack(data: unknown, source: string): NamePack {
       if (!isObject(month)) return problems.push(`${where} must be an object`);
       for (const key of ['name', 'gloss', 'meaning']) if (!isText(month[key])) problems.push(`${where} needs a "${key}"`);
       if (!CERTAINTIES.includes(month.certainty as Certainty)) problems.push(`${where} "certainty" must be one of ${CERTAINTIES.join(', ')}`);
-      for (const key of ['original', 'notes']) if (month[key] !== undefined && !isText(month[key])) problems.push(`${where} "${key}" must be text if present`);
+      for (const key of ['original', 'notes', 'say', 'ipa']) if (month[key] !== undefined && !isText(month[key])) problems.push(`${where} "${key}" must be text if present`);
     });
+    // Pronunciations come as a set: a note on the pack and a respelling for every month
+    const said = data.months.filter((month: unknown) => isObject(month) && isText(month.say)).length;
+    if (said > 0 && said < 13) problems.push('give "say" for all 13 months, or for none');
+    if (said > 0 && !isText(data.pronunciation)) problems.push('"pronunciation" must explain the pronunciations when months have "say"');
+  }
+  if (data.pronunciation !== undefined && !isText(data.pronunciation)) problems.push('"pronunciation" must be text if present');
+  if (isObject(leapWeek)) {
+    for (const key of ['say', 'ipa']) if (leapWeek[key] !== undefined && !isText(leapWeek[key])) problems.push(`leapWeek "${key}" must be text if present`);
   }
 
   if (!Array.isArray(data.sources) || data.sources.length === 0) {
