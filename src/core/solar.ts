@@ -70,7 +70,14 @@ export function toSolar(n: DayNumber): SolarDate {
   return { year, month: Math.floor(offset / DAYS_PER_MONTH) + 1, day: (offset % DAYS_PER_MONTH) + 1, dayOfYear: offset + 1 };
 }
 
+export function isValidSolarDate(year: number, month: number, day: number): boolean {
+  return [year, month, day].every(Number.isInteger)
+    && month >= 1 && month <= monthsInYear(year)
+    && day >= 1 && day <= daysInMonth(month);
+}
+
 export function fromSolar(year: number, month: number, day: number): DayNumber {
+  if (!isValidSolarDate(year, month, day)) throw new RangeError(`No such solar date: year ${year}, month ${month}, day ${day}`);
   return yearStart(year) + (month - 1) * DAYS_PER_MONTH + day - 1;
 }
 

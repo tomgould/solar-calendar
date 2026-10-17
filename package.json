@@ -10,11 +10,12 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "tsc",
+    "typecheck": "tsc && tsc -p tests/unit",
     "test:unit": "vitest run"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
+    "@types/node": "^22.20.5",
     "typescript": "^7.0.2",
     "vite": "^8.3.4",
     "vitest": "^5.0.5"
