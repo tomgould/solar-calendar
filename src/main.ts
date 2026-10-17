@@ -10,6 +10,7 @@ import { DEFAULT_PACK_ID, isPackId, loadAllPacks, loadPack } from './names/regis
 import type { NamePack } from './names/schema';
 import { moonPhaseName, moonQuarters } from './sky/moon';
 import { renderDayPanel } from './ui/day-panel';
+import { GoToDate } from './ui/goto';
 import { escapeHtml, gregorianLong, solarLong } from './ui/format';
 import { THEME_ICONS, chevron } from './ui/icons';
 import { MonthView } from './ui/month-view';
@@ -41,6 +42,7 @@ const storage = {
 
 let monthView: MonthView;
 let yearView: YearView;
+let goTo: GoToDate;
 
 // Moon quarters arrive asynchronously, cached per solar month
 const moonCache = new Map<string, SkyEvent[]>();
@@ -81,6 +83,7 @@ function render(focus = false): void {
       events: events.filter((event) => event.day === selected),
       next: nextSeasonEvent(selected),
     });
+    goTo.render({ selected, pack });
     moonPhaseName(selected).then((phase) => {
       const target = document.querySelector('#day-panel [data-moon]');
       if (target && state.selected === selected) target.textContent = phase;
@@ -177,6 +180,7 @@ function setUpTheme(): void {
 
 function wire(): void {
   monthView = new MonthView($('#month-view'), { select, goToMonth, shiftMonth });
+  goTo = new GoToDate($('#goto'), [FIRST_DAY, LAST_DAY], (day) => select(day));
   yearView = new YearView($('#year-view'), (day) => {
     state.view = 'month';
     select(day, { focus: true });

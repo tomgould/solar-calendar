@@ -83,6 +83,32 @@ test('shows every day of the year in the year view', async ({ page }) => {
   await expect(page.locator('#almanac td[data-day]')).toHaveCount(371);
 });
 
+test('converts between the calendars with Go to a date', async ({ page }) => {
+  await page.goto('./?date=2026-10-17&names=gregorian');
+  // Both forms start on the selected day
+  await expect(page.locator('#goto-gregorian-date')).toHaveValue('2026-10-17');
+  await expect(page.locator('#goto-solar-day')).toHaveValue('13');
+  await expect(page.locator('#goto-solar-year')).toHaveValue('2026');
+
+  await page.locator('#goto-gregorian-date').fill('2029-03-21');
+  await page.locator('#goto-gregorian').getByRole('button', { name: 'Go' }).click();
+  await expect(page.locator('#month-name')).toHaveText('Leap week');
+  await expect(page.locator('#goto-solar-day')).toHaveValue('3');
+
+  await page.locator('#goto-solar-day').fill('1');
+  await page.locator('#goto-solar-year').fill('2027');
+  await page.locator('#goto-solar-year').dispatchEvent('change');
+  await page.locator('#goto-solar-month').selectOption({ label: 'March' });
+  await page.locator('#goto-solar').getByRole('button', { name: 'Go' }).click();
+  await expect(page.locator(selectedCell)).toHaveAccessibleName(/^1 March 2027, Monday 22 March 2027/);
+  await expect(page.locator('#goto-gregorian-date')).toHaveValue('2027-03-22');
+
+  // 2026 has no leap week, so it isn't offered
+  await page.locator('#goto-solar-year').fill('2026');
+  await page.locator('#goto-solar-year').dispatchEvent('change');
+  await expect(page.locator('#goto-solar-month option')).toHaveCount(13);
+});
+
 test('switches theme, offering the other mode', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('./');
