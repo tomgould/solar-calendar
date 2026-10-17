@@ -51,7 +51,7 @@ const speakerIcon = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden
  * no respelling or this browser can't speak. Names with an original script
  * (Persian) are spoken from it.
  */
-export function hearButton(pack: NamePack, entry: { name: string; original?: string; say?: string }): string {
+export function hearButton(pack: Pick<NamePack, 'lang' | 'originalLang'>, entry: { name: string; original?: string; say?: string }): string {
   if (!entry.say || !canSpeak()) return '';
   const [text, lang] = entry.original && pack.originalLang ? [entry.original, pack.originalLang] : [entry.name, pack.lang];
   return `<button type="button" class="hear" data-hear-text="${escapeHtml(text)}" data-hear-lang="${escapeHtml(lang)}"`

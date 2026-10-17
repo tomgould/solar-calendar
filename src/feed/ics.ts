@@ -1,7 +1,7 @@
 import { type DayNumber, civilFromDay } from '../core/days';
 import { SKY_EVENT_NAMES, seasonEvents } from '../core/sky';
 import { LEAP_WEEK, toSolar, yearLength } from '../core/solar';
-import { festivalOccurrences } from '../names/festivals';
+import { type FestivalSource, festivalLabel, festivalsFrom } from '../names/festivals';
 import type { NamePack } from '../names/schema';
 import { monthGloss, monthName, solarLong } from '../ui/format';
 
@@ -13,6 +13,8 @@ import { monthGloss, monthName, solarLong } from '../ui/format';
 
 export interface IcsOptions {
   pack: NamePack;
+  /** Festivals from elsewhere too: other packs, or a set of bank holidays */
+  extra?: FestivalSource[];
   /** First and last day, inclusive */
   from: DayNumber;
   to: DayNumber;
@@ -59,7 +61,7 @@ function utcValue(ms: number): string {
   return `${pad(d.getUTCFullYear(), 4)}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
 }
 
-export function buildIcs({ pack, from, to, now }: IcsOptions): string {
+export function buildIcs({ pack, extra = [], from, to, now }: IcsOptions): string {
   const stamp = utcValue(now);
   const lines = [
     'BEGIN:VCALENDAR',
@@ -91,16 +93,17 @@ export function buildIcs({ pack, from, to, now }: IcsOptions): string {
     );
   }
 
-  // The pack's festivals, one event per occurrence, spanning its days
-  for (const { day, festival } of festivalOccurrences(pack, from, to)) {
+  // Festivals and holidays, one event per occurrence, spanning its days
+  for (const entry of festivalsFrom([pack, ...extra], from, to, true)) {
+    const { day, festival, source, substitute } = entry;
     const slug = festival.name.normalize('NFD').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase();
     lines.push(
       'BEGIN:VEVENT',
-      `UID:${dateValue(day)}-${pack.id}-${slug}@solar-calendar`,
+      `UID:${dateValue(day)}-${source.id}-${slug}${substitute ? '-substitute' : ''}@solar-calendar`,
       `DTSTAMP:${stamp}`,
       `DTSTART;VALUE=DATE:${dateValue(day)}`,
-      `DTEND;VALUE=DATE:${dateValue(day + (festival.days ?? 1))}`,
-      `SUMMARY:${escapeText(festival.name)}`,
+      `DTEND;VALUE=DATE:${dateValue(day + (substitute ? 1 : festival.days ?? 1))}`,
+      `SUMMARY:${escapeText(festivalLabel(entry))}`,
       `DESCRIPTION:${escapeText(`${festival.gloss}. ${festival.meaning}`)}`,
       'TRANSP:TRANSPARENT',
       'END:VEVENT',

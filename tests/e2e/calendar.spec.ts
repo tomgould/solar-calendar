@@ -121,6 +121,7 @@ test('marks festivals and explains them', async ({ page }) => {
   await expect(page.locator('#day-panel')).toContainText('Bóndadagur (Þorrablót)');
   await page.locator('#about-name').click();
   await expect(page.locator('#about-dialog .about-festivals')).toContainText('The first Friday on or after 19 January');
+  await expect(page.locator('#about-dialog .about-festivals .about-next').first()).toContainText(/^Next: /);
   await page.keyboard.press('Escape');
 
   // The menu groups packs, history first
@@ -129,7 +130,46 @@ test('marks festivals and explains them', async ({ page }) => {
   await expect(page.locator('.pack-group').first().locator('.pack-title').first()).toHaveText('Gregorian names');
 });
 
+test('shows bank holidays and other packs’ festivals, chosen in the Festivals menu', async ({ page }) => {
+  await page.goto('./?date=2026-12-25&names=gregorian');
+  await page.locator('#festivals-button').click();
+  const menu = page.locator('#festivals-menu');
+  await menu.getByLabel('Scotland').check();
+  await menu.getByRole('checkbox', { name: /^Persian/ }).check();
+  await page.keyboard.press('Escape');
+
+  // Listed under the month, and named in the day panel with where they come from
+  const list = page.locator('#month-festivals');
+  await expect(list).toContainText('Christmas Day');
+  await expect(list).toContainText('Scotland bank holiday');
+  await expect(list).toContainText('Yalda');
+  await expect(page.locator('#day-panel')).toContainText('Christmas Day (Scotland)');
+  await list.getByRole('button', { name: /Yalda/ }).click();
+  await expect(page.locator('#day-panel .day-greg')).toContainText('Monday 21 December 2026');
+  await expect(page.locator(selectedCell)).toBeFocused();
+
+  // Remembered, and in the year's table and the feed
+  await page.reload();
+  await expect(page.locator('#month-festivals')).toContainText('St Andrew’s Day');
+  await page.getByRole('button', { name: 'Year', exact: true }).click();
+  await expect(page.locator('#year-festivals')).toContainText('Nowruz');
+  const feedUrl = await page.locator('#feed-url').inputValue();
+  expect(feedUrl).toMatch(/&festivals=persian&holidays=uk-scotland$/);
+  const feed = await (await page.request.get(feedUrl)).text();
+  expect(feed).toContain('SUMMARY:St Andrew’s Day');
+  expect(feed).toContain('SUMMARY:Yalda');
+
+  // None turns the bank holidays off again
+  await page.getByRole('button', { name: 'Month', exact: true }).click();
+  await page.locator('#festivals-button').click();
+  await menu.getByLabel('None').check();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#month-festivals')).not.toContainText('St Andrew’s Day');
+});
+
 test('keeps the selected day in a sheet along the bottom on phones', async ({ page }) => {
+  // No bank holidays, so the month's festival list is the same in every time zone
+  await page.addInitScript(() => localStorage.setItem('holidays', ''));
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('./?date=2026-01-23&names=old-norse');
   const sheet = page.locator('#day-panel');
@@ -151,12 +191,14 @@ test('keeps the selected day in a sheet along the bottom on phones', async ({ pa
   await expect(sheet.locator('.facts')).toBeHidden();
   await expect(sheet.getByRole('button', { name: 'Details' })).toBeFocused();
 
-  // Keyboard focus moving back to the grid folds it, so it can't cover the focused day
+  // Keyboard focus moving back to the page behind folds it, so it can't cover what has focus
   await page.keyboard.press('Enter');
   await expect(sheet.locator('.facts')).toBeVisible();
   await page.keyboard.press('Shift+Tab');
-  await expect(page.locator(selectedCell)).toBeFocused();
+  await expect(page.locator('#month-festivals .festival-link')).toBeFocused();
   await expect(sheet.locator('.facts')).toBeHidden();
+  await page.keyboard.press('Shift+Tab');
+  await expect(page.locator(selectedCell)).toBeFocused();
 
   // On wider screens it sits beside the grid, with nothing to open
   await page.setViewportSize({ width: 1200, height: 800 });
@@ -249,7 +291,8 @@ test('downloads the year and offers a subscription feed', async ({ page }) => {
 
   // The feed is served by the built Worker bundle
   const feedUrl = await page.locator('#feed-url').inputValue();
-  expect(feedUrl).toMatch(/\/feed\.ics\?names=anglo-saxon$/);
+  // On UK time, England and Wales bank holidays are on by default
+  expect(feedUrl).toMatch(/\/feed\.ics\?names=anglo-saxon(&holidays=uk-england-and-wales)?$/);
   await expect(page.locator('#open-feed')).toHaveAttribute('href', /^webcal:/);
   const feed = await page.request.get(feedUrl);
   expect(feed.headers()['content-type']).toBe('text/calendar; charset=utf-8');

@@ -24,6 +24,10 @@
           <button type="button" data-view="year" aria-pressed="false">Year</button>
         </div>
         <button type="button" class="button" id="names-button" popovertarget="names-menu"><span class="narrow-only">Names</span><span class="wide-only">Month names: <span id="names-current"></span></span></button>
+        <button type="button" class="button festivals-button" id="festivals-button" popovertarget="festivals-menu" aria-label="Festivals">
+          <svg viewBox="0 0 12 12" width="14" height="14" aria-hidden="true" focusable="false"><path d="M6 .8 7.4 4.6 11.2 6 7.4 7.4 6 11.2 4.6 7.4.8 6 4.6 4.6z" fill="currentColor"/></svg>
+          <span class="wide-only" aria-hidden="true">Festivals</span>
+        </button>
       </div>
       <!-- Shows the mode it switches to: moon and "Dark mode", or sun and "Light mode" -->
       <button type="button" class="button theme-button" id="theme-button" aria-label="Dark mode">
@@ -37,6 +41,13 @@
       <p class="menu-note">Choose what the months are called. The days stay the same.</p>
       <div id="names-options" class="pack-options"></div>
       <p class="status" id="names-status" role="status"></p>
+    </div>
+
+    <div id="festivals-menu" class="names-menu" popover role="dialog" aria-labelledby="festivals-menu-title">
+      <h2 id="festivals-menu-title" class="menu-title">Festivals and holidays</h2>
+      <p class="menu-note">Marked in the calendar with a star, or a flag for a day off, and listed under each month.</p>
+      <div id="festivals-options" class="pack-options"></div>
+      <p class="status" id="festivals-status" role="status"></p>
     </div>
 
     <main id="main" class="is-loading">
@@ -61,10 +72,16 @@
           </div>
         </div>
         <div class="month-body">
-          <table class="grid" role="grid" aria-labelledby="month-title">
-            <thead><tr id="grid-head"></tr></thead>
-            <tbody id="grid-body"></tbody>
-          </table>
+          <div class="month-main">
+            <table class="grid" role="grid" aria-labelledby="month-title">
+              <thead><tr id="grid-head"></tr></thead>
+              <tbody id="grid-body"></tbody>
+            </table>
+            <section class="month-festivals" id="month-festivals" aria-labelledby="month-festivals-title" hidden>
+              <h2 id="month-festivals-title" class="notes-title">Festivals and holidays this month</h2>
+              <ul class="festival-list"></ul>
+            </section>
+          </div>
           <div class="side">
             <aside class="day" id="day-panel" aria-label="Selected day"></aside>
             <section class="goto" id="goto" aria-labelledby="goto-title">
@@ -121,6 +138,13 @@
             <h2 id="legend-title" class="notes-title">The months</h2>
             <ol id="year-legend" class="legend"></ol>
           </section>
+        </div>
+        <div class="table-scroll year-festivals" id="year-festivals" role="region" aria-label="Festivals and holidays this year" tabindex="0" hidden>
+          <table class="festival-table">
+            <caption class="notes-title"></caption>
+            <thead><tr><th scope="col">Solar date</th><th scope="col">Gregorian date</th><th scope="col">Festival or holiday</th><th scope="col">Kind</th></tr></thead>
+            <tbody></tbody>
+          </table>
         </div>
         <section class="calendar-apps" aria-labelledby="apps-title">
           <h2 id="apps-title" class="notes-title">Add to your calendar</h2>

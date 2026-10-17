@@ -1,8 +1,10 @@
-import { LEAP_WEEK } from '../core/solar';
+import type { DayNumber } from '../core/days';
+import { LEAP_WEEK, toSolar } from '../core/solar';
+import { festivalOccurrences } from '../names/festivals';
 import { DEFAULT_PACK_ID } from '../names/registry';
 import { SKY_EVENT_NAMES } from '../core/sky';
 import { type Festival, type NamePack, type PackKind, RESPELLING_KEY } from '../names/schema';
-import { escapeHtml, forDisplayFont, hueClass } from './format';
+import { escapeHtml, forDisplayFont, gregorianLong, hueClass, solarLong } from './format';
 import { hearButton } from './speech';
 
 const certaintyText = { established: 'Meaning well established', likely: 'Meaning likely', uncertain: 'Meaning uncertain' };
@@ -15,26 +17,36 @@ const sayLine = (pack: NamePack, entry: { name: string; original?: string; say?:
 const GROUPS: [PackKind, string][] = [['historical', 'From history'], ['modern', 'Modern inventions']];
 
 const GREGORIAN_MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const COPTIC_MONTH_NAMES = ['Thout', 'Paopi', 'Hathor', 'Koiak', 'Tobi', 'Meshir', 'Paremhat', 'Parmouti', 'Pashons', 'Paoni', 'Epip', 'Mesori', 'Pi Kogi Enavot'];
+const PERSIAN_MONTH_NAMES = ['Farvardin', 'Ordibehesht', 'Khordad', 'Tir', 'Mordad', 'Shahrivar', 'Mehr', 'Aban', 'Azar', 'Dey', 'Bahman', 'Esfand'];
+
+const capital = (text: string) => `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
+const lower = (text: string) => (/^The /.test(text) ? `the ${text.slice(4)}` : text);
 
 /** A festival's date rule in plain words: "The first Friday on or after 19 January, for 2 days" */
 export function describeWhen({ when, days = 1 }: Festival, pack: NamePack): string {
-  const offset = when.offset ?? 0;
-  const shift = (base: string) => {
-    if (offset === 0) return base;
-    if (offset === -1) return `The day before ${base.charAt(0).toLowerCase()}${base.slice(1)}`;
-    if (offset === 1) return `The day after ${base.charAt(0).toLowerCase()}${base.slice(1)}`;
-    return `${Math.abs(offset)} days ${offset < 0 ? 'before' : 'after'} ${base.charAt(0).toLowerCase()}${base.slice(1)}`;
+  const monthDay = (text: string, names: string[]) => {
+    const [month, day] = text.split('-').map(Number);
+    return `${day} ${names[month - 1]}`;
   };
   let text: string;
-  if ('event' in when) {
-    text = shift(`The ${SKY_EVENT_NAMES[when.event]}`);
-  } else if ('gregorian' in when) {
-    const [month, day] = when.gregorian.split('-').map(Number);
-    const date = `${day} ${GREGORIAN_MONTH_NAMES[month - 1]}`;
-    text = shift(when.weekday ? `The first ${when.weekday.charAt(0).toUpperCase()}${when.weekday.slice(1)} on or after ${date}` : date);
-  } else {
-    text = shift(`${when.solar.day} ${pack.months[when.solar.month - 1].name}`);
-  }
+  if ('event' in when) text = `The ${SKY_EVENT_NAMES[when.event]}`;
+  else if ('gregorian' in when) {
+    const date = monthDay(when.gregorian, GREGORIAN_MONTH_NAMES);
+    text = when.weekday ? `The first ${capital(when.weekday)} on or after ${date}` : date;
+  } else if ('solar' in when) text = `${when.solar.day} ${pack.months[when.solar.month - 1].name}`;
+  else if ('easter' in when) text = 'Easter Sunday';
+  else if ('date' in when) {
+    const [year, month, day] = when.date.split('-').map(Number);
+    text = `${day} ${GREGORIAN_MONTH_NAMES[month - 1]} ${year} only`;
+  } else if ('julian' in when) text = `${monthDay(when.julian, GREGORIAN_MONTH_NAMES)} in the Julian calendar`;
+  else if ('coptic' in when) text = `${when.coptic.day} ${COPTIC_MONTH_NAMES[when.coptic.month - 1]} in the Coptic calendar`;
+  else text = `${when.persian.day} ${PERSIAN_MONTH_NAMES[when.persian.month - 1]} in the Iranian calendar`;
+
+  if (when.before) text = `The last ${capital(when.before)} before ${lower(text)}`;
+  const offset = when.offset ?? 0;
+  if (offset === -1 || offset === 1) text = `The day ${offset < 0 ? 'before' : 'after'} ${lower(text)}`;
+  else if (offset !== 0) text = `${Math.abs(offset)} days ${offset < 0 ? 'before' : 'after'} ${lower(text)}`;
   return days > 1 ? `${text}, for ${days} days` : text;
 }
 
@@ -58,8 +70,14 @@ function packOption(pack: NamePack, currentId: string): string {
     </label>`;
 }
 
-/** The "About this name" dialog: every month of the pack, with the current one marked. */
-export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, currentMonth: number): void {
+/** The "About this name" dialog: every month of the pack, with the current one marked, and its festivals' next dates. */
+export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, currentMonth: number, today: DayNumber): void {
+  // Every festival comes round within a few years, apart from one-offs that are past
+  const upcoming = festivalOccurrences(pack, today, today + 4 * 366).sort((a, b) => a.day - b.day);
+  const nextLine = (festival: Festival) => {
+    const next = upcoming.find((entry) => entry.festival === festival && !entry.substitute);
+    return next ? `<p class="about-next">Next: ${next.day === today ? 'today, ' : ''}${gregorianLong(next.day)}, ${escapeHtml(solarLong(pack, toSolar(next.day)))}</p>` : '';
+  };
   const lang = `lang="${escapeHtml(pack.lang)}"`;
   const originalLang = `lang="${escapeHtml(pack.originalLang ?? pack.lang)}"${pack.originalDir ? ` dir="${pack.originalDir}"` : ''}`;
   const months = pack.months.map((month, i) => `
@@ -112,6 +130,7 @@ export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, cur
           <p class="about-gloss">${escapeHtml(festival.gloss)}</p>
           ${sayLine(pack, festival)}
           <p class="about-when">${escapeHtml(describeWhen(festival, pack))}</p>
+          ${nextLine(festival)}
           <p>${escapeHtml(festival.meaning)}</p>
           ${festival.certainty ? `<p class="certainty">${certaintyText[festival.certainty].replace('Meaning', 'Date and meaning')}</p>` : ''}
         </li>`).join('')}

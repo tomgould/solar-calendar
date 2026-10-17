@@ -11,14 +11,16 @@ import './styles/app.css';
 import { type DayNumber, parseIsoDate, today as todayNumber, toIsoDate } from './core/days';
 import { type SkyEvent, nextSeasonEvent, seasonEvents } from './core/sky';
 import { LEAP_WEEK, MAX_YEAR, MIN_YEAR, MONTHS, daysInMonth, fromSolar, hasLeapWeek, monthSpan, toSolar, yearStart } from './core/solar';
-import { festivalsBetween } from './names/festivals';
+import { holidaySet, defaultHolidaySetId } from './holidays/registry';
+import { type FestivalSource, festivalsFrom } from './names/festivals';
 import { DEFAULT_PACK_ID, isPackId, loadAllPacks, loadPack } from './names/registry';
-import type { NamePack } from './names/schema';
+import type { HolidaySet, NamePack } from './names/schema';
 import { buildIcs } from './feed/ics';
 import { moonPhaseName, moonQuarters } from './sky/moon';
 import { type Place, isPlace, placeTimeZone, sunTimes } from './sky/sun';
 import { renderDayPanel, sunText } from './ui/day-panel';
 import { GoToDate } from './ui/goto';
+import { renderFestivalsMenu, renderMonthFestivals, renderYearFestivals } from './ui/festivals';
 import { escapeHtml, gregorianLong, solarLong } from './ui/format';
 import { THEME_ICONS, chevron } from './ui/icons';
 import { MonthView } from './ui/month-view';
@@ -36,7 +38,16 @@ const state = {
   selected: 0 as DayNumber,
   view: 'month' as View,
   pack: null as unknown as NamePack,
+  /** Bank holidays shown, if any */
+  holidays: null as HolidaySet | null,
+  /** Other packs whose festivals are shown too */
+  extraPacks: [] as NamePack[],
 };
+
+/** Everything whose festivals are shown: the chosen names, any other packs ticked, and the bank holidays. */
+function festivalSources(): FestivalSource[] {
+  return [state.pack, ...state.extraPacks.filter((pack) => pack.id !== state.pack.id), ...(state.holidays ? [state.holidays] : [])];
+}
 
 const $ = <T extends Element = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 
@@ -119,13 +130,17 @@ function render(focus = false): void {
 
   if (view === 'month') {
     const events = monthEvents(date.year, date.month);
-    const festivals = festivalsBetween(pack, ...monthSpan(date.year, date.month));
+    const [first, last] = monthSpan(date.year, date.month);
+    const festivals = festivalsFrom(festivalSources(), first, last);
     monthView.render({ selected, today, pack, events, festivals }, focus);
+    // The list under the grid: every festival or holiday that touches the month
+    renderMonthFestivals($('#month-festivals'), festivalsFrom(festivalSources(), first - 31, last, true)
+      .filter((entry) => entry.day + (entry.substitute ? 1 : entry.festival.days ?? 1) > first && entry.day <= last));
     renderDayPanel($('#day-panel'), {
       selected, today, pack,
       events: events.filter((event) => event.day === selected),
       next: nextSeasonEvent(selected),
-      festivals: festivals.filter((entry) => entry.day === selected).map((entry) => entry.festival),
+      festivals: festivals.filter((entry) => entry.day === selected),
     });
     goTo.render({ selected, pack });
     const moon = $('#day-panel [data-moon]');
@@ -152,7 +167,9 @@ function render(focus = false): void {
     $<HTMLButtonElement>('#prev-month').disabled = selected - date.day < FIRST_DAY;
     $<HTMLButtonElement>('#next-month').disabled = selected - date.day + daysInMonth(date.month) > LAST_DAY;
   } else {
-    yearView.render({ year: date.year, today, pack });
+    const [first, last] = [yearStart(date.year), yearStart(date.year + 1) - 1];
+    yearView.render({ year: date.year, today, pack, festivals: festivalsFrom(festivalSources(), first, last) });
+    renderYearFestivals($('#year-festivals'), festivalsFrom(festivalSources(), first, last, true), pack, date.year);
     renderCalendarApps(date.year, pack);
   }
   restoreFocus();
@@ -190,11 +207,27 @@ async function readUrl(): Promise<void> {
     state.pack = await loadPack(DEFAULT_PACK_ID);
     $('#names-status').textContent = 'Couldn’t load your chosen names, so the Gregorian names are shown. Check your connection.';
   }
+  // Bank holidays are on by default on UK time; choosing None stores ""
+  const holidays = storage.get('holidays');
+  state.holidays = holidaySet(holidays === null ? defaultHolidaySetId() : holidays);
+  await loadExtraPacks((storage.get('festivals') ?? '').split(','));
+}
+
+/** Loads the other packs whose festivals are shown, skipping any that fail (offline, say). */
+async function loadExtraPacks(ids: string[]): Promise<void> {
+  const loaded = await Promise.allSettled(ids.filter(isPackId).map(loadPack));
+  state.extraPacks = loaded.flatMap((result) => (result.status === 'fulfilled' ? [result.value] : []));
+}
+
+/** The festivals and holidays shown, as feed parameters: "&festivals=persian&holidays=uk-scotland" */
+function festivalParams(): string {
+  const extras = state.extraPacks.map((pack) => pack.id).join(',');
+  return `${extras ? `&festivals=${extras}` : ''}${state.holidays ? `&holidays=${state.holidays.id}` : ''}`;
 }
 
 // "Add to your calendar": a one-year download, and the subscription feed
 function renderCalendarApps(year: number, pack: NamePack): void {
-  const feed = new URL(`/feed.ics?names=${pack.id}`, location.origin).href;
+  const feed = new URL(`/feed.ics?names=${pack.id}${festivalParams()}`, location.origin).href;
   $('#download-ics').textContent = `Download solar ${year} (.ics)`;
   $<HTMLInputElement>('#feed-url').value = feed;
   $<HTMLAnchorElement>('#open-feed').href = feed.replace(/^https?:/, 'webcal:');
@@ -202,7 +235,7 @@ function renderCalendarApps(year: number, pack: NamePack): void {
 
 function downloadYear(): void {
   const { year } = toSolar(state.selected);
-  const text = buildIcs({ pack: state.pack, from: yearStart(year), to: yearStart(year + 1) - 1, now: Date.now() });
+  const text = buildIcs({ pack: state.pack, extra: festivalSources().slice(1), from: yearStart(year), to: yearStart(year + 1) - 1, now: Date.now() });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(new Blob([text], { type: 'text/calendar' }));
   link.download = `solar-calendar-${year}-${state.pack.id}.ics`;
@@ -372,14 +405,18 @@ function wire(): void {
   });
   setUpTheme();
 
-  const menu = $('#names-menu');
-  menu.addEventListener('toggle', async (event) => {
-    if ((event as ToggleEvent).newState !== 'open') return;
-    // Anchor the menu under its button, kept inside the viewport
-    const anchor = $('#names-button').getBoundingClientRect();
+  // Anchor a menu under its button, kept inside the viewport
+  const anchorMenu = (menu: HTMLElement, button: HTMLElement) => {
+    const anchor = button.getBoundingClientRect();
     const width = Math.min(440, window.innerWidth - 32);
     menu.style.top = `${anchor.bottom + 8}px`;
     menu.style.right = `${Math.min(Math.max(16, window.innerWidth - anchor.right), window.innerWidth - width - 16)}px`;
+  };
+
+  const menu = $('#names-menu');
+  menu.addEventListener('toggle', async (event) => {
+    if ((event as ToggleEvent).newState !== 'open') return;
+    anchorMenu(menu, $('#names-button'));
     try {
       renderNamesMenu($('#names-options'), await loadAllPacks(), state.pack.id);
     } catch {
@@ -391,9 +428,42 @@ function wire(): void {
     if (input.name === 'name-pack') void choosePack(input.value);
   });
 
+  const festivalsMenu = $('#festivals-menu');
+  festivalsMenu.addEventListener('toggle', async (event) => {
+    if ((event as ToggleEvent).newState !== 'open') return;
+    anchorMenu(festivalsMenu, $('#festivals-button'));
+    try {
+      renderFestivalsMenu($('#festivals-options'), await loadAllPacks(), state.pack, state.holidays?.id ?? null, state.extraPacks.map((pack) => pack.id));
+    } catch {
+      $('#festivals-status').textContent = 'Couldn’t load the list of festivals. Check your connection and try again.';
+    }
+  });
+  festivalsMenu.addEventListener('change', async (event) => {
+    const input = event.target as HTMLInputElement;
+    if (input.name === 'holidays') {
+      state.holidays = holidaySet(input.value);
+      storage.set('holidays', input.value);
+    } else if (input.name === 'festival-pack') {
+      const ids = [...festivalsMenu.querySelectorAll<HTMLInputElement>('input[name="festival-pack"]:checked')].map((box) => box.value);
+      storage.set('festivals', ids.join(','));
+      await loadExtraPacks(ids);
+    }
+    render();
+  });
+
+  // The festival lists under the month and the year go to the day they name
+  for (const id of ['#month-festivals', '#year-festivals']) {
+    $(id).addEventListener('click', (event) => {
+      const link = (event.target as Element).closest<HTMLElement>('[data-day]');
+      if (!link) return;
+      state.view = 'month';
+      select(Number(link.dataset.day), { focus: true });
+    });
+  }
+
   const dialog = $<HTMLDialogElement>('#about-dialog');
   $('#about-name').addEventListener('click', () => {
-    renderAboutDialog(dialog, state.pack, toSolar(state.selected).month);
+    renderAboutDialog(dialog, state.pack, toSolar(state.selected).month, state.today);
     dialog.showModal();
     dialog.querySelector('[aria-current]')?.scrollIntoView({ block: 'center' });
   });

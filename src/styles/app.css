@@ -156,7 +156,7 @@ a { color: inherit; text-underline-offset: 3px; }
   font: 800 var(--step-3) / 1 var(--font-display); letter-spacing: 0.01em; text-decoration: none;
 }
 .controls { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
-.theme-button { display: inline-flex; align-items: center; gap: 6px; }
+.theme-button, .festivals-button { display: inline-flex; align-items: center; gap: 6px; }
 .narrow-only { display: none; }
 
 /* Phones: the wordmark and theme toggle share a row, the controls get their own */
@@ -210,6 +210,7 @@ a { color: inherit; text-underline-offset: 3px; }
 .gloss { color: var(--ink); font-style: italic; font-size: var(--step-1); }
 
 .month-body { display: grid; gap: var(--space-6); }
+.month-main { display: grid; gap: var(--space-5); min-width: 0; }
 @media (min-width: 980px) { .month-body { grid-template-columns: minmax(0, 1fr) 280px; align-items: start; } }
 
 .grid {
@@ -406,6 +407,37 @@ a.button { display: inline-flex; align-items: center; color: inherit; text-decor
 .about-festival-name { margin: 0; font: 800 var(--step-3) / 1 var(--font-display); font-variation-settings: 'opsz' 72; }
 .about-when { font-weight: 700; }
 .festival { margin: 0 0 var(--space-2); }
+.festival-source, .about-next { color: var(--muted); }
+
+/* Festivals and holidays ---------------------------------------------------- */
+
+.choice-group { display: grid; gap: var(--space-1); margin: 0; padding: 0; border: 0; min-width: 0; }
+.choice-group legend { margin-bottom: var(--space-2); padding: 0; color: var(--muted); font-size: var(--step--1); font-weight: 700; }
+.choice { display: flex; gap: var(--space-2); align-items: baseline; min-height: 32px; padding: var(--space-1) 0; cursor: pointer; }
+.choice input { flex: none; margin: 0; accent-color: var(--ink); }
+.choice-sample { display: block; color: var(--muted); font-size: var(--step--1); }
+.choice-note { margin: 0 0 var(--space-2); color: var(--muted); font-size: var(--step--1); }
+
+.festival-list { margin: 0; padding: 0; list-style: none; }
+.festival-list li { border-top: 1px solid var(--rule); }
+.festival-link {
+  display: flex; gap: var(--space-3); align-items: baseline; width: 100%; padding: var(--space-2) 0;
+  border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.festival-link:hover .festival-name { text-decoration: underline; text-underline-offset: 3px; }
+.festival-day {
+  min-width: 2ch; font: 300 var(--step-3) / 1 var(--font-display);
+  font-variation-settings: 'opsz' 72; font-variant-numeric: tabular-nums;
+}
+.festival-name { font-weight: 700; }
+.festival-meta { display: block; color: var(--muted); font-size: var(--step--1); }
+
+.year-festivals { margin-top: var(--space-6); }
+.festival-table { width: 100%; border-collapse: collapse; }
+.festival-table caption { text-align: left; }
+.festival-table th, .festival-table td { padding: var(--space-2) var(--space-3) var(--space-2) 0; border-top: 1px solid var(--rule); text-align: left; vertical-align: baseline; }
+.festival-table th { color: var(--muted); font-size: var(--step--1); }
+.festival-table .festival-link { display: inline; width: auto; padding: 0; }
 .about-say strong { font-weight: 700; letter-spacing: 0.02em; }
 .ipa { color: var(--muted); }
 .say-key { margin: var(--space-4) 0; padding: var(--space-3) var(--space-4); border: 1px solid var(--rule); border-radius: var(--radius); }
@@ -462,6 +494,14 @@ a.button { display: inline-flex; align-items: center; color: inherit; text-decor
   [aria-selected='true'] > .cell, .cell[aria-current='date'], [aria-selected='true'] > .cell[aria-current='date'] { background: none; color: inherit; box-shadow: none; }
   .cell[aria-current='date'] .greg:not(.is-new-month) { color: var(--muted); }
   .month-meaning { margin: 4mm 0 0; color: var(--muted); }
+  .month-main { display: block; }
+  .month-festivals { margin-top: 3mm; font-size: 8pt; }
+  .month-festivals .notes-title { margin-bottom: 1mm; font-size: 9pt; }
+  .festival-list { display: flex; flex-wrap: wrap; gap: 0 6mm; }
+  .festival-list li { border: 0; }
+  .festival-link { padding: 0; }
+  .festival-day { font-size: 10pt; }
+  .year-festivals { display: none !important; }
 
   .year-head { margin-bottom: 2mm; }
   .year-name { font-size: 22pt; }

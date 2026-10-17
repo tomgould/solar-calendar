@@ -37,5 +37,8 @@ export const THEME_ICONS = {
 /** Marks a festival day in calendar cells: a four-pointed star. */
 export const FESTIVAL_ICON = svg('<path d="M6 .8 7.4 4.6 11.2 6 7.4 7.4 6 11.2 4.6 7.4.8 6 4.6 4.6z" fill="currentColor"/>');
 
+/** Marks a day off, such as a bank holiday: a flag. */
+export const HOLIDAY_ICON = svg('<path d="M3 1.4v9.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M3.6 1.8h6.2L8.2 4.1l1.6 2.3H3.6z" fill="currentColor"/>');
+
 export const chevron = (direction: 'left' | 'right') =>
   `<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="${direction === 'left' ? 'M10 3 5 8l5 5' : 'M6 3l5 5-5 5'}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
