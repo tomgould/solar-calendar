@@ -49,7 +49,8 @@ describe('fonts cover every pack', () => {
   it.each(packs)('%s: all other text is in the body font (Andika)', (_, pack) => {
     const strings = [pack.title, pack.description, pack.origin, pack.pronunciation,
       pack.leapWeek.gloss, pack.leapWeek.meaning, pack.leapWeek.say, pack.leapWeek.ipa,
-      ...pack.months.flatMap((month) => [month.name, month.gloss, month.meaning, month.notes, month.say, month.ipa])];
+      ...pack.months.flatMap((month) => [month.name, month.gloss, month.meaning, month.notes, month.say, month.ipa]),
+      ...(pack.festivals ?? []).flatMap((festival) => [festival.name, festival.gloss, festival.meaning, festival.say, festival.ipa])];
     expect(missing(strings, text)).toEqual([]);
   });
 
