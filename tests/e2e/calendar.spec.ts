@@ -81,6 +81,38 @@ test('shows how to say each name', async ({ page }) => {
   await expect(page.locator('#month-say')).toBeHidden();
 });
 
+test('reads names aloud', async ({ page }) => {
+  // A stand-in for speech synthesis, with an English and a Persian voice
+  await page.addInitScript(() => {
+    const spoken: { text: string; lang: string }[] = [];
+    Object.assign(window, { spoken });
+    class Utterance { lang = ''; voice = null; rate = 1; constructor(public text: string) {} }
+    Object.defineProperty(window, 'SpeechSynthesisUtterance', { configurable: true, value: Utterance });
+    Object.defineProperty(window, 'speechSynthesis', {
+      configurable: true,
+      value: {
+        cancel() {},
+        getVoices: () => [{ lang: 'en-GB', name: 'English' }, { lang: 'fa-IR', name: 'Persian' }],
+        speak: (utterance: Utterance) => spoken.push({ text: utterance.text, lang: utterance.lang }),
+      },
+    });
+  });
+  const spoken = () => page.evaluate(() => (window as unknown as { spoken: unknown[] }).spoken.at(-1));
+
+  // No Old English voice exists, so an English one reads the respelling
+  await page.goto('./?date=2026-12-10&names=anglo-saxon');
+  await page.locator('#month-say').getByRole('button', { name: 'Hear Ǣrra Gēola' }).click();
+  expect(await spoken()).toEqual({ text: expect.stringMatching(/^[a-z ]+$/), lang: 'en-GB' });
+
+  // Persian names are read in Persian, from the Persian script
+  await page.goto('./?date=2026-10-17&names=persian');
+  await page.locator('#month-say .hear').click();
+  expect(await spoken()).toEqual({ text: expect.stringMatching(/^[؀-ۿ\s]+$/), lang: 'fa-IR' });
+  await page.locator('#about-name').click();
+  // 13 months and the leap week
+  await expect(page.locator('#about-dialog .about-months .hear')).toHaveCount(14);
+});
+
 test('marks festivals and explains them', async ({ page }) => {
   // Þorrablót: the first Friday on or after 19 January, 23 January in 2026
   await page.goto('./?date=2026-01-23&names=old-norse');

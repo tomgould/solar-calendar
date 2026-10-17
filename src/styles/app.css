@@ -198,6 +198,11 @@ a { color: inherit; text-underline-offset: 3px; }
 .month-year { color: var(--muted); font-weight: 300; }
 .say { color: var(--ink); letter-spacing: 0.02em; }
 .say-label { color: var(--muted); letter-spacing: 0; }
+.hear {
+  display: inline-grid; place-items: center; width: 28px; height: 28px; margin: -4px 0; padding: 0; vertical-align: middle;
+  border: 1px solid var(--rule); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer;
+}
+.hear:hover { border-color: var(--rule-strong); }
 .gloss { color: var(--ink); font-style: italic; font-size: var(--step-1); }
 
 .month-body { display: grid; gap: var(--space-6); }
@@ -408,7 +413,7 @@ a.button { display: inline-flex; align-items: center; color: inherit; text-decor
   }
   body { font-size: 9pt; }
   .page { max-width: none; padding: 0; }
-  .masthead, .today-line, .about-calendar, .steps, .skip-link, .strip, .side, .text-button, .calendar-apps { display: none !important; }
+  .masthead, .today-line, .about-calendar, .steps, .skip-link, .strip, .side, .text-button, .hear, .calendar-apps { display: none !important; }
   .print-only { display: block; }
 
   .month-head { margin-bottom: 4mm; }

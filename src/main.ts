@@ -23,6 +23,7 @@ import { escapeHtml, gregorianLong, solarLong } from './ui/format';
 import { THEME_ICONS, chevron } from './ui/icons';
 import { MonthView } from './ui/month-view';
 import { renderAboutDialog, renderNamesMenu } from './ui/names';
+import { listenForHear } from './ui/speech';
 import { YearView } from './ui/year-view';
 
 type View = 'month' | 'year';
@@ -312,6 +313,7 @@ function setUpLocation(): void {
 
 function wire(): void {
   setUpLocation();
+  listenForHear();
   monthView = new MonthView($('#month-view'), { select, goToMonth, shiftMonth });
   goTo = new GoToDate($('#goto'), [FIRST_DAY, LAST_DAY], (day) => select(day));
   yearView = new YearView($('#year-view'), (day) => {

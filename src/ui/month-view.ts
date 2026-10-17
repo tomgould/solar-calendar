@@ -5,6 +5,7 @@ import type { NamePack } from '../names/schema';
 import { WEEKDAYS, escapeHtml, forDisplayFont, gregorianLong, gregorianShort, hueClass, monthGloss, monthName, solarLong } from './format';
 import type { FestivalDay } from '../names/festivals';
 import { EVENT_ICONS, FESTIVAL_ICON } from './icons';
+import { hearButton } from './speech';
 
 export interface MonthViewState {
   selected: DayNumber;
@@ -82,13 +83,12 @@ export class MonthView {
     name.lang = pack.lang;
     this.root.querySelector('#month-year')!.textContent = String(date.year);
     this.root.querySelector('#month-gloss')!.textContent = monthGloss(pack, date.month);
-    const say = date.month === LEAP_WEEK ? pack.leapWeek.say : pack.months[date.month - 1].say;
+    const entry = date.month === LEAP_WEEK ? pack.leapWeek : pack.months[date.month - 1];
     const sayElement = this.root.querySelector<HTMLElement>('#month-say')!;
-    sayElement.hidden = !say;
-    sayElement.innerHTML = say ? `<span class="say-label">Say</span> ${escapeHtml(say)}` : '';
+    sayElement.hidden = !entry.say;
+    sayElement.innerHTML = entry.say ? `<span class="say-label">Say</span> ${escapeHtml(entry.say)} ${hearButton(pack, entry)}` : '';
     // Printed under the grid
-    const meaning = date.month === LEAP_WEEK ? pack.leapWeek.meaning : pack.months[date.month - 1].meaning;
-    this.root.querySelector('#month-meaning')!.textContent = `${monthName(pack, date.month)}: ${meaning}`;
+    this.root.querySelector('#month-meaning')!.textContent = `${monthName(pack, date.month)}: ${entry.meaning}`;
     this.root.querySelector('#month-place')!.textContent = date.month === LEAP_WEEK
       ? `The leap week, ${gregorianShort(first)} to ${gregorianShort(first + 6, true)}`
       : `Month ${date.month} of 13, ${gregorianShort(first)} to ${gregorianShort(first + 27, true)}`;
