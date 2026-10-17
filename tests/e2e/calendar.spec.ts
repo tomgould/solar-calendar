@@ -134,10 +134,14 @@ test('shows bank holidays and other packs’ festivals, chosen in the Festivals 
   await page.goto('./?date=2026-12-25&names=gregorian');
   await page.locator('#festivals-button').click();
   const menu = page.locator('#festivals-menu');
+  // Everything is on to begin with
+  await expect(menu.getByRole('checkbox')).toHaveCount(11);
+  for (const box of await menu.getByRole('checkbox').all()) await expect(box).toBeChecked();
+  // Keep Northern Ireland, Scotland and the Persian festivals
   await menu.getByLabel('England and Wales').uncheck();
-  await menu.getByLabel('Scotland').check();
-  await menu.getByLabel('Northern Ireland').check();
-  await menu.getByRole('checkbox', { name: /^Persian/ }).check();
+  for (const box of await menu.locator('input[name="festival-pack"]').all()) {
+    if (await box.getAttribute('value') !== 'persian') await box.uncheck();
+  }
   await page.keyboard.press('Escape');
 
   // Listed under the month, once even when both regions keep it, and named in
@@ -171,8 +175,11 @@ test('shows bank holidays and other packs’ festivals, chosen in the Festivals 
 });
 
 test('keeps the selected day in a sheet along the bottom on phones', async ({ page }) => {
-  // No bank holidays, so the month's festival list is the same in every time zone
-  await page.addInitScript(() => localStorage.setItem('holidays', ''));
+  // Only the chosen names' festivals, so the month's list is short and known
+  await page.addInitScript(() => {
+    localStorage.setItem('holidays', '');
+    localStorage.setItem('festivals', '');
+  });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('./?date=2026-01-23&names=old-norse');
   const sheet = page.locator('#day-panel');
@@ -295,7 +302,9 @@ test('downloads the year and offers a subscription feed', async ({ page }) => {
   // The feed is served by the built Worker bundle
   const feedUrl = await page.locator('#feed-url').inputValue();
   // Every region's bank holidays are on by default
-  expect(feedUrl).toMatch(/\/feed\.ics\?names=anglo-saxon&holidays=uk-england-and-wales,uk-northern-ireland,uk-scotland$/);
+  expect(feedUrl).toMatch(/\/feed\.ics\?names=anglo-saxon&festivals=[a-z,-]+&holidays=uk-england-and-wales,uk-northern-ireland,uk-scotland$/);
+  // Every other pack with festivals, but not the chosen names' own
+  expect(new URL(feedUrl).searchParams.get('festivals')!.split(',')).toEqual(['coptic', 'egyptian', 'gaulish', 'old-norse', 'persian', 'roman', 'sky']);
   await expect(page.locator('#open-feed')).toHaveAttribute('href', /^webcal:/);
   const feed = await page.request.get(feedUrl);
   expect(feed.headers()['content-type']).toBe('text/calendar; charset=utf-8');
@@ -374,6 +383,13 @@ test('prints the month or the year on one page', async ({ page }, testInfo) => {
   await expect(page.locator('#day-panel')).toBeHidden();
   await expect(page.locator('#month-meaning')).toContainText('Winterfylleþ: Bede says');
   expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(255, 255, 255)');
+  expect(await pages()).toBe(1);
+
+  // The busiest month for festivals, with every pack and holiday on
+  await page.emulateMedia({ media: 'screen' });
+  await page.goto('./?date=2026-12-21&names=gregorian');
+  await expect(page.locator('#month-festivals li')).not.toHaveCount(0);
+  await page.emulateMedia({ media: 'print' });
   expect(await pages()).toBe(1);
 
   await page.emulateMedia({ media: 'screen' });
