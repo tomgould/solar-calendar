@@ -11,3 +11,6 @@ playwright/.cache/
 
 # Vite
 dist/
+
+# Local tool state
+.mullet/
