@@ -321,7 +321,9 @@ a.button { display: inline-flex; align-items: center; color: inherit; text-decor
 }
 .menu-title { margin: 0; font: 700 var(--step-2) / 1.2 var(--font-text); }
 .menu-note { margin: var(--space-1) 0 var(--space-4); color: var(--muted); }
-.pack-options { display: grid; gap: var(--space-2); }
+.pack-options { display: grid; gap: var(--space-4); }
+.pack-group { display: grid; gap: var(--space-2); margin: 0; padding: 0; border: 0; min-width: 0; }
+.pack-group legend { margin-bottom: var(--space-2); padding: 0; color: var(--muted); font-size: var(--step--1); font-weight: 700; }
 .pack-option {
   display: grid; grid-template-columns: auto 1fr; gap: 2px var(--space-3);
   padding: var(--space-3); border: 1px solid var(--rule); border-radius: var(--radius); cursor: pointer;
