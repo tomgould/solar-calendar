@@ -193,6 +193,7 @@ a { color: inherit; text-underline-offset: 3px; }
   display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3);
   margin: var(--space-3) 0 0; color: var(--muted);
 }
+.month-year { color: var(--muted); font-weight: 300; }
 .gloss { color: var(--ink); font-style: italic; font-size: var(--step-1); }
 
 .month-body { display: grid; gap: var(--space-6); }
@@ -343,18 +344,50 @@ a { color: inherit; text-underline-offset: 3px; }
   .grid, .strip .bar { transition: none; }
 }
 
+.print-only { display: none; }
+
+/* Printing shows whichever view is on screen, on one A4 landscape page */
 @media print {
   @page { size: A4 landscape; margin: 10mm; }
-  :root { --paper: #fff; --surface: #fff; --ink: #000; --muted: #333; --rule: #bbb; --rule-strong: #666; --hue-l: 0.72; --hue-c: 0.13; }
+  /* Light colours whatever the screen theme: this selector matches the dark
+     theme rules' specificity and comes later, so it wins */
+  :root:is([data-theme], :not([data-theme='light'])) {
+    color-scheme: light;
+    --paper: #fff; --surface: #fff; --wash: #fff; --ink: #000; --muted: #333; --rule: #bbb; --rule-strong: #666;
+    --hue-l: 0.72; --hue-c: 0.13;
+  }
   body { font-size: 9pt; }
   .page { max-width: none; padding: 0; }
-  .masthead, .today-line, .month, .about-calendar, .steps, .skip-link { display: none !important; }
-  .year { display: block !important; }
-  .year-name { font-size: 28pt; }
+  .masthead, .today-line, .about-calendar, .steps, .skip-link, .strip, .day, .text-button { display: none !important; }
+  .print-only { display: block; }
+
+  .month-head { margin-bottom: 4mm; }
+  .month-name { font-size: 36pt; }
+  .month-meta { margin-top: 2mm; }
+  .month-body { display: block; }
+  .grid { border-top-width: 3mm; }
+  .grid th { padding: 1.5mm 2mm; font-size: 9pt; }
+  .cell { height: 31mm; padding: 2mm; }
+  .num { font-size: 30pt; }
+  .greg { font-size: 10pt; }
+  .marks svg { width: 4mm; height: 4mm; }
+  [aria-selected='true'] > .cell, .cell[aria-current='date'], [aria-selected='true'] > .cell[aria-current='date'] { background: none; color: inherit; box-shadow: none; }
+  .cell[aria-current='date'] .greg:not(.is-new-month) { color: var(--muted); }
+  .month-meaning { margin: 4mm 0 0; color: var(--muted); }
+
+  .year-head { margin-bottom: 2mm; }
+  .year-name { font-size: 22pt; }
   .table-scroll { overflow: visible; }
-  .almanac { min-width: 0; font-size: 7.5pt; }
-  .almanac td { padding: 1px 4px; }
+  .almanac { min-width: 0; font-size: 7.5pt; line-height: 1.15; }
+  .almanac thead th { padding: 1mm; }
+  .almanac tbody th, .almanac td { padding: 0.25mm 1mm; }
+  .almanac .n { font-size: 8.5pt; }
+  .seasons li, .legend li { padding: 0.5mm 0; }
+  .event-name { display: inline; margin-right: 1mm; }
+  .notes-title { margin-bottom: 1mm; font-size: 9pt; }
+  .legend { columns: 3; column-gap: 4mm; }
+  .swatch { width: 2.5mm; height: 2.5mm; margin-top: 0.8mm; }
   .almanac td.is-today { background: none; color: inherit; outline: 1.5px solid #000; }
-  .year-notes { grid-template-columns: 1fr 2fr; margin-top: 4mm; font-size: 7.5pt; }
+  .year-notes { grid-template-columns: 1fr 2fr; gap: 6mm; margin-top: 3mm; font-size: 7.5pt; }
   * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 }

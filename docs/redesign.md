@@ -53,7 +53,7 @@ These matter most, because a calendar that is sometimes a day or a week out is w
 | Topic | Decision |
 |---|---|
 | Year model | **Leap week.** Year N starts on the first Monday on or after the March equinox of year N, taking the equinox's date in UTC. Normal years are 13 x 28 = 364 days. A 371-day year ends with a 7-day leap week. That's 35 of the 200 years from 1900 to 2100, about 1 in 6. |
-| Month names | **Switchable name packs.** All eleven sets in section 4 ship, including the original names. People pick a pack, can switch any time, and see what each month's name means. The default for new visitors is the Original names pack (confirmed 17 Oct 2026). |
+| Month names | **Switchable name packs.** All eleven sets in section 4 ship, including the Gregorian names. People pick a pack, can switch any time, and see what each month's name means. The default for new visitors is the Gregorian names pack (confirmed 17 Oct 2026; renamed from "Original names" the same day). |
 | Design | **Perennial grid.** See section 3. |
 | Extras | All four: print-ready year, ICS calendar feed, sun and moon data, offline PWA |
 | Stack | TypeScript, Vite, no UI framework, static output (confirmed) |
@@ -138,11 +138,11 @@ Gregorian date of the year at once. It prints well on one A4 landscape page.
 
 All of these ship as switchable **name packs** (section 5). There are eleven:
 
-- **Original names:** the names the calendar has always used, and the default.
+- **Gregorian names:** the names the calendar has always used, and the default.
 - **Seven from history:** Anglo-Saxon, Old Norse, Roman, Gaulish, Persian, Egyptian (ancient) and Coptic.
 - **Three invented:** Nature, Latin numbers and Sky.
 
-**Original names** are March to February, then Sol. Their meanings:
+**Gregorian names** are March to February, then Sol. Their meanings:
 - March: Mars, god of war
 - April: uncertain, possibly *aperire*, "to open"
 - May: Maia, a goddess of growth

@@ -11,7 +11,7 @@ import type { NamePack } from './names/schema';
 import { moonPhaseName, moonQuarters } from './sky/moon';
 import { renderDayPanel } from './ui/day-panel';
 import { escapeHtml, gregorianLong, solarLong } from './ui/format';
-import { chevron } from './ui/icons';
+import { THEME_ICONS, chevron } from './ui/icons';
 import { MonthView } from './ui/month-view';
 import { renderAboutDialog, renderNamesMenu } from './ui/names';
 import { YearView } from './ui/year-view';
@@ -157,7 +157,14 @@ function setUpTheme(): void {
   const button = $<HTMLButtonElement>('#theme-button');
   const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
   const current = () => document.documentElement.dataset.theme ?? (systemDark.matches ? 'dark' : 'light');
-  const update = () => button.setAttribute('aria-pressed', String(current() === 'dark'));
+  // The button offers the other mode: moon and "Dark mode" in light, sun and "Light mode" in dark
+  const update = () => {
+    const offer = current() === 'dark' ? 'light' : 'dark';
+    const label = offer === 'dark' ? 'Dark mode' : 'Light mode';
+    button.setAttribute('aria-label', label);
+    button.querySelector('.theme-label')!.textContent = label;
+    button.querySelector('.theme-icon')!.innerHTML = THEME_ICONS[offer];
+  };
   button.addEventListener('click', () => {
     const next = current() === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = next;
@@ -193,7 +200,9 @@ function wire(): void {
       render();
     });
   }
+  // Printing shows whichever view is on screen
   $('#print-year').addEventListener('click', () => window.print());
+  $('#print-month').addEventListener('click', () => window.print());
   setUpTheme();
 
   const menu = $('#names-menu');

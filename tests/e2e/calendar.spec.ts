@@ -22,11 +22,11 @@ test('opens on today, in both calendars', async ({ page }) => {
 });
 
 test('gives the same solar date in every time zone', async ({ page }) => {
-  await page.goto('./?date=2026-03-23&names=original');
+  await page.goto('./?date=2026-03-23&names=gregorian');
   await expect(page.locator('#month-name')).toHaveText('March');
   await expect(page.locator(selectedCell)).toHaveAccessibleName(/^1 March 2026, Monday 23 March 2026/);
 
-  await page.goto('./?date=2026-10-17&names=original');
+  await page.goto('./?date=2026-10-17&names=gregorian');
   await expect(page.locator(selectedCell)).toHaveAccessibleName(/^13 October 2026, Saturday 17 October 2026/);
 });
 
@@ -43,7 +43,7 @@ test('moves by day, week and month with the keyboard', async ({ page }) => {
 });
 
 test('switches month names and remembers the choice', async ({ page }) => {
-  await page.goto('./?date=2026-10-17&names=original');
+  await page.goto('./?date=2026-10-17&names=gregorian');
   await expect(page.locator('#month-name')).toHaveText('October');
 
   await page.locator('#names-button').click();
@@ -66,7 +66,7 @@ test('explains what each month name means', async ({ page }) => {
 });
 
 test('ends a 371-day year with a leap week', async ({ page }) => {
-  await page.goto('./?date=2029-03-21&names=original');
+  await page.goto('./?date=2029-03-21&names=gregorian');
   await expect(page.locator('#month-name')).toHaveText('Leap week');
   await expect(page.locator('#grid-body tr:not([hidden]) .cell')).toHaveCount(7);
   await expect(page.locator('#day-panel h2')).toHaveText('Leap week, day 3, 2028');
@@ -79,12 +79,48 @@ test('shows every day of the year in the year view', async ({ page }) => {
     headers.filter((th) => th.scrollWidth > th.clientWidth + 1).length);
   expect(overflowing).toBe(0);
 
-  await page.goto('./?view=year&date=2028-06-01&names=original');
+  await page.goto('./?view=year&date=2028-06-01&names=gregorian');
   await expect(page.locator('#almanac td[data-day]')).toHaveCount(371);
 });
 
+test('switches theme, offering the other mode', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.goto('./');
+  const button = page.locator('#theme-button');
+  await expect(button).toHaveAccessibleName('Dark mode');
+  await button.click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(button).toHaveAccessibleName('Light mode');
+  await button.click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(button).toHaveAccessibleName('Dark mode');
+});
+
+test('prints the month or the year on one page', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'PDF output is Chromium only');
+  const pages = async () => {
+    const pdf = await page.pdf({ preferCSSPageSize: true, printBackground: true });
+    return (pdf.toString('latin1').match(/\/Type\s*\/Page(?!s)/g) ?? []).length;
+  };
+  // Dark mode on screen must still print in light colours
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('./?date=2026-10-17&names=anglo-saxon');
+  await page.emulateMedia({ media: 'print', colorScheme: 'dark' });
+  await expect(page.locator('.masthead')).toBeHidden();
+  await expect(page.locator('#day-panel')).toBeHidden();
+  await expect(page.locator('#month-meaning')).toContainText('Winterfylleþ: Bede says');
+  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(255, 255, 255)');
+  expect(await pages()).toBe(1);
+
+  await page.emulateMedia({ media: 'screen' });
+  await page.goto('./?view=year&date=2028-06-01&names=anglo-saxon');
+  await page.emulateMedia({ media: 'print' });
+  await expect(page.locator('#almanac')).toBeVisible();
+  expect(await pages()).toBe(1);
+});
+
 test('goes back to the previous month with the Back button', async ({ page }) => {
-  await page.goto('./?date=2026-10-17&names=original');
+  await page.goto('./?date=2026-10-17&names=gregorian');
   await page.locator('#next-month').click();
   await expect(page.locator('#month-name')).toHaveText('November');
   await page.goBack();

@@ -8,7 +8,7 @@ const loaders = Object.fromEntries(
     .filter(([id]) => !id.startsWith('_')),
 );
 
-export const DEFAULT_PACK_ID = 'original';
+export const DEFAULT_PACK_ID = 'gregorian';
 export const PACK_IDS: readonly string[] = Object.keys(loaders).sort();
 
 export function isPackId(id: string | null | undefined): id is string {
