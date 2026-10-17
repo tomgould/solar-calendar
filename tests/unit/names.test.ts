@@ -15,6 +15,11 @@ describe('name packs', () => {
     expect(validatePack(data, file).id).toBe(file.replace(/\.json$/, ''));
   });
 
+  it('only accepts language tags, since they go into lang attributes', () => {
+    const pack = { ...packFiles[0][1] as object, lang: 'en" onclick="x' };
+    expect(() => validatePack(pack, 'bad-lang.json')).toThrowError(/"lang" must be a language tag/);
+  });
+
   it('reports every problem in a broken pack', () => {
     expect(() => validatePack({ id: 'Bad Id', months: [{}] }, 'broken.json')).toThrowError(/"id" must be lowercase[\s\S]*exactly 13 months[\s\S]*at least one source/);
   });

@@ -8,10 +8,15 @@ type Fetch = (request: Request) => Response | Promise<Response>;
 
 const serveFeed = (load: () => Promise<Fetch>): Connect.NextHandleFunction => async (req, res, next) => {
   if (!req.url?.startsWith('/feed.ics')) return next();
-  const response = await (await load())(new Request(new URL(req.url, 'http://localhost')));
-  res.statusCode = response.status;
-  response.headers.forEach((value, key) => res.setHeader(key, value));
-  res.end(await response.text());
+  try {
+    const response = await (await load())(new Request(new URL(req.url, 'http://localhost')));
+    res.statusCode = response.status;
+    response.headers.forEach((value, key) => res.setHeader(key, value));
+    res.end(await response.text());
+  } catch (error) {
+    // For example, preview without a build: dist-worker/worker.js is missing
+    next(error);
+  }
 };
 
 // Answers /feed.ics locally with the same code Cloudflare runs: the source in

@@ -111,11 +111,13 @@ function render(focus = false): void {
     const place = readPlace();
     const sun = $('#day-panel [data-sun]');
     if (place) {
+      // The button is there straight away, so focus can return to it after the dialog
+      sun.innerHTML = '<span data-sun-text>Calculating…</span> <button type="button" class="text-button" data-set-location>Change place</button>';
+      const text = sun.querySelector('[data-sun-text]')!;
       sunTimes(selected, place).then((times) => {
-        if (state.selected !== selected || !sun.isConnected) return;
-        sun.innerHTML = `${escapeHtml(sunText(times))} <button type="button" class="text-button" data-set-location>Change place</button>`;
+        if (state.selected === selected && sun.isConnected) text.textContent = sunText(times);
       }).catch(() => {
-        if (sun.isConnected) sun.textContent = 'Couldn’t load sunrise and sunset. Check your connection.';
+        if (sun.isConnected) text.textContent = 'Couldn’t load sunrise and sunset. Check your connection.';
       });
     } else {
       sun.innerHTML = '<button type="button" class="text-button" data-set-location>Add your location</button>';
@@ -153,7 +155,13 @@ async function readUrl(): Promise<void> {
   state.selected = Math.min(LAST_DAY, Math.max(FIRST_DAY, parseIsoDate(params.get('date') ?? '') ?? state.today));
   state.view = params.get('view') === 'year' ? 'year' : 'month';
   const requested = params.get('names') ?? storage.get('names');
-  state.pack = await loadPack(isPackId(requested) ? requested : DEFAULT_PACK_ID);
+  try {
+    state.pack = await loadPack(isPackId(requested) ? requested : DEFAULT_PACK_ID);
+  } catch {
+    // That pack didn't load (offline, say); the default is always in the bundle
+    state.pack = await loadPack(DEFAULT_PACK_ID);
+    $('#names-status').textContent = 'Couldn’t load your chosen names, so the Gregorian names are shown. Check your connection.';
+  }
 }
 
 // "Add to your calendar": a one-year download, and the subscription feed
@@ -283,11 +291,13 @@ function setUpLocation(): void {
     storage.set('location', JSON.stringify(place));
     dialog.close();
     render();
+    document.querySelector<HTMLElement>('#day-panel [data-set-location]')?.focus();
   });
   $('#clear-location').addEventListener('click', () => {
     storage.remove('location');
     dialog.close();
     render();
+    document.querySelector<HTMLElement>('#day-panel [data-set-location]')?.focus();
   });
 }
 
@@ -380,7 +390,12 @@ async function start(): Promise<void> {
   wire();
   render();
   window.addEventListener('popstate', async () => {
-    await readUrl();
+    try {
+      await readUrl();
+    } catch (error) {
+      console.error(error);
+      return;
+    }
     restoringFromHistory = true;
     render();
     restoringFromHistory = false;

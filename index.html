@@ -71,7 +71,7 @@
               <form id="goto-gregorian" class="goto-form" novalidate>
                 <label for="goto-gregorian-date">Gregorian date</label>
                 <div class="goto-row">
-                  <input type="date" id="goto-gregorian-date" class="field" required>
+                  <input type="date" id="goto-gregorian-date" class="field" required aria-describedby="goto-error">
                   <button type="submit" class="button">Go</button>
                 </div>
               </form>
@@ -80,11 +80,11 @@
                   <legend>Solar date</legend>
                   <div class="goto-row">
                     <label class="visually-hidden" for="goto-solar-day">Day</label>
-                    <input type="number" id="goto-solar-day" class="field field-day" min="1" max="28" inputmode="numeric" required>
+                    <input type="number" id="goto-solar-day" class="field field-day" min="1" max="28" inputmode="numeric" required aria-describedby="goto-error">
                     <label class="visually-hidden" for="goto-solar-month">Month</label>
-                    <select id="goto-solar-month" class="field field-month"></select>
+                    <select id="goto-solar-month" class="field field-month" aria-describedby="goto-error"></select>
                     <label class="visually-hidden" for="goto-solar-year">Year</label>
-                    <input type="number" id="goto-solar-year" class="field field-year" inputmode="numeric" required>
+                    <input type="number" id="goto-solar-year" class="field field-year" inputmode="numeric" required aria-describedby="goto-error">
                     <button type="submit" class="button">Go</button>
                   </div>
                 </fieldset>
@@ -154,7 +154,7 @@
         <button type="button" class="button" data-close>Close</button>
       </div>
       <div class="about-body">
-        <p class="about-origin">Sunrise and sunset depend on where you are. Your location stays in this browser and is never sent anywhere.</p>
+        <p class="about-origin">Sunrise and sunset depend on where you are. Times are shown in this device’s time zone, so choose a place in your own time zone. Your location stays in this browser and is never sent anywhere.</p>
         <p><button type="button" class="button" id="use-my-location">Use my location</button></p>
         <div class="goto-row">
           <label for="location-lat">Latitude</label>
