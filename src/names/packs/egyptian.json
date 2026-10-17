@@ -121,6 +121,65 @@
       "ipa": "ˈpeɾet fɔː"
     }
   ],
+  "festivals": [
+    {
+      "name": "Wepet Renpet",
+      "gloss": "opening of the year",
+      "meaning": "The Egyptian new year, at the start of the flood season and tied to the rising of Sirius and the Nile flood. It falls on the first day of Akhet I here. This follows the idealised civil calendar, not historical dates.",
+      "when": {
+        "solar": {
+          "month": 6,
+          "day": 1
+        }
+      },
+      "certainty": "established",
+      "say": "WEH-pet REN-pet",
+      "ipa": "ˈwepet ˈɾenpet"
+    },
+    {
+      "name": "Birthdays of the gods",
+      "gloss": "the five extra days",
+      "meaning": "The five epagomenal days at the end of the civil year, celebrated as the birthdays of Osiris, Horus, Set, Isis and Nephthys. They are dated here as the first five days of Heriu Renpet, in the idealised civil calendar, not historical dates.",
+      "when": {
+        "solar": {
+          "month": 5,
+          "day": 1
+        }
+      },
+      "days": 5,
+      "certainty": "established"
+    },
+    {
+      "name": "Opet",
+      "gloss": "Theban river festival",
+      "meaning": "The great Theban festival in which the statues of Amun, Mut and Khonsu sailed to Luxor. It began on II Akhet 15 under Thutmose III and lasted 11 days, though it later grew to 27. It is dated here by that early rule, in the idealised civil calendar, not historical dates.",
+      "when": {
+        "solar": {
+          "month": 7,
+          "day": 15
+        }
+      },
+      "days": 11,
+      "certainty": "likely",
+      "say": "OH-pet",
+      "ipa": "ˈopet"
+    },
+    {
+      "name": "Khoiak mysteries",
+      "gloss": "Osiris mourning rites",
+      "meaning": "A festival of Osiris in the fourth month of Akhet (Khoiak), with rites of mourning that ended in the raising of the djed pillar. Sources give different lengths. The longest form ran from the 12th to the 30th of the month, and it is cut here to days 12 to 28 to fit a 28-day month, in the idealised civil calendar, not historical dates.",
+      "when": {
+        "solar": {
+          "month": 9,
+          "day": 12
+        }
+      },
+      "days": 17,
+      "certainty": "uncertain",
+      "say": "KOY-ak",
+      "ipa": "ˈkoiak"
+    }
+  ],
   "sources": [
     {
       "title": "Egyptian calendar (Wikipedia)",
@@ -137,6 +196,18 @@
     {
       "title": "Egyptian calendar: Akhet, Peret, Shemu, Heriu Renpet (Wikipedia)",
       "url": "https://en.wikipedia.org/wiki/Egyptian_calendar"
+    },
+    {
+      "title": "Opet Festival (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Opet_Festival"
+    },
+    {
+      "title": "Khoiak (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Khoiak"
+    },
+    {
+      "title": "Festivals in Ancient Egypt (World History Encyclopedia)",
+      "url": "https://www.worldhistory.org/article/1032/festivals-in-ancient-egypt/"
     }
   ]
 }

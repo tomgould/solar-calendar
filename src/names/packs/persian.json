@@ -136,6 +136,76 @@
       "ipa": "esˈfænd"
     }
   ],
+  "festivals": [
+    {
+      "name": "Nowruz",
+      "gloss": "Persian new year",
+      "meaning": "The Persian new year, at the March equinox, and the same anchor as this calendar. The Iranian calendar counts the equinox day as Nowruz only if it falls before noon in Tehran, and otherwise the next day, so the date here is approximate and can be a day early.",
+      "when": {
+        "event": "march-equinox"
+      },
+      "certainty": "established",
+      "say": "no-ROHZ",
+      "ipa": "noːˈɾuːz"
+    },
+    {
+      "name": "Sizdah Bedar",
+      "gloss": "thirteenth-day outing",
+      "meaning": "The 13th day of the Persian new year, spent outdoors with picnics. It is dated here as 12 days after the equinox, so it shares the approximation in the Nowruz date.",
+      "when": {
+        "event": "march-equinox",
+        "offset": 12
+      },
+      "certainty": "established",
+      "say": "siz-DAH be-DAHR",
+      "ipa": "sizˈdæ beˈdɒːɾ"
+    },
+    {
+      "name": "Chaharshanbe Suri",
+      "gloss": "Wednesday fire festival",
+      "meaning": "Jumping over bonfires on the eve of the last Wednesday before Nowruz, which is the Tuesday evening. It is dated here as the first Tuesday on or after 13 March. That gives the right day for 2025 to 2032, but is a week out in a few years, such as 2024, when Nowruz falls on a Wednesday 20 March.",
+      "when": {
+        "gregorian": "03-13",
+        "weekday": "tuesday"
+      },
+      "certainty": "likely",
+      "say": "chah-har-shan-BEH soo-REE",
+      "ipa": "tʃɒːhɒːɾʃæmˈbe suˈɾiː"
+    },
+    {
+      "name": "Yalda",
+      "gloss": "longest night",
+      "meaning": "Families stay up through the longest night of the year, eating pomegranates and reading poetry. It is held on the night of the December solstice, so here it falls on the solstice date.",
+      "when": {
+        "event": "december-solstice"
+      },
+      "certainty": "established",
+      "say": "yal-DAH",
+      "ipa": "jælˈdɒː"
+    },
+    {
+      "name": "Mehregan",
+      "gloss": "autumn Mithra festival",
+      "meaning": "An ancient autumn harvest festival for Mithra, held on the 16th of Mehr in the Iranian calendar. It is dated here as 8 October, but the Iranian date is 7 October in some years, and other calendars give other days.",
+      "when": {
+        "gregorian": "10-08"
+      },
+      "certainty": "likely",
+      "say": "meh-reh-GAHN",
+      "ipa": "mehɾeˈɡɒːn"
+    },
+    {
+      "name": "Tirgan",
+      "gloss": "midsummer water festival",
+      "meaning": "A summer festival of water, held on the 13th of Tir in the Iranian calendar. It is dated here as 4 July, but the Iranian date is 3 July in some years, and other calendars give other days.",
+      "when": {
+        "gregorian": "07-04"
+      },
+      "certainty": "likely",
+      "say": "teer-GAHN",
+      "ipa": "tiːɾˈɡɒːn"
+    }
+  ],
   "sources": [
     {
       "title": "Zoroastrian calendar (Wikipedia)",
@@ -164,6 +234,26 @@
     {
       "title": "Wiktionary: شهریور (Shahrivar)",
       "url": "https://en.wiktionary.org/wiki/شهریور"
+    },
+    {
+      "title": "Nowruz (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Nowruz"
+    },
+    {
+      "title": "Chaharshanbe Suri (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Chaharshanbe_Suri"
+    },
+    {
+      "title": "Yalda Night (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Yalda_Night"
+    },
+    {
+      "title": "Mehregan (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Mehregan"
+    },
+    {
+      "title": "Tirgan (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Tirgan"
     }
   ]
 }

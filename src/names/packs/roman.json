@@ -121,6 +121,65 @@
       "ipa": "mɛrkeːˈdɔniʊs"
     }
   ],
+  "festivals": [
+    {
+      "name": "Saturnalia",
+      "gloss": "feast of Saturn",
+      "meaning": "The Roman midwinter festival of Saturn, known from Macrobius and others, with feasting and gift-giving. It began on 17 December and was lengthened over time, to about seven days (17 to 23 December) under the Empire. This is the Roman calendar date, not a true historical day.",
+      "when": {
+        "gregorian": "12-17"
+      },
+      "days": 7,
+      "certainty": "established",
+      "say": "sat-ur-NAH-lee-uh",
+      "ipa": "saturˈnaːlia"
+    },
+    {
+      "name": "Lupercalia",
+      "gloss": "wolf purification",
+      "meaning": "A pastoral purification festival held on 15 February in the Roman calendar, described by Plutarch and Ovid. This is the Roman calendar date, not a true historical day.",
+      "when": {
+        "gregorian": "02-15"
+      },
+      "certainty": "established",
+      "say": "loo-per-KAH-lee-uh",
+      "ipa": "lupɛrˈkaːlia"
+    },
+    {
+      "name": "Matronalia",
+      "gloss": "mothers' feast",
+      "meaning": "A festival of Juno Lucina, honouring married women, kept on 1 March, the old new year. This is the Roman calendar date, not a true historical day.",
+      "when": {
+        "gregorian": "03-01"
+      },
+      "certainty": "established",
+      "say": "mat-roh-NAH-lee-uh",
+      "ipa": "matroːˈnaːlia"
+    },
+    {
+      "name": "Parilia",
+      "gloss": "shepherds' festival",
+      "meaning": "A festival of Pales, goddess of flocks, kept on 21 April, which Romans also held to be the city's founding day. This is the Roman calendar date, not a true historical day.",
+      "when": {
+        "gregorian": "04-21"
+      },
+      "certainty": "established",
+      "say": "puh-RIL-ee-uh",
+      "ipa": "paˈriːlia"
+    },
+    {
+      "name": "Floralia",
+      "gloss": "festival of Flora",
+      "meaning": "A spring festival of the flower goddess Flora, with games, held from 28 April to 3 May. This is the Roman calendar date, not a true historical day.",
+      "when": {
+        "gregorian": "04-28"
+      },
+      "days": 6,
+      "certainty": "established",
+      "say": "floh-RAH-lee-uh",
+      "ipa": "floːˈraːlia"
+    }
+  ],
   "sources": [
     {
       "title": "Roman calendar (Wikipedia)",
@@ -141,6 +200,14 @@
     {
       "title": "Iānuārius, Māius, Iūnius, Mercēdonius (Wiktionary, classical IPA)",
       "url": "https://en.wiktionary.org/wiki/Ianuarius"
+    },
+    {
+      "title": "Roman festivals (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Roman_festivals"
+    },
+    {
+      "title": "Lupercalia (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Lupercalia"
     }
   ]
 }

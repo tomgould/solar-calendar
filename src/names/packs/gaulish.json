@@ -121,6 +121,67 @@
       "ipa": "eˈdrinios"
     }
   ],
+  "festivals": [
+    {
+      "name": "Trinox Samonii",
+      "gloss": "three nights of Samonios",
+      "meaning": "The Coligny calendar, a Gaulish bronze tablet from the 100s CE, marks TRINVX SAMO SINDIV on the 17th day of the month Samonios. It is usually read as 'three nights of Samonios', a festival; the reading and its length are debated. It is dated here to days 17 to 19 of Samonios.",
+      "when": {
+        "solar": {
+          "month": 3,
+          "day": 17
+        }
+      },
+      "days": 3,
+      "certainty": "likely",
+      "say": "tree-NOKS sah-MOH-nee",
+      "ipa": "triˈnoks saˈmoːnii"
+    },
+    {
+      "name": "Samhain",
+      "gloss": "Gaelic winter start",
+      "meaning": "Samhain is a Gaelic (Irish) festival, not a Gaulish one. It is included because it is the best-known quarter day of the Insular Celtic year and may match the Coligny feast. Recorded in medieval Irish texts, it is dated to 1 November.",
+      "when": {
+        "gregorian": "11-01"
+      },
+      "certainty": "established",
+      "say": "SOW-in",
+      "ipa": "ˈsˠəunʲ"
+    },
+    {
+      "name": "Imbolc",
+      "gloss": "Gaelic spring start",
+      "meaning": "Imbolc is a Gaelic (Irish) festival, not a Gaulish one, included as one of the four Insular Celtic quarter days. Recorded in medieval Irish texts, it is usually dated to 1 February.",
+      "when": {
+        "gregorian": "02-01"
+      },
+      "certainty": "established",
+      "say": "IM-bolk",
+      "ipa": "ˈimˠbˠolˠɣ"
+    },
+    {
+      "name": "Bealtaine",
+      "gloss": "Gaelic summer start",
+      "meaning": "Bealtaine is a Gaelic (Irish) festival, not a Gaulish one, included as one of the four Insular Celtic quarter days. Recorded in medieval Irish texts, it is usually dated to 1 May.",
+      "when": {
+        "gregorian": "05-01"
+      },
+      "certainty": "established",
+      "say": "BYAL-tin-uh",
+      "ipa": "ˈbʲaulˠtˠənʲə"
+    },
+    {
+      "name": "Lughnasadh",
+      "gloss": "Gaelic harvest start",
+      "meaning": "Lughnasadh is a Gaelic (Irish) festival, not a Gaulish one, included as one of the four Insular Celtic quarter days. Recorded in medieval Irish texts, it is usually dated to 1 August.",
+      "when": {
+        "gregorian": "08-01"
+      },
+      "certainty": "established",
+      "say": "LOO-nuh-suh",
+      "ipa": "ˈlˠuːnˠəsˠə"
+    }
+  ],
   "sources": [
     {
       "title": "Coligny calendar (Wikipedia)",
@@ -133,6 +194,10 @@
     {
       "title": "Gaulish language (Wikipedia)",
       "url": "https://en.wikipedia.org/wiki/Gaulish_language"
+    },
+    {
+      "title": "Samhain, Imbolc, Beltane and Lughnasadh (Wikipedia, Gaelic calendar festivals)",
+      "url": "https://en.wikipedia.org/wiki/Gaelic_calendar"
     }
   ]
 }

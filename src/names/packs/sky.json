@@ -132,6 +132,85 @@
       "ipa": "əˈkwɛəriəs"
     }
   ],
+  "festivals": [
+    {
+      "name": "Quadrantids",
+      "gloss": "meteor shower peak",
+      "meaning": "Named for the old constellation Quadrans Muralis. Its parent is the asteroid 2003 EH1, which may be a dead comet. Peak dates shift by a day or so from year to year.",
+      "when": {
+        "gregorian": "01-03"
+      },
+      "days": 2,
+      "certainty": "established",
+      "say": "kwod-RAN-tidz",
+      "ipa": "kwɒˈdræntɪdz"
+    },
+    {
+      "name": "Lyrids",
+      "gloss": "meteor shower peak",
+      "meaning": "Debris from comet Thatcher (C/1861 G1), which returns about every 415 years. Records of the shower go back over 2,600 years. Peak dates shift by a day or so from year to year.",
+      "when": {
+        "gregorian": "04-22"
+      },
+      "certainty": "established",
+      "say": "LEYE-ridz",
+      "ipa": "ˈlaɪrɪdz"
+    },
+    {
+      "name": "Eta Aquariids",
+      "gloss": "meteor shower peak",
+      "meaning": "Debris from Halley's Comet, which also feeds the Orionids in October. It is best seen from the southern hemisphere and the tropics. Peak dates shift by a day or so from year to year.",
+      "when": {
+        "gregorian": "05-06"
+      },
+      "certainty": "established",
+      "say": "AY-tuh uh-KWAIR-ee-idz",
+      "ipa": "ˈeɪtə əˈkwɛəriɪdz"
+    },
+    {
+      "name": "Perseids",
+      "gloss": "meteor shower peak",
+      "meaning": "Debris from comet Swift-Tuttle, which orbits the sun about every 133 years. It is the best-known shower of the northern summer. Peak dates shift by a day or so from year to year.",
+      "when": {
+        "gregorian": "08-12"
+      },
+      "days": 2,
+      "certainty": "established",
+      "say": "PUR-see-idz",
+      "ipa": "ˈpɜːrsiɪdz"
+    },
+    {
+      "name": "Orionids",
+      "gloss": "meteor shower peak",
+      "meaning": "Debris from Halley's Comet, the same stream as the Eta Aquariids in May. Earth crosses it a second time each October. Peak dates shift by a day or so from year to year.",
+      "when": {
+        "gregorian": "10-21"
+      },
+      "certainty": "established",
+      "say": "oh-REYE-uh-nidz",
+      "ipa": "oʊˈraɪənɪdz"
+    },
+    {
+      "name": "Leonids",
+      "gloss": "meteor shower peak",
+      "meaning": "Debris from comet Tempel-Tuttle, which returns about every 33 years. The shower brings storms in some of those years, as in 1833 and 1966. Peak dates shift by a day or so from year to year.",
+      "when": {
+        "gregorian": "11-17"
+      },
+      "certainty": "established"
+    },
+    {
+      "name": "Geminids",
+      "gloss": "meteor shower peak",
+      "meaning": "Debris from the asteroid 3200 Phaethon, not a comet, which is unusual. It is one of the strongest showers of the year. Peak dates shift by a day or so from year to year.",
+      "when": {
+        "gregorian": "12-14"
+      },
+      "certainty": "established",
+      "say": "JEM-i-nidz",
+      "ipa": "ˈdʒɛmɪnɪdz"
+    }
+  ],
   "sources": [
     {
       "title": "Zodiac: sun dates in IAU constellations (Wikipedia)",
@@ -152,6 +231,14 @@
     {
       "title": "IAU designated constellations, with pronunciations (Wikipedia)",
       "url": "https://en.wikipedia.org/wiki/IAU_designated_constellations"
+    },
+    {
+      "title": "International Meteor Organization, meteor shower calendar",
+      "url": "https://www.imo.net/resources/calendar/"
+    },
+    {
+      "title": "Meteor shower (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Meteor_shower"
     }
   ]
 }
