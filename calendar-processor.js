@@ -176,8 +176,8 @@ class CalendarProcessor {
     } else if (isLeap && daysSinceSolarYearStart === 365) {
         return { monthIndex: -1, day: 2, year: solarYear, specialDay: 'Leap Day', monthName: 'Leap Day', monthNumber: null };
     } else if (daysSinceSolarYearStart >= (isLeap ? 366 : 365)) {
-         // Date belongs to the subsequent Solar year
-         return this.getSolarDateFromGregorian(gregorianDate, solarYear + 1);
+         // Gap between Year Day and the next year's Monday start (371-day years); no Solar date defined
+         return null;
     } else if (daysSinceSolarYearStart < 0) {
         return null; // Calculation error
     }
