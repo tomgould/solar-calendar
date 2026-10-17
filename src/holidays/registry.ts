@@ -20,7 +20,7 @@ export function holidaySets(ids: string | null | undefined): HolidaySet[] {
   return HOLIDAY_SETS.filter((set) => wanted.has(set.id));
 }
 
-/** Bank holidays are on by default for devices on UK time. */
-export function defaultHolidaySetIds(timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone): string {
-  return timeZone === 'Europe/London' ? 'uk-england-and-wales' : '';
+/** Every region's bank holidays are on until the viewer chooses otherwise. */
+export function defaultHolidaySetIds(): string {
+  return HOLIDAY_SETS.map((set) => set.id).join(',');
 }
