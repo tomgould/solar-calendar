@@ -289,6 +289,8 @@ a { color: inherit; text-underline-offset: 3px; }
 .almanac td.empty { cursor: default; background: var(--paper); }
 .almanac td.is-new-month { font-weight: 700; }
 .almanac td.is-today { background: var(--ink); color: var(--paper); }
+.almanac td.has-festival::after { content: ' \2022'; color: var(--muted); }
+.almanac td.is-today.has-festival::after { color: var(--paper); }
 .almanac tr.week-end > * { border-bottom: 1px solid var(--rule-strong); }
 
 .year-notes { display: grid; gap: var(--space-6); margin-top: var(--space-6); }
@@ -362,6 +364,12 @@ a.button { display: inline-flex; align-items: center; color: inherit; text-decor
 .about-name { margin: 0; font: 800 var(--step-4) / 1 var(--font-display); font-variation-settings: 'opsz' 72; }
 .about-gloss { font-style: italic; }
 .about-note, .certainty { color: var(--muted); font-size: var(--step--1); }
+.about-festivals { margin: 0 0 var(--space-5); padding: 0; list-style: none; }
+.about-festivals li { padding: var(--space-3) 0; border-top: 1px solid var(--rule); }
+.about-festivals p { margin: 0 0 var(--space-2); max-width: 62ch; }
+.about-festival-name { margin: 0; font: 800 var(--step-3) / 1 var(--font-display); font-variation-settings: 'opsz' 72; }
+.about-when { font-weight: 700; }
+.festival { margin: 0 0 var(--space-2); }
 .about-say strong { font-weight: 700; letter-spacing: 0.02em; }
 .ipa { color: var(--muted); }
 .say-key { margin: var(--space-4) 0; padding: var(--space-3) var(--space-4); border: 1px solid var(--rule); border-radius: var(--radius); }

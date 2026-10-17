@@ -3,13 +3,15 @@ import { SKY_EVENT_NAMES, type SkyEvent } from '../core/sky';
 import { LEAP_WEEK, daysInMonth, fromSolar, monthsInYear, toSolar } from '../core/solar';
 import type { NamePack } from '../names/schema';
 import { WEEKDAYS, escapeHtml, forDisplayFont, gregorianLong, gregorianShort, hueClass, monthGloss, monthName, solarLong } from './format';
-import { EVENT_ICONS } from './icons';
+import type { FestivalDay } from '../names/festivals';
+import { EVENT_ICONS, FESTIVAL_ICON } from './icons';
 
 export interface MonthViewState {
   selected: DayNumber;
   today: DayNumber;
   pack: NamePack;
   events: SkyEvent[];
+  festivals: FestivalDay[];
 }
 
 export interface MonthViewHandlers {
@@ -66,7 +68,7 @@ export class MonthView {
     }
   }
 
-  render({ selected, today, pack, events }: MonthViewState, focusSelected = false): void {
+  render({ selected, today, pack, events, festivals }: MonthViewState, focusSelected = false): void {
     const date = toSolar(selected);
     const changedMonth = this.shown !== null && (this.shown.year !== date.year || this.shown.month !== date.month);
     this.shown = { year: date.year, month: date.month };
@@ -94,6 +96,8 @@ export class MonthView {
 
     const eventsByDay = new Map<DayNumber, SkyEvent[]>();
     for (const event of events) eventsByDay.set(event.day, [...(eventsByDay.get(event.day) ?? []), event]);
+    const festivalsByDay = new Map<DayNumber, string[]>();
+    for (const { day, festival } of festivals) festivalsByDay.set(day, [...(festivalsByDay.get(day) ?? []), festival.name]);
 
     this.rows.forEach((row, index) => { row.hidden = index * 7 >= length; });
     this.cells.forEach((cell, index) => {
@@ -106,7 +110,9 @@ export class MonthView {
       label.classList.toggle('is-new-month', startsMonth);
 
       const dayEvents = eventsByDay.get(day) ?? [];
-      cell.querySelector('.marks')!.innerHTML = dayEvents.map((event) => EVENT_ICONS[event.kind] ?? '').join('');
+      const dayFestivals = festivalsByDay.get(day) ?? [];
+      cell.querySelector('.marks')!.innerHTML = (dayFestivals.length > 0 ? FESTIVAL_ICON : '')
+        + dayEvents.map((event) => EVENT_ICONS[event.kind] ?? '').join('');
       if (day === today) cell.setAttribute('aria-current', 'date');
       else cell.removeAttribute('aria-current');
       cell.parentElement!.setAttribute('aria-selected', String(day === selected));
@@ -115,6 +121,7 @@ export class MonthView {
         solarLong(pack, toSolar(day)),
         gregorianLong(day),
         day === today ? 'today' : '',
+        ...dayFestivals,
         ...dayEvents.map((event) => SKY_EVENT_NAMES[event.kind]),
       ].filter(Boolean).join(', ');
     });

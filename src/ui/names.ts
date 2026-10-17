@@ -1,6 +1,7 @@
 import { LEAP_WEEK } from '../core/solar';
 import { DEFAULT_PACK_ID } from '../names/registry';
-import { type NamePack, type PackKind, RESPELLING_KEY } from '../names/schema';
+import { SKY_EVENT_NAMES } from '../core/sky';
+import { type Festival, type NamePack, type PackKind, RESPELLING_KEY } from '../names/schema';
 import { escapeHtml, forDisplayFont, hueClass } from './format';
 
 const certaintyText = { established: 'Meaning well established', likely: 'Meaning likely', uncertain: 'Meaning uncertain' };
@@ -11,6 +12,30 @@ const sayLine = (say?: string, ipa?: string) => (say
   : '');
 
 const GROUPS: [PackKind, string][] = [['historical', 'From history'], ['modern', 'Modern inventions']];
+
+const GREGORIAN_MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+/** A festival's date rule in plain words: "The first Friday on or after 19 January, for 2 days" */
+export function describeWhen({ when, days = 1 }: Festival, pack: NamePack): string {
+  const offset = when.offset ?? 0;
+  const shift = (base: string) => {
+    if (offset === 0) return base;
+    if (offset === -1) return `The day before ${base.charAt(0).toLowerCase()}${base.slice(1)}`;
+    if (offset === 1) return `The day after ${base.charAt(0).toLowerCase()}${base.slice(1)}`;
+    return `${Math.abs(offset)} days ${offset < 0 ? 'before' : 'after'} ${base.charAt(0).toLowerCase()}${base.slice(1)}`;
+  };
+  let text: string;
+  if ('event' in when) {
+    text = shift(`The ${SKY_EVENT_NAMES[when.event]}`);
+  } else if ('gregorian' in when) {
+    const [month, day] = when.gregorian.split('-').map(Number);
+    const date = `${day} ${GREGORIAN_MONTH_NAMES[month - 1]}`;
+    text = shift(when.weekday ? `The first ${when.weekday.charAt(0).toUpperCase()}${when.weekday.slice(1)} on or after ${date}` : date);
+  } else {
+    text = shift(`${when.solar.day} ${pack.months[when.solar.month - 1].name}`);
+  }
+  return days > 1 ? `${text}, for ${days} days` : text;
+}
 
 /** The packs inside the "Month names" popover, grouped by kind, the default first. */
 export function renderNamesMenu(container: HTMLElement, packs: NamePack[], currentId: string): void {
@@ -78,6 +103,18 @@ export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, cur
           </div>
         </li>
       </ol>
+      ${pack.festivals?.length ? `
+      <h3 class="sources-title">Festivals</h3>
+      <ul class="about-festivals">${pack.festivals.map((festival) => `
+        <li>
+          <h4 class="about-festival-name" ${lang}>${escapeHtml(forDisplayFont(festival.name))}</h4>
+          <p class="about-gloss">${escapeHtml(festival.gloss)}</p>
+          ${sayLine(festival.say, festival.ipa)}
+          <p class="about-when">${escapeHtml(describeWhen(festival, pack))}</p>
+          <p>${escapeHtml(festival.meaning)}</p>
+          ${festival.certainty ? `<p class="certainty">${certaintyText[festival.certainty].replace('Meaning', 'Date and meaning')}</p>` : ''}
+        </li>`).join('')}
+      </ul>` : ''}
       <h3 class="sources-title">Sources</h3>
       <ul class="sources">${pack.sources.map((source) => `<li><a href="${escapeHtml(source.url)}" rel="noopener">${escapeHtml(source.title)}</a></li>`).join('')}</ul>
     </div>`;

@@ -1,6 +1,7 @@
 import { type DayNumber, civilFromDay } from '../core/days';
 import { SKY_EVENT_NAMES, seasonEvents } from '../core/sky';
 import { DAYS_PER_MONTH, LEAP_WEEK, MAX_YEAR, MIN_YEAR, fromSolar, monthsInYear, yearLength, yearStart } from '../core/solar';
+import { festivalsBetween } from '../names/festivals';
 import type { NamePack } from '../names/schema';
 import { WEEKDAYS, escapeHtml, eventTime, forDisplayFont, gregorianDate, gregorianLong, gregorianShort, hueClass, monthGloss, monthName } from './format';
 
@@ -37,6 +38,10 @@ export class YearView {
     const head = `<thead><tr><th scope="col"><span class="visually-hidden">Day</span></th>${Array.from({ length: months }, (_, i) =>
       `<th scope="col" class="${hueClass(i + 1)}" ${lang}>${escapeHtml(forDisplayFont(monthName(pack, i + 1)))}</th>`).join('')}</tr></thead>`;
 
+    const festivalNames = new Map<DayNumber, string[]>();
+    for (const { day, festival } of festivalsBetween(pack, start, start + length - 1)) {
+      festivalNames.set(day, [...(festivalNames.get(day) ?? []), festival.name]);
+    }
     const rows = Array.from({ length: DAYS_PER_MONTH }, (_, r) => {
       const dayOfMonth = r + 1;
       const cells = Array.from({ length: months }, (_, m) => {
@@ -45,8 +50,10 @@ export class YearView {
         const day = fromSolar(year, month, dayOfMonth);
         const gregorianDay = civilFromDay(day).day;
         const startsMonth = dayOfMonth === 1 || gregorianDay === 1;
-        const classes = [startsMonth ? 'is-new-month' : '', day === today ? 'is-today' : ''].filter(Boolean).join(' ');
-        return `<td data-day="${day}"${classes ? ` class="${classes}"` : ''} title="${gregorianLong(day)}">${startsMonth ? gregorianShort(day) : gregorianDay}</td>`;
+        const festivalsHere = festivalNames.get(day) ?? [];
+        const classes = [startsMonth ? 'is-new-month' : '', day === today ? 'is-today' : '', festivalsHere.length ? 'has-festival' : ''].filter(Boolean).join(' ');
+        const title = [gregorianLong(day), ...festivalsHere].map(escapeHtml).join(', ');
+        return `<td data-day="${day}"${classes ? ` class="${classes}"` : ''} title="${title}">${startsMonth ? gregorianShort(day) : gregorianDay}</td>`;
       }).join('');
       const weekEnd = dayOfMonth % 7 === 0 && dayOfMonth < DAYS_PER_MONTH ? ' class="week-end"' : '';
       return `<tr${weekEnd}><th scope="row"><span class="n">${dayOfMonth}</span> ${WEEKDAYS[r % 7].slice(0, 3)}</th>${cells}</tr>`;

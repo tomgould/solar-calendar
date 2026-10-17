@@ -11,6 +11,7 @@ import './styles/app.css';
 import { type DayNumber, parseIsoDate, today as todayNumber, toIsoDate } from './core/days';
 import { type SkyEvent, nextSeasonEvent, seasonEvents } from './core/sky';
 import { LEAP_WEEK, MAX_YEAR, MIN_YEAR, MONTHS, daysInMonth, fromSolar, hasLeapWeek, monthSpan, toSolar, yearStart } from './core/solar';
+import { festivalsBetween } from './names/festivals';
 import { DEFAULT_PACK_ID, isPackId, loadAllPacks, loadPack } from './names/registry';
 import type { NamePack } from './names/schema';
 import { buildIcs } from './feed/ics';
@@ -100,11 +101,13 @@ function render(focus = false): void {
 
   if (view === 'month') {
     const events = monthEvents(date.year, date.month);
-    monthView.render({ selected, today, pack, events }, focus);
+    const festivals = festivalsBetween(pack, ...monthSpan(date.year, date.month));
+    monthView.render({ selected, today, pack, events, festivals }, focus);
     renderDayPanel($('#day-panel'), {
       selected, today, pack,
       events: events.filter((event) => event.day === selected),
       next: nextSeasonEvent(selected),
+      festivals: festivals.filter((entry) => entry.day === selected).map((entry) => entry.festival),
     });
     goTo.render({ selected, pack });
     const moon = $('#day-panel [data-moon]');

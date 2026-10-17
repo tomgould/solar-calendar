@@ -34,5 +34,8 @@ export const THEME_ICONS = {
   light: `<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="3.2" fill="currentColor"/>${sunRays}</svg>`,
 };
 
+/** Marks a festival day in calendar cells: a four-pointed star. */
+export const FESTIVAL_ICON = svg('<path d="M6 .8 7.4 4.6 11.2 6 7.4 7.4 6 11.2 4.6 7.4.8 6 4.6 4.6z" fill="currentColor"/>');
+
 export const chevron = (direction: 'left' | 'right') =>
   `<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="${direction === 'left' ? 'M10 3 5 8l5 5' : 'M6 3l5 5-5 5'}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
