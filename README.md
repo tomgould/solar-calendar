@@ -15,7 +15,13 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
 - Day details: day of the year, moon phase, and the next equinox or solstice in your local time.
 - Year view: every day of the year in one table, one row per day of the month.
 - Printing: a month or the whole year, each on a single A4 page, in light colours whatever the screen theme.
-- Month name packs: switch between sets of month names, such as the Gregorian names or the Anglo-Saxon months recorded by Bede, and read what each name means.
+- Month name packs: eleven sets of month names to switch between, and read what each name means:
+  - historical: Gregorian, Anglo-Saxon (recorded by Bede), Old Norse, Roman, Gaulish, Persian, ancient Egyptian and Coptic
+  - modern: Nature, Latin numbers and Sky
+- Go to a date: type a date in either calendar to find it in the other.
+- Sunrise, sunset and hours of daylight for your location. Location is opt-in and stays in your browser.
+- Add to your calendar: download a year as an .ics file, or subscribe to a feed that stays up to date.
+- Works offline after the first visit, and can be installed as an app.
 - Dark mode, keyboard navigation and phone layouts.
 
 ## Development
@@ -26,7 +32,7 @@ npx playwright install   # browsers for the end-to-end tests
 npm run dev              # http://localhost:5173
 npm test                 # unit tests, then end-to-end tests
 npm run typecheck
-npm run build            # static site in dist/
+npm run build            # static site in dist/, plus the feed Worker in dist-worker/
 ```
 
 Run one test file with `npx vitest run tests/unit/core.test.ts` or `npx playwright test --project=chromium`.
@@ -40,7 +46,7 @@ The site runs on Cloudflare Workers as static files (`wrangler.jsonc`).
 
 ## Adding a month name pack
 
-Add one JSON file to `src/names/packs/`. The app finds it automatically, and the file name must match the pack's `id`. `src/names/schema.ts` describes the format, and `npm run test:unit` checks every pack. Give each meaning a source, and mark disputed meanings as uncertain.
+Add one JSON file to `src/names/packs/`, starting from `_template.json`. The app finds it automatically. See [docs/name-packs.md](docs/name-packs.md) for the format and writing standard. `npm run test:unit` checks every pack, including that the fonts have every letter it uses.
 
 ## Project layout
 
