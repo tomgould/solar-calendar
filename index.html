@@ -33,6 +33,7 @@
       <h2 id="names-menu-title" class="menu-title">Month names</h2>
       <p class="menu-note">Choose what the months are called. The days stay the same.</p>
       <div id="names-options" class="pack-options" role="radiogroup" aria-labelledby="names-menu-title"></div>
+      <p class="status" id="names-status" role="status"></p>
     </div>
 
     <main id="main">
@@ -143,6 +144,29 @@
   </div>
 
   <dialog id="about-dialog" class="about" aria-labelledby="about-title"></dialog>
+  <dialog id="location-dialog" class="about" aria-labelledby="location-title">
+    <form id="location-form" novalidate>
+      <div class="about-head">
+        <h2 id="location-title">Your location</h2>
+        <button type="button" class="button" data-close>Close</button>
+      </div>
+      <div class="about-body">
+        <p class="about-origin">Sunrise and sunset depend on where you are. Your location stays in this browser and is never sent anywhere.</p>
+        <p><button type="button" class="button" id="use-my-location">Use my location</button></p>
+        <div class="goto-row">
+          <label for="location-lat">Latitude</label>
+          <input type="number" id="location-lat" class="field" step="any" min="-90" max="90" inputmode="decimal">
+          <label for="location-lon">Longitude</label>
+          <input type="number" id="location-lon" class="field" step="any" min="-180" max="180" inputmode="decimal">
+        </div>
+        <p class="status" id="location-status" role="status"></p>
+        <div class="apps-row">
+          <button type="submit" class="button">Save</button>
+          <button type="button" class="button" id="clear-location">Forget my location</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
   <noscript><p class="page">This calendar needs JavaScript to work out the dates.</p></noscript>
   <script type="module" src="/src/main.ts"></script>
 </body>

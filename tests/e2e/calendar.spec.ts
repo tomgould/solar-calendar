@@ -128,6 +128,24 @@ test('downloads the year and offers a subscription feed', async ({ page }) => {
   expect(await feed.text()).toContain('X-WR-CALNAME:Solar calendar (Anglo-Saxon)');
 });
 
+test('shows sunrise and sunset once a location is set', async ({ page, context }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'Location emulation, one project');
+  await context.grantPermissions(['geolocation']);
+  await context.setGeolocation({ latitude: 51.5074, longitude: -0.1278 });
+  await page.goto('./?date=2026-06-21&names=gregorian');
+  await page.locator('#day-panel [data-set-location]').click();
+  await page.locator('#use-my-location').click();
+  await expect(page.locator('#location-lat')).toHaveValue('51.51');
+  await page.locator('#location-form').getByRole('button', { name: 'Save' }).click();
+  const sun = page.locator('#day-panel [data-sun]');
+  await expect(sun).toContainText(/Sunrise 04:4\d, sunset 21:2\d BST\. 16 h \d+ min of daylight/);
+
+  // Forgetting the location goes back to offering it
+  await sun.getByRole('button', { name: 'Change place' }).click();
+  await page.locator('#clear-location').click();
+  await expect(sun).toHaveText('Add your location');
+});
+
 test('switches theme, offering the other mode', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('./');
@@ -192,6 +210,8 @@ test('works under the production Content-Security-Policy', async ({ page }) => {
   await page.goto('./?view=year&date=2026-10-17');
   await expect(page.locator('#almanac td[data-day]')).toHaveCount(364);
   expect(await page.evaluate(() => (window as unknown as { blocked: string[] }).blocked)).toEqual([]);
+  // Font requests can still be in flight; let them finish unintercepted
+  await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
 
 test('passes automated accessibility checks', async ({ page }, testInfo) => {
