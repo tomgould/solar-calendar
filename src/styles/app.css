@@ -494,7 +494,7 @@ a.button { display: inline-flex; align-items: center; color: inherit; text-decor
   .month-body { display: block; }
   .grid { border-top-width: 3mm; }
   .grid th { padding: 1.5mm 2mm; font-size: 9pt; }
-  .cell { height: 31mm; padding: 2mm; }
+  .cell { height: 29mm; padding: 2mm; }
   .num { font-size: 30pt; }
   .greg { font-size: 10pt; }
   .marks svg { width: 4mm; height: 4mm; }
@@ -502,12 +502,14 @@ a.button { display: inline-flex; align-items: center; color: inherit; text-decor
   .cell[aria-current='date'] .greg:not(.is-new-month) { color: var(--muted); }
   .month-meaning { margin: 4mm 0 0; color: var(--muted); }
   .month-main { display: block; }
-  .month-festivals { margin-top: 3mm; font-size: 8pt; }
+  /* Three columns, one line each, so a busy month still fits the page */
+  .month-festivals { margin-top: 3mm; font-size: 7.5pt; line-height: 1.25; }
   .month-festivals .notes-title { margin-bottom: 1mm; font-size: 9pt; }
-  .festival-list { display: flex; flex-wrap: wrap; gap: 0 6mm; }
+  .festival-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5mm 5mm; }
   .festival-list li { border: 0; }
-  .festival-link { padding: 0; }
-  .festival-day { font-size: 10pt; }
+  .festival-link { gap: 1.5mm; padding: 0; }
+  .festival-day { min-width: 0; font-size: 9pt; }
+  .festival-meta { display: inline; margin-left: 1.5mm; font-size: 7pt; }
   .year-festivals { display: none !important; }
 
   .year-head { margin-bottom: 2mm; }
