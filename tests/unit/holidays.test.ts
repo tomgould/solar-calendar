@@ -55,10 +55,9 @@ describe('UK bank holidays', () => {
     expect(() => validateHolidaySet(set, 'test.json')).toThrow(/"moves"/);
   });
 
-  it('are on by default only on UK time', () => {
+  it('are all on by default', () => {
     expect(HOLIDAY_SETS.map((set) => set.title)).toEqual(['England and Wales', 'Northern Ireland', 'Scotland']);
-    expect(defaultHolidaySetIds('Europe/London')).toBe('uk-england-and-wales');
-    expect(defaultHolidaySetIds('America/New_York')).toBe('');
+    expect(defaultHolidaySetIds()).toBe('uk-england-and-wales,uk-northern-ireland,uk-scotland');
   });
 
   it('show a holiday kept in several regions once, naming them all', () => {

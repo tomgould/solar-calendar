@@ -30,9 +30,9 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
   - modern inventions: Nature for each hemisphere, Latin numbers and Sky
 - Pronunciation: a respelling and IPA for every name that isn't English, and a button that reads it aloud.
 - Festivals: the historical packs (apart from Gregorian) mark their own festivals, such as Nowruz or Þorrablót, and Sky marks the meteor showers. Show festivals from several packs at once, listed under each month and year.
-- UK bank holidays and Easter for England and Wales, Scotland and Northern Ireland, any or all at once, kept in step with GOV.UK by a weekly check.
+- UK bank holidays and Easter for England and Wales, Scotland and Northern Ireland, all on by default and each can be turned off, kept in step with GOV.UK by a weekly check.
 - Go to a date: type a date in either calendar to find it in the other.
-- Sunrise, sunset and hours of daylight for your location, in its own time zone. Location is opt-in and stays in your browser.
+- Sunrise, sunset and hours of daylight for your location, in its own time zone. A first-visit notice explains why it asks, with a "No thanks"; the location stays in your browser.
 - Add to your calendar: download a year as an .ics file, or subscribe to a feed that stays up to date.
 - Works offline after the first visit, and can be installed as an app.
 - Dark mode, keyboard navigation, and a phone layout that keeps the selected day in a sheet along the bottom.

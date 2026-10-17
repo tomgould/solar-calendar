@@ -53,6 +53,17 @@
     <main id="main" class="is-loading">
       <p class="today-line" id="today-line"></p>
 
+      <!-- Asks once; the browser's own permission prompt only comes from the button -->
+      <section class="location-notice" id="location-notice" aria-labelledby="location-notice-title" hidden>
+        <h2 id="location-notice-title" class="notice-title">Sunrise and sunset where you are</h2>
+        <p>To show sunrise, sunset and hours of daylight, the calendar needs to know roughly where you are. Your location stays in this browser and is never sent anywhere. You can change or forget it at any time under Sunrise and sunset.</p>
+        <div class="apps-row">
+          <button type="button" class="button button-strong" id="notice-use-location">Use my location</button>
+          <button type="button" class="button" id="notice-dismiss">No thanks</button>
+        </div>
+        <p class="status" id="notice-status" role="status"></p>
+      </section>
+
       <section id="month-view" class="month" aria-labelledby="month-title">
         <nav class="strip" aria-label="Months of this year"><ol id="month-strip"></ol></nav>
         <div class="month-head">
