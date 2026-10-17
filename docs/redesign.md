@@ -470,3 +470,4 @@ Status:
 - [x] Coptic and Persian festivals on their own calendars' rules.
 - [x] Festivals menu, lists under the month and the year, next dates in the meaning dialog, holidays in the feed.
 - [x] `npm run holidays:check` and the weekly workflow.
+- [x] Lighthouse re-run after Phase 7: unchanged, 98 performance on mobile and 100 on desktop, 100 for accessibility, best practices and SEO. Main bundle 24 KB gzipped. README screenshots retaken, with one of the Festivals menu.
