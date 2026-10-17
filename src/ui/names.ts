@@ -1,5 +1,6 @@
 import { LEAP_WEEK } from '../core/solar';
-import { type NamePack, RESPELLING_KEY } from '../names/schema';
+import { DEFAULT_PACK_ID } from '../names/registry';
+import { type NamePack, type PackKind, RESPELLING_KEY } from '../names/schema';
 import { escapeHtml, forDisplayFont, hueClass } from './format';
 
 const certaintyText = { established: 'Meaning well established', likely: 'Meaning likely', uncertain: 'Meaning uncertain' };
@@ -9,15 +10,26 @@ const sayLine = (say?: string, ipa?: string) => (say
   ? `<p class="about-say"><span class="say-label">Say</span> <strong>${escapeHtml(say)}</strong>${ipa ? ` <span class="ipa">/${escapeHtml(ipa)}/</span>` : ''}</p>`
   : '');
 
-/** The list of packs inside the "Month names" popover. */
+const GROUPS: [PackKind, string][] = [['historical', 'From history'], ['modern', 'Modern inventions']];
+
+/** The packs inside the "Month names" popover, grouped by kind, the default first. */
 export function renderNamesMenu(container: HTMLElement, packs: NamePack[], currentId: string): void {
-  container.innerHTML = packs.map((pack) => `
+  const order = (a: NamePack, b: NamePack) =>
+    Number(b.id === DEFAULT_PACK_ID) - Number(a.id === DEFAULT_PACK_ID) || a.title.localeCompare(b.title);
+  container.innerHTML = GROUPS.map(([kind, legend]) => {
+    const group = packs.filter((pack) => pack.kind === kind).sort(order);
+    return group.length === 0 ? '' : `<fieldset class="pack-group"><legend>${legend}</legend>${group.map((pack) => packOption(pack, currentId)).join('')}</fieldset>`;
+  }).join('');
+}
+
+function packOption(pack: NamePack, currentId: string): string {
+  return `
     <label class="pack-option">
       <input type="radio" name="name-pack" value="${pack.id}"${pack.id === currentId ? ' checked' : ''}>
       <span class="pack-title">${escapeHtml(pack.title)}</span>
       <span class="pack-desc">${escapeHtml(pack.description)}</span>
       <span class="pack-sample" lang="${escapeHtml(pack.lang)}">${pack.months.slice(0, 3).map((month) => escapeHtml(forDisplayFont(month.name))).join(', ')} …</span>
-    </label>`).join('');
+    </label>`;
 }
 
 /** The "About this name" dialog: every month of the pack, with the current one marked. */
