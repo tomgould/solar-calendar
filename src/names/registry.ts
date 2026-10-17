@@ -1,3 +1,4 @@
+import defaultPack from './packs/gregorian.json';
 import { type NamePack, validatePack } from './schema';
 
 // Every JSON file in packs/ is a pack. Files starting with "_" (such as a
@@ -15,7 +16,9 @@ export function isPackId(id: string | null | undefined): id is string {
   return typeof id === 'string' && id in loaders;
 }
 
-const cache = new Map<string, Promise<NamePack>>();
+// The default pack is in the main bundle, so the app can always start, even
+// offline with no other pack cached. Keep this import in step with DEFAULT_PACK_ID.
+const cache = new Map<string, Promise<NamePack>>([[DEFAULT_PACK_ID, Promise.resolve(validatePack(defaultPack, 'gregorian.json'))]]);
 
 export function loadPack(id: string): Promise<NamePack> {
   const packId = isPackId(id) ? id : DEFAULT_PACK_ID;
@@ -26,6 +29,10 @@ export function loadPack(id: string): Promise<NamePack> {
       const pack = validatePack(data, path);
       if (pack.id !== packId) throw new Error(`${path}: "id" must match the file name "${packId}"`);
       return pack;
+    }).catch((error: unknown) => {
+      // Don't remember a failed load (offline, say), so a later attempt can succeed
+      cache.delete(packId);
+      throw error;
     });
     cache.set(packId, pending);
   }

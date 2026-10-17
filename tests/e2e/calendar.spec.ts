@@ -107,6 +107,13 @@ test('converts between the calendars with Go to a date', async ({ page }) => {
   await page.locator('#goto-solar-year').fill('2026');
   await page.locator('#goto-solar-year').dispatchEvent('change');
   await expect(page.locator('#goto-solar-month option')).toHaveCount(13);
+
+  // A day that doesn't exist is reported against the day field
+  await page.locator('#goto-solar-day').fill('30');
+  await page.locator('#goto-solar').getByRole('button', { name: 'Go' }).click();
+  await expect(page.locator('#goto-error')).toHaveText('Choose a day from 1 to 28.');
+  await expect(page.locator('#goto-solar-day')).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.locator('#goto-solar-day')).toBeFocused();
 });
 
 test('downloads the year and offers a subscription feed', async ({ page }) => {
@@ -139,11 +146,14 @@ test('shows sunrise and sunset once a location is set', async ({ page, context }
   await page.locator('#location-form').getByRole('button', { name: 'Save' }).click();
   const sun = page.locator('#day-panel [data-sun]');
   await expect(sun).toContainText(/Sunrise 04:4\d, sunset 21:2\d BST\. 16 h \d+ min of daylight/);
+  // Focus comes back to the button that opened the dialog
+  await expect(sun.getByRole('button', { name: 'Change place' })).toBeFocused();
 
   // Forgetting the location goes back to offering it
   await sun.getByRole('button', { name: 'Change place' }).click();
   await page.locator('#clear-location').click();
   await expect(sun).toHaveText('Add your location');
+  await expect(sun.getByRole('button', { name: 'Add your location' })).toBeFocused();
 });
 
 test('switches theme, offering the other mode', async ({ page }) => {

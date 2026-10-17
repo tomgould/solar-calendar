@@ -54,7 +54,12 @@ export function validatePack(data: unknown, source: string): NamePack {
   for (const key of ['dir', 'originalDir']) {
     if (data[key] !== undefined && data[key] !== 'ltr' && data[key] !== 'rtl') problems.push(`"${key}" must be "ltr" or "rtl"`);
   }
-  if (data.originalLang !== undefined && !isText(data.originalLang)) problems.push('"originalLang" must be a language tag if present');
+  // Language tags go into lang="" attributes, so only allow the BCP 47 shape
+  const languageTag = /^[A-Za-z]{2,8}(-[A-Za-z0-9]{1,8})*$/;
+  if (isText(data.lang) && !languageTag.test(data.lang)) problems.push('"lang" must be a language tag such as "la" or "fa-Latn"');
+  if (data.originalLang !== undefined && !(isText(data.originalLang) && languageTag.test(data.originalLang))) {
+    problems.push('"originalLang" must be a language tag such as "fa" if present');
+  }
 
   const leapWeek = data.leapWeek;
   if (!isObject(leapWeek) || !['name', 'gloss', 'meaning'].every((key) => isText(leapWeek[key]))) {
