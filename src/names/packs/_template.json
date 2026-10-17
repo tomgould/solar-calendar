@@ -1,0 +1,32 @@
+{
+  "id": "rename-me-to-match-the-file-name",
+  "title": "Short title shown in the menu",
+  "description": "One line on where these names come from",
+  "culture": "Who used them, for example Anglo-Saxon England",
+  "era": "When, for example 8th century",
+  "lang": "Language tag of the names as shown, for example ang, is, la or fa-Latn",
+  "origin": "Two to four sentences: the source, the era, how that calendar worked, and how its months are placed in these 13 slots.",
+  "leapWeek": {
+    "name": "Leap week, or a historical name for an extra period",
+    "gloss": "two to four words",
+    "meaning": "One to three sentences."
+  },
+  "months": [
+    { "name": "Month 1 (23 Mar to 19 Apr in 2026)", "gloss": "two to four words", "meaning": "One to three sentences: what the name means and who recorded it.", "certainty": "established" },
+    { "name": "Month 2 (20 Apr to 17 May)", "gloss": "two to four words", "meaning": "One to three sentences.", "certainty": "likely" },
+    { "name": "Month 3 (18 May to 14 Jun)", "gloss": "two to four words", "meaning": "One to three sentences.", "certainty": "uncertain" },
+    { "name": "Month 4 (15 Jun to 12 Jul, holds the June solstice)", "gloss": "two to four words", "meaning": "One to three sentences.", "certainty": "established" },
+    { "name": "Month 5 (13 Jul to 9 Aug)", "gloss": "two to four words", "meaning": "One to three sentences.", "certainty": "established" },
+    { "name": "Month 6 (10 Aug to 6 Sep)", "gloss": "two to four words", "meaning": "One to three sentences.", "certainty": "established" },
+    { "name": "Month 7 (7 Sep to 4 Oct, holds the September equinox)", "gloss": "two to four words", "meaning": "One to three sentences.", "certainty": "established" },
+    { "name": "Month 8 (5 Oct to 1 Nov)", "gloss": "two to four words", "meaning": "One to three sentences.", "certainty": "established" },
+    { "name": "Month 9 (2 Nov to 29 Nov)", "gloss": "two to four words", "meaning": "One to three sentences.", "certainty": "established" },
+    { "name": "Month 10 (30 Nov to 27 Dec, holds the December solstice)", "gloss": "two to four words", "meaning": "One to three sentences.", "certainty": "established" },
+    { "name": "Month 11 (28 Dec to 24 Jan)", "gloss": "two to four words", "meaning": "One to three sentences.", "certainty": "established" },
+    { "name": "Month 12 (25 Jan to 21 Feb)", "gloss": "two to four words", "meaning": "One to three sentences.", "certainty": "established" },
+    { "name": "Month 13 (22 Feb to 21 Mar)", "original": "Optional: the original spelling or script", "gloss": "two to four words", "meaning": "One to three sentences.", "certainty": "established", "notes": "Optional: for example where a 13th name comes from" }
+  ],
+  "sources": [
+    { "title": "A source you checked", "url": "https://example.org/" }
+  ]
+}

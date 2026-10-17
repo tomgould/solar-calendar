@@ -246,6 +246,26 @@ a { color: inherit; text-underline-offset: 3px; }
 .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-top: var(--space-5); }
 .status { color: var(--muted); font-size: var(--step--1); }
 
+/* Go to a date ------------------------------------------------------------ */
+
+.side { display: grid; gap: var(--space-6); align-content: start; }
+.goto { padding-top: var(--space-3); border-top: 1px solid var(--rule); }
+.goto-title { margin: 0 0 var(--space-3); font: 700 var(--step-1) / 1.3 var(--font-text); }
+.goto-form { margin: 0 0 var(--space-4); }
+.goto-form label, .goto-form legend { display: block; margin-bottom: var(--space-1); color: var(--muted); font-size: var(--step--1); }
+.goto-form fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+.goto-row { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+.field {
+  min-height: 36px; padding: 4px 8px; border: 1px solid var(--rule-strong); border-radius: var(--radius);
+  background: var(--surface); color: var(--ink); font: inherit;
+}
+.field:hover { border-color: var(--ink); }
+.field-day { width: 4.5em; }
+.field-year { width: 5.5em; }
+.field-month { flex: 1; min-width: 9em; }
+.goto-error { margin: 0; color: var(--ink); font-weight: 700; }
+.goto-error:empty { display: none; }
+
 /* Year view --------------------------------------------------------------- */
 
 .table-scroll { overflow-x: auto; background: var(--surface); }
@@ -358,7 +378,7 @@ a { color: inherit; text-underline-offset: 3px; }
   }
   body { font-size: 9pt; }
   .page { max-width: none; padding: 0; }
-  .masthead, .today-line, .about-calendar, .steps, .skip-link, .strip, .day, .text-button { display: none !important; }
+  .masthead, .today-line, .about-calendar, .steps, .skip-link, .strip, .side, .text-button { display: none !important; }
   .print-only { display: block; }
 
   .month-head { margin-bottom: 4mm; }

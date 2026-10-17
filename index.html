@@ -60,7 +60,34 @@
             <thead><tr id="grid-head"></tr></thead>
             <tbody id="grid-body"></tbody>
           </table>
-          <aside class="day" id="day-panel" aria-label="Selected day"></aside>
+          <div class="side">
+            <aside class="day" id="day-panel" aria-label="Selected day"></aside>
+            <section class="goto" id="goto" aria-labelledby="goto-title">
+              <h2 id="goto-title" class="goto-title">Go to a date</h2>
+              <form id="goto-gregorian" class="goto-form" novalidate>
+                <label for="goto-gregorian-date">Gregorian date</label>
+                <div class="goto-row">
+                  <input type="date" id="goto-gregorian-date" class="field" required>
+                  <button type="submit" class="button">Go</button>
+                </div>
+              </form>
+              <form id="goto-solar" class="goto-form" novalidate>
+                <fieldset>
+                  <legend>Solar date</legend>
+                  <div class="goto-row">
+                    <label class="visually-hidden" for="goto-solar-day">Day</label>
+                    <input type="number" id="goto-solar-day" class="field field-day" min="1" max="28" inputmode="numeric" required>
+                    <label class="visually-hidden" for="goto-solar-month">Month</label>
+                    <select id="goto-solar-month" class="field field-month"></select>
+                    <label class="visually-hidden" for="goto-solar-year">Year</label>
+                    <input type="number" id="goto-solar-year" class="field field-year" inputmode="numeric" required>
+                    <button type="submit" class="button">Go</button>
+                  </div>
+                </fieldset>
+              </form>
+              <p class="goto-error" id="goto-error" role="alert"></p>
+            </section>
+          </div>
         </div>
         <p class="print-only month-meaning" id="month-meaning"></p>
       </section>
