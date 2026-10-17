@@ -428,3 +428,45 @@ The site is static files plus one dynamic URL: the ICS feed, which calendar apps
 - [x] A slide-up day panel on phones.
 - [x] Lighthouse audit, then README screenshots. On the built site: 98 performance on mobile and 100 on desktop, 100 for accessibility, best practices and SEO. Fixes: `<main>` hidden until the first render (layout shift 0.48 to 0.001), `scrollbar-gutter: stable`, a deferred `registerSW.js`, and `robots.txt`.
 
+
+### Phase 7: bank holidays, Easter and festival lists (agreed 17 Oct 2026)
+
+Decisions: holidays are a separate setting; all three UK regions; any packs' festivals can be shown together (a "Festivals" menu with "Also show festivals from" checkboxes, and the chosen names' own festivals always shown); include the Coptic and Persian accuracy fixes.
+
+Requested: UK bank holidays plus Easter, and festival dates shown plainly when a pack is loaded, not only as marks on their days. Plan the upkeep too.
+
+**1. Holidays as their own layer, not part of a name pack.** The bank holidays would sit in a "Holidays" setting in the names menu: None, England and Wales, Scotland or Northern Ireland. They show alongside whichever month names are chosen, so someone using Anglo-Saxon names still sees the bank holidays, and someone outside the UK using Gregorian names doesn't get UK dates forced on them. By default they're on for devices set to UK time and off elsewhere. Each region is a JSON file in `src/holidays/` in the same festival format as the packs, so every display path already works.
+
+**2. Rule format additions** (`src/core/festivals.ts`, unit-tested):
+- `{ "easter": true, "offset": -2 }`: Western Easter, using the Gregorian computus, valid for every supported year. Easter Sunday itself goes in each region's file. Good Friday is offset -2 and Easter Monday +1.
+- `{ "date": "2023-05-08" }`: a one-off, such as a coronation or a state funeral.
+- `"moves": { "2020": "05-08" }`: a holiday moved in one year, such as the early May bank holiday for VE Day in 2020.
+- `"substitute": true`: a holiday that falls at the weekend also gets the next free weekday, as "Christmas Day (substitute day)". The feast still shows on its own date.
+- `"from": 1978`: the first year a holiday applies. The current pattern settled in 1978 (early May), so earlier years show only Easter, Christmas and the dates that existed then.
+- Existing rules already cover "first Monday in May" (`05-01` + Monday) and "last Monday in May" (`05-25` + Monday).
+
+**3. Showing festival and holiday dates** (for every pack and holiday set):
+- Month view: a "This month" list under the grid, with each date in both calendars. Choosing one selects its day. It prints with the month.
+- Year view: a "Festivals and holidays in solar 2026" list under the table. It's on screen only, so the year still prints on one page.
+- "About this name": each festival's next date next to its rule.
+- Day panel: bank holidays get their own row, like festivals.
+- Feed and download: holidays are included when chosen (`/feed.ics?names=…&holidays=uk-england-wales`).
+
+**4. Keeping them up to date.** Rules produce every year automatically, so only one-offs (jubilees, coronations, funerals, moved days) ever need adding. The government announces those months ahead.
+- **Snapshot test:** `tests/fixtures/gov-uk-bank-holidays.json` is a copy of https://www.gov.uk/bank-holidays.json (Open Government Licence; currently 2019 to 2028 for all three regions). A unit test checks the rules produce exactly those dates. The tests never touch the network.
+- **`npm run holidays:check`:** fetches the live file and lists any dates the rules miss or add.
+- **Weekly GitHub Action:** once the repo is pushed, it fetches the live file. If it has changed, it opens a pull request that updates the snapshot. The snapshot test then fails on that pull request until someone adds the one-off to the region's JSON. Merging deploys it. The app updates itself through the service worker, and feed subscribers get it within a day.
+- **Earlier one-offs:** about ten since 1978, such as the 1981 royal wedding and the millennium. They're checked against GOV.UK from 2019 and against the published proclamations before that.
+- **The historical packs' festivals:** they follow fixed traditions and need no updates.
+- **Optional accuracy fixes in the same pass:**
+  - **Coptic:** the dates follow the Julian calendar and shift a day in 2100. A `coptic` rule would keep them right in every supported year, and put Nayrouz on 12 September in the years it moves.
+  - **Persian:** Nowruz could use Iran's Tehran-noon rule.
+
+**Order of work:** rule engine and tests; holiday data with the snapshot test; fact-check of one-offs; menu setting and lists; feed; upkeep script and workflow; docs.
+
+Status:
+- [x] Rule engine: Easter, one-off dates, Julian, Coptic and Persian dates, `before`, `from`/`until`, `moves`, substitute days.
+- [x] Holiday sets for England and Wales, Scotland and Northern Ireland, matching GOV.UK for every year it lists (2019 to 2028). The test found the 2026 World Cup bank holiday in Scotland on its first run.
+- [x] Coptic and Persian festivals on their own calendars' rules.
+- [x] Festivals menu, lists under the month and the year, next dates in the meaning dialog, holidays in the feed.
+- [x] `npm run holidays:check` and the weekly workflow.
