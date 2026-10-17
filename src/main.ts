@@ -10,7 +10,8 @@ import { DEFAULT_PACK_ID, isPackId, loadAllPacks, loadPack } from './names/regis
 import type { NamePack } from './names/schema';
 import { buildIcs } from './feed/ics';
 import { moonPhaseName, moonQuarters } from './sky/moon';
-import { renderDayPanel } from './ui/day-panel';
+import { type Place, isPlace, sunTimes } from './sky/sun';
+import { renderDayPanel, sunText } from './ui/day-panel';
 import { GoToDate } from './ui/goto';
 import { escapeHtml, gregorianLong, solarLong } from './ui/format';
 import { THEME_ICONS, chevron } from './ui/icons';
@@ -39,7 +40,20 @@ const storage = {
   set(key: string, value: string): void {
     try { localStorage.setItem(key, value); } catch { /* private mode: the choice just isn't remembered */ }
   },
+  remove(key: string): void {
+    try { localStorage.removeItem(key); } catch { /* nothing stored */ }
+  },
 };
+
+/** The viewer's place for sunrise and sunset, kept only in this browser. */
+function readPlace(): Place | null {
+  try {
+    const place: unknown = JSON.parse(storage.get('location') ?? 'null');
+    return isPlace(place) ? place : null;
+  } catch {
+    return null;
+  }
+}
 
 let monthView: MonthView;
 let yearView: YearView;
@@ -59,6 +73,9 @@ function monthEvents(year: number, month: number): SkyEvent[] {
       moonPending.delete(key);
       const shown = toSolar(state.selected);
       if (state.view === 'month' && shown.year === year && shown.month === month) render();
+    }).catch(() => {
+      // The moon library didn't load (offline, say); try again on the next render
+      moonPending.delete(key);
     });
   }
   return [...seasonEvents(first, last), ...(moonCache.get(key) ?? [])];
@@ -85,10 +102,24 @@ function render(focus = false): void {
       next: nextSeasonEvent(selected),
     });
     goTo.render({ selected, pack });
+    const moon = $('#day-panel [data-moon]');
     moonPhaseName(selected).then((phase) => {
-      const target = document.querySelector('#day-panel [data-moon]');
-      if (target && state.selected === selected) target.textContent = phase;
+      if (state.selected === selected && moon.isConnected) moon.textContent = phase;
+    }).catch(() => {
+      if (moon.isConnected) moon.textContent = 'Couldn’t load moon data. Check your connection.';
     });
+    const place = readPlace();
+    const sun = $('#day-panel [data-sun]');
+    if (place) {
+      sunTimes(selected, place).then((times) => {
+        if (state.selected !== selected || !sun.isConnected) return;
+        sun.innerHTML = `${escapeHtml(sunText(times))} <button type="button" class="text-button" data-set-location>Change place</button>`;
+      }).catch(() => {
+        if (sun.isConnected) sun.textContent = 'Couldn’t load sunrise and sunset. Check your connection.';
+      });
+    } else {
+      sun.innerHTML = '<button type="button" class="text-button" data-set-location>Add your location</button>';
+    }
     $<HTMLButtonElement>('#prev-month').disabled = selected - date.day < FIRST_DAY;
     $<HTMLButtonElement>('#next-month').disabled = selected - date.day + daysInMonth(date.month) > LAST_DAY;
   } else {
@@ -171,7 +202,13 @@ function shiftYear(delta: number): void {
 }
 
 async function choosePack(id: string): Promise<void> {
-  state.pack = await loadPack(id);
+  try {
+    state.pack = await loadPack(id);
+  } catch {
+    $('#names-status').textContent = 'Couldn’t load those names. Check your connection and try again.';
+    return;
+  }
+  $('#names-status').textContent = '';
   storage.set('names', id);
   render();
 }
@@ -198,7 +235,64 @@ function setUpTheme(): void {
   update();
 }
 
+function setUpLocation(): void {
+  const dialog = $<HTMLDialogElement>('#location-dialog');
+  const lat = $<HTMLInputElement>('#location-lat');
+  const lon = $<HTMLInputElement>('#location-lon');
+  const status = $('#location-status');
+
+  $('#day-panel').addEventListener('click', (event) => {
+    if (!(event.target as Element).closest('[data-set-location]')) return;
+    const place = readPlace();
+    [lat.value, lon.value] = place ? [String(place.lat), String(place.lon)] : ['', ''];
+    status.textContent = '';
+    dialog.showModal();
+  });
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog || (event.target as Element).closest('[data-close]')) dialog.close();
+  });
+
+  $('#use-my-location').addEventListener('click', () => {
+    if (!navigator.geolocation) {
+      status.textContent = 'This browser can’t share your location. Enter it below instead.';
+      return;
+    }
+    status.textContent = 'Finding your location…';
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        // About a kilometre is plenty for sunrise and sunset
+        [lat.value, lon.value] = [coords.latitude.toFixed(2), coords.longitude.toFixed(2)];
+        status.textContent = 'Found. Press Save to use it.';
+      },
+      (error) => {
+        status.textContent = error.code === error.PERMISSION_DENIED
+          ? 'Location access is blocked. Enter your latitude and longitude below instead.'
+          : 'Couldn’t find your location. Enter it below instead.';
+      },
+      { timeout: 10_000, maximumAge: 3_600_000 },
+    );
+  });
+
+  $('#location-form').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const place = { lat: Number(lat.value), lon: Number(lon.value) };
+    if (lat.value === '' || lon.value === '' || !isPlace(place)) {
+      status.textContent = 'Enter a latitude from −90 to 90 and a longitude from −180 to 180.';
+      return;
+    }
+    storage.set('location', JSON.stringify(place));
+    dialog.close();
+    render();
+  });
+  $('#clear-location').addEventListener('click', () => {
+    storage.remove('location');
+    dialog.close();
+    render();
+  });
+}
+
 function wire(): void {
+  setUpLocation();
   monthView = new MonthView($('#month-view'), { select, goToMonth, shiftMonth });
   goTo = new GoToDate($('#goto'), [FIRST_DAY, LAST_DAY], (day) => select(day));
   yearView = new YearView($('#year-view'), (day) => {
@@ -247,7 +341,11 @@ function wire(): void {
     const width = Math.min(440, window.innerWidth - 32);
     menu.style.top = `${anchor.bottom + 8}px`;
     menu.style.right = `${Math.min(Math.max(16, window.innerWidth - anchor.right), window.innerWidth - width - 16)}px`;
-    renderNamesMenu($('#names-options'), await loadAllPacks(), state.pack.id);
+    try {
+      renderNamesMenu($('#names-options'), await loadAllPacks(), state.pack.id);
+    } catch {
+      $('#names-status').textContent = 'Couldn’t load the list of names. Check your connection and try again.';
+    }
   });
   menu.addEventListener('change', (event) => {
     const input = event.target as HTMLInputElement;

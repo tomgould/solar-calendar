@@ -2,7 +2,8 @@ import type { DayNumber } from '../core/days';
 import { SKY_EVENT_NAMES, type SkyEvent } from '../core/sky';
 import { toSolar, yearLength } from '../core/solar';
 import type { NamePack } from '../names/schema';
-import { daysAway, escapeHtml, eventTime, gregorianLong, solarLong } from './format';
+import type { SunTimes } from '../sky/sun';
+import { LOCALE, daysAway, escapeHtml, eventTime, gregorianLong, solarLong } from './format';
 
 export interface DayPanelState {
   selected: DayNumber;
@@ -14,6 +15,18 @@ export interface DayPanelState {
   next: SkyEvent;
 }
 
+/** "Sunrise 04:43, sunset 21:21 BST. 16 h 38 min of daylight", in the viewer's time zone */
+export function sunText({ rise, set, polar }: SunTimes): string {
+  if (polar) return polar === 'day' ? 'The sun stays up all day' : 'The sun stays down all day';
+  const clock = (ms: number) => new Intl.DateTimeFormat(LOCALE, { hour: '2-digit', minute: '2-digit' }).format(ms);
+  const zone = new Intl.DateTimeFormat(LOCALE, { timeZoneName: 'short' }).formatToParts(rise ?? set ?? 0)
+    .find((part) => part.type === 'timeZoneName')?.value ?? '';
+  const text = `${rise !== null ? `Sunrise ${clock(rise)}` : 'No sunrise'}, ${set !== null ? `sunset ${clock(set)}` : 'no sunset'} ${zone}`.trim();
+  if (rise === null || set === null || set <= rise) return text;
+  const minutes = Math.round((set - rise) / 60_000);
+  return `${text}. ${Math.floor(minutes / 60)} h ${minutes % 60} min of daylight`;
+}
+
 export function renderDayPanel(root: HTMLElement, { selected, today, pack, events, next }: DayPanelState): void {
   const date = toSolar(selected);
   const nextWhen = selected === today ? daysAway(today, next.day) : `${next.day - selected} days later`;
@@ -23,6 +36,7 @@ export function renderDayPanel(root: HTMLElement, { selected, today, pack, event
     <dl class="facts">
       <div><dt>Day of the year</dt><dd>${date.dayOfYear} of ${yearLength(date.year)}</dd></div>
       <div><dt>Moon</dt><dd data-moon>&nbsp;</dd></div>
+      <div><dt>Sunrise and sunset</dt><dd data-sun>&nbsp;</dd></div>
       ${events.length > 0 ? `<div><dt>On this day</dt><dd>${events.map((event) => `${SKY_EVENT_NAMES[event.kind]} at ${eventTime(event.instant, false)}`).join('<br>')}</dd></div>` : ''}
       <div><dt>Next equinox or solstice</dt><dd>${SKY_EVENT_NAMES[next.kind]}, ${eventTime(next.instant)}, ${nextWhen}</dd></div>
     </dl>
