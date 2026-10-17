@@ -16,7 +16,9 @@
   --hue: oklch(var(--hue-l) 0 0);
 
   --font-display: 'Big Shoulders Variable', 'Arial Narrow', sans-serif;
-  --font-text: 'Andika', system-ui, sans-serif;
+  /* Vazirmatn (Persian) and Noto Sans Coptic only cover their own scripts, so
+     the browser uses them just for those letters */
+  --font-text: 'Andika', 'Vazirmatn', 'Noto Sans Coptic', system-ui, sans-serif;
 
   --step--1: 0.8125rem;
   --step-0: 1rem;
@@ -194,6 +196,8 @@ a { color: inherit; text-underline-offset: 3px; }
   margin: var(--space-3) 0 0; color: var(--muted);
 }
 .month-year { color: var(--muted); font-weight: 300; }
+.say { color: var(--ink); letter-spacing: 0.02em; }
+.say-label { color: var(--muted); letter-spacing: 0; }
 .gloss { color: var(--ink); font-style: italic; font-size: var(--step-1); }
 
 .month-body { display: grid; gap: var(--space-6); }
@@ -356,6 +360,15 @@ a.button { display: inline-flex; align-items: center; color: inherit; text-decor
 .about-name { margin: 0; font: 800 var(--step-4) / 1 var(--font-display); font-variation-settings: 'opsz' 72; }
 .about-gloss { font-style: italic; }
 .about-note, .certainty { color: var(--muted); font-size: var(--step--1); }
+.about-say strong { font-weight: 700; letter-spacing: 0.02em; }
+.ipa { color: var(--muted); }
+.say-key { margin: var(--space-4) 0; padding: var(--space-3) var(--space-4); border: 1px solid var(--rule); border-radius: var(--radius); }
+.say-key summary { cursor: pointer; font-weight: 700; }
+.say-key p { max-width: 62ch; }
+.say-key dl { display: grid; grid-template-columns: repeat(auto-fill, minmax(12em, 1fr)); gap: 2px var(--space-4); margin: 0 0 var(--space-3); }
+.say-key dl div { display: flex; gap: var(--space-2); }
+.say-key dt { min-width: 4.5em; font-weight: 700; }
+.say-key dd { margin: 0; color: var(--muted); }
 .sources-title { margin: 0 0 var(--space-2); font-size: var(--step-1); }
 .sources { margin: 0; padding-left: 1.2em; }
 

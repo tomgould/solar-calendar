@@ -1,8 +1,13 @@
 import { LEAP_WEEK } from '../core/solar';
-import type { NamePack } from '../names/schema';
+import { type NamePack, RESPELLING_KEY } from '../names/schema';
 import { escapeHtml, hueClass } from './format';
 
 const certaintyText = { established: 'Meaning well established', likely: 'Meaning likely', uncertain: 'Meaning uncertain' };
+
+/** "Say WIN-ter-fil-leth /ˈwintərˌfylːeθ/", or nothing for names without one */
+const sayLine = (say?: string, ipa?: string) => (say
+  ? `<p class="about-say"><span class="say-label">Say</span> <strong>${escapeHtml(say)}</strong>${ipa ? ` <span class="ipa">/${escapeHtml(ipa)}/</span>` : ''}</p>`
+  : '');
 
 /** The list of packs inside the "Month names" popover. */
 export function renderNamesMenu(container: HTMLElement, packs: NamePack[], currentId: string): void {
@@ -25,6 +30,7 @@ export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, cur
       <div>
         <h3 class="about-name" ${lang}>${escapeHtml(month.name)}</h3>
         <p class="about-gloss">${escapeHtml(month.gloss)}${month.original ? `. Also written <span ${originalLang}>${escapeHtml(month.original)}</span>` : ''}</p>
+        ${sayLine(month.say, month.ipa)}
         <p>${escapeHtml(month.meaning)}</p>
         ${month.notes ? `<p class="about-note">${escapeHtml(month.notes)}</p>` : ''}
         <p class="certainty">${certaintyText[month.certainty]}</p>
@@ -41,12 +47,21 @@ export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, cur
     </div>
     <div class="about-body">
       <p class="about-origin">${escapeHtml(pack.origin)}</p>
+      ${pack.pronunciation ? `
+      <details class="say-key">
+        <summary>How to say these names</summary>
+        <p>${escapeHtml(pack.pronunciation)}</p>
+        <p>The respellings use English sounds:</p>
+        <dl>${RESPELLING_KEY.map(([spelling, sound]) => `<div><dt>${spelling}</dt><dd>as in ${sound}</dd></div>`).join('')}</dl>
+        <p>The IPA, in slashes, gives the exact sounds for readers who know the phonetic alphabet.</p>
+      </details>` : ''}
       <ol class="about-months">${months}
         <li class="${hueClass(LEAP_WEEK)}"${currentMonth === LEAP_WEEK ? ' aria-current="true"' : ''}>
           <span class="about-num" aria-hidden="true">+</span>
           <div>
             <h3 class="about-name" ${lang}>${escapeHtml(pack.leapWeek.name)}</h3>
             <p class="about-gloss">${escapeHtml(pack.leapWeek.gloss)}</p>
+            ${sayLine(pack.leapWeek.say, pack.leapWeek.ipa)}
             <p>${escapeHtml(pack.leapWeek.meaning)}</p>
           </div>
         </li>

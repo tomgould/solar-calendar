@@ -80,6 +80,10 @@ export class MonthView {
     name.lang = pack.lang;
     this.root.querySelector('#month-year')!.textContent = String(date.year);
     this.root.querySelector('#month-gloss')!.textContent = monthGloss(pack, date.month);
+    const say = date.month === LEAP_WEEK ? pack.leapWeek.say : pack.months[date.month - 1].say;
+    const sayElement = this.root.querySelector<HTMLElement>('#month-say')!;
+    sayElement.hidden = !say;
+    sayElement.innerHTML = say ? `<span class="say-label">Say</span> ${escapeHtml(say)}` : '';
     // Printed under the grid
     const meaning = date.month === LEAP_WEEK ? pack.leapWeek.meaning : pack.months[date.month - 1].meaning;
     this.root.querySelector('#month-meaning')!.textContent = `${monthName(pack, date.month)}: ${meaning}`;
