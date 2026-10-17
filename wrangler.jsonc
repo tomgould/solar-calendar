@@ -9,5 +9,8 @@
   "assets": {
     "directory": "./dist",
     "run_worker_first": ["/feed.ics"]
-  }
+  },
+  // Workers Builds runs `wrangler preview` for branches other than main, which
+  // needs this block; everything above applies to previews as it is
+  "previews": {}
 }
