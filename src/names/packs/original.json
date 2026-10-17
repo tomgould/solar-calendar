@@ -1,0 +1,33 @@
+{
+  "id": "original",
+  "title": "Original names",
+  "description": "March to February, then Sol: the names this calendar started with",
+  "culture": "Roman and Gregorian",
+  "era": "Ancient Rome to today",
+  "lang": "en",
+  "origin": "These are the Gregorian month names, which come from the Roman calendar, plus Sol, borrowed from Moses Cotsworth's International Fixed Calendar of the early 1900s. Each solar month runs about three weeks behind the Gregorian month with the same name.",
+  "leapWeek": {
+    "name": "Leap week",
+    "gloss": "the extra week",
+    "meaning": "Added at the end of the year, about one year in six, so that the next year can start on the Monday after the equinox again."
+  },
+  "months": [
+    { "name": "March", "gloss": "Mars, god of war", "meaning": "Named after Mars, the Roman god of war. Martius was the first month of the early Roman year, which also began in spring.", "certainty": "established" },
+    { "name": "April", "gloss": "origin unclear", "meaning": "No one is sure. It may come from the Latin aperire, to open, for opening buds, or from Aphrodite.", "certainty": "uncertain" },
+    { "name": "May", "gloss": "Maia, goddess of growth", "meaning": "Named after Maia, a Roman goddess linked with growth and spring.", "certainty": "likely" },
+    { "name": "June", "gloss": "Juno, queen of the gods", "meaning": "Named after Juno, queen of the Roman gods.", "certainty": "likely" },
+    { "name": "July", "gloss": "Julius Caesar", "meaning": "Renamed after Julius Caesar in 44 BC. Before that it was Quintilis, the fifth month.", "certainty": "established" },
+    { "name": "August", "gloss": "the emperor Augustus", "meaning": "Renamed after the emperor Augustus in 8 BC. Before that it was Sextilis, the sixth month.", "certainty": "established" },
+    { "name": "September", "gloss": "seventh", "meaning": "From the Latin septem, seven. It was the seventh month when the Roman year began in March.", "certainty": "established" },
+    { "name": "October", "gloss": "eighth", "meaning": "From the Latin octo, eight.", "certainty": "established" },
+    { "name": "November", "gloss": "ninth", "meaning": "From the Latin novem, nine.", "certainty": "established" },
+    { "name": "December", "gloss": "tenth", "meaning": "From the Latin decem, ten.", "certainty": "established" },
+    { "name": "January", "gloss": "Janus, god of doorways", "meaning": "Named after Janus, the two-faced Roman god of doorways and beginnings.", "certainty": "established" },
+    { "name": "February", "gloss": "the purification month", "meaning": "From Februa, a Roman purification festival held in this month.", "certainty": "established" },
+    { "name": "Sol", "gloss": "the sun", "meaning": "Latin for sun. Moses Cotsworth gave this name to the extra month in his International Fixed Calendar, 13 months of 28 days, proposed in the early 1900s. Eastman Kodak kept its books on that calendar for most of the 20th century.", "certainty": "established", "notes": "The 13th month." }
+  ],
+  "sources": [
+    { "title": "Roman calendar (Wikipedia)", "url": "https://en.wikipedia.org/wiki/Roman_calendar" },
+    { "title": "International Fixed Calendar (Wikipedia)", "url": "https://en.wikipedia.org/wiki/International_Fixed_Calendar" }
+  ]
+}
