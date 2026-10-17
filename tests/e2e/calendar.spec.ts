@@ -190,28 +190,50 @@ test('goes back to the previous month with the Back button', async ({ page }) =>
   await expect(page.locator('#month-name')).toHaveText('October');
 });
 
-test('works under the production Content-Security-Policy', async ({ page }) => {
-  // The same policy Cloudflare serves, from public/_headers
-  const csp = /Content-Security-Policy: (.+)/.exec(readFileSync('public/_headers', 'utf8'))![1];
-  await page.route('**/*', async (route) => {
-    const response = await route.fetch();
-    await route.fulfill({ response, headers: { ...response.headers(), 'content-security-policy': csp } });
-  });
-  await page.addInitScript(() => {
-    const blocked: string[] = [];
-    (window as unknown as { blocked: string[] }).blocked = blocked;
-    document.addEventListener('securitypolicyviolation', (event) => blocked.push(`${event.violatedDirective} ${event.blockedURI}`));
-  });
+test.describe('under the production Content-Security-Policy', () => {
+  // A service worker would answer requests before page.route could add the policy
+  test.use({ serviceWorkers: 'block' });
 
+  test('works without anything being blocked', async ({ page }) => {
+    // The same policy Cloudflare serves, from public/_headers
+    const csp = /Content-Security-Policy: (.+)/.exec(readFileSync('public/_headers', 'utf8'))![1];
+    await page.route('**/*', async (route) => {
+      const response = await route.fetch();
+      await route.fulfill({ response, headers: { ...response.headers(), 'content-security-policy': csp } });
+    });
+    await page.addInitScript(() => {
+      const blocked: string[] = [];
+      (window as unknown as { blocked: string[] }).blocked = blocked;
+      document.addEventListener('securitypolicyviolation', (event) => blocked.push(`${event.violatedDirective} ${event.blockedURI}`));
+    });
+
+    await page.goto('./?date=2026-10-17&names=anglo-saxon');
+    await expect(page.locator('#month-name')).toHaveText('Winterfylleþ');
+    await expect(page.locator('#day-panel [data-moon]')).not.toHaveText(/^\s*$/);
+    await page.locator('#about-name').click();
+    await page.goto('./?view=year&date=2026-10-17');
+    await expect(page.locator('#almanac td[data-day]')).toHaveCount(364);
+    expect(await page.evaluate(() => (window as unknown as { blocked: string[] }).blocked)).toEqual([]);
+    // Font requests can still be in flight; let them finish unintercepted
+    await page.unrouteAll({ behavior: 'ignoreErrors' });
+  });
+});
+
+test('works offline after the first visit', async ({ page, context }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'Service worker test, one project');
   await page.goto('./?date=2026-10-17&names=anglo-saxon');
-  await expect(page.locator('#month-name')).toHaveText('Winterfylleþ');
-  await expect(page.locator('#day-panel [data-moon]')).not.toHaveText(/^\s*$/);
-  await page.locator('#about-name').click();
-  await page.goto('./?view=year&date=2026-10-17');
-  await expect(page.locator('#almanac td[data-day]')).toHaveCount(364);
-  expect(await page.evaluate(() => (window as unknown as { blocked: string[] }).blocked)).toEqual([]);
-  // Font requests can still be in flight; let them finish unintercepted
-  await page.unrouteAll({ behavior: 'ignoreErrors' });
+  // Wait for the service worker to finish precaching and take control
+  await page.waitForFunction(() => navigator.serviceWorker.controller !== null, undefined, { timeout: 15_000 });
+
+  await context.setOffline(true);
+  await page.goto('./?date=2026-06-21&names=gregorian');
+  await expect(page.locator('#month-name')).toHaveText('June');
+  await expect(page.locator('#day-panel [data-moon]')).toHaveText(/moon|quarter|crescent|gibbous/i);
+  // A pack never opened before still loads
+  await page.locator('#names-button').click();
+  await page.locator('input[value="old-norse"]').check();
+  await expect(page.locator('#month-name')).toHaveText('Sólmánuður');
+  await context.setOffline(false);
 });
 
 test('passes automated accessibility checks', async ({ page }, testInfo) => {

@@ -7,3 +7,7 @@
 
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
+
+# The service worker must always be checked for updates
+/sw.js
+  Cache-Control: no-cache

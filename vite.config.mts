@@ -1,6 +1,7 @@
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import type { Connect, Plugin } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vitest/config';
 
 type Fetch = (request: Request) => Response | Promise<Response>;
@@ -28,7 +29,39 @@ const feed = (): Plugin => ({
 export default defineConfig({
   // Relative asset URLs, so the build works from any path (previews, sub-folders)
   base: './',
-  plugins: [feed()],
+  plugins: [
+    feed(),
+    // Works offline after the first visit: precaches the app, every name pack,
+    // the moon library and the Latin-script fonts
+    VitePWA({
+      registerType: 'autoUpdate',
+      // An external registerSW.js, so the Content-Security-Policy needs no inline script
+      injectRegister: 'script',
+      manifest: {
+        name: 'Solar calendar',
+        short_name: 'Solar calendar',
+        description: 'A calendar of 13 identical 28-day months, with the year starting at the spring equinox.',
+        start_url: './',
+        scope: './',
+        display: 'standalone',
+        background_color: '#f6f7f9',
+        theme_color: '#1d2742',
+        icons: [
+          { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'icons/maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        globIgnores: ['**/*cyrillic*', '**/*vietnamese*'],
+        navigateFallback: 'index.html',
+        navigateFallbackDenylist: [/\/feed\.ics/],
+        // Take control of the page that installed it, so the first visit already works offline
+        clientsClaim: true,
+      },
+    }),
+  ],
   test: {
     include: ['tests/unit/**/*.test.ts'],
   },
