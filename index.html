@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solar calendar</title>
+  <meta name="description" content="A calendar of 13 identical 28-day months, with the year starting at the spring equinox.">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#161c2e" media="(prefers-color-scheme: dark)">
+  <!-- Blocking on purpose: applies a saved theme before the first paint -->
+  <script src="./theme.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to the calendar</a>
+  <div class="page">
+    <header class="masthead">
+      <a class="wordmark" href="./">Solar calendar</a>
+      <div class="controls">
+        <button type="button" class="button" id="today-button">Today</button>
+        <div class="segmented" role="group" aria-label="View">
+          <button type="button" data-view="month" aria-pressed="true">Month</button>
+          <button type="button" data-view="year" aria-pressed="false">Year</button>
+        </div>
+        <button type="button" class="button" id="names-button" popovertarget="names-menu"><span class="narrow-only">Names</span><span class="wide-only">Month names: <span id="names-current"></span></span></button>
+        <button type="button" class="button festivals-button" id="festivals-button" popovertarget="festivals-menu" aria-label="Festivals">
+          <svg viewBox="0 0 12 12" width="14" height="14" aria-hidden="true" focusable="false"><path d="M6 .8 7.4 4.6 11.2 6 7.4 7.4 6 11.2 4.6 7.4.8 6 4.6 4.6z" fill="currentColor"/></svg>
+          <span class="wide-only" aria-hidden="true">Festivals</span>
+        </button>
+      </div>
+      <!-- Shows the mode it switches to: moon and "Dark mode", or sun and "Light mode" -->
+      <button type="button" class="button theme-button" id="theme-button" aria-label="Dark mode">
+        <span class="theme-icon" aria-hidden="true"></span>
+        <span class="theme-label wide-only" aria-hidden="true">Dark mode</span>
+      </button>
+    </header>
+
+    <div id="names-menu" class="names-menu" popover role="dialog" aria-labelledby="names-menu-title">
+      <h2 id="names-menu-title" class="menu-title">Month names</h2>
+      <p class="menu-note">Choose what the months are called. The days stay the same.</p>
+      <div id="names-options" class="pack-options"></div>
+      <p class="status" id="names-status" role="status"></p>
+    </div>
+
+    <div id="festivals-menu" class="names-menu" popover role="dialog" aria-labelledby="festivals-menu-title">
+      <h2 id="festivals-menu-title" class="menu-title">Festivals and holidays</h2>
+      <p class="menu-note">Marked in the calendar with a star, or a flag for a day off, and listed under each month.</p>
+      <div id="festivals-options" class="pack-options"></div>
+      <p class="status" id="festivals-status" role="status"></p>
+    </div>
+
+    <main id="main" class="is-loading">
+      <p class="today-line" id="today-line"></p>
+
+      <section id="month-view" class="month" aria-labelledby="month-title">
+        <nav class="strip" aria-label="Months of this year"><ol id="month-strip"></ol></nav>
+        <div class="month-head">
+          <div>
+            <h1 id="month-title" class="month-name"><span id="month-name"></span> <span class="month-year" id="month-year"></span></h1>
+            <p class="month-meta">
+              <span id="month-gloss" class="gloss"></span>
+              <span id="month-say" class="say" hidden></span>
+              <span id="month-place"></span>
+              <button type="button" class="text-button" id="about-name">About this name</button>
+            </p>
+          </div>
+          <div class="steps">
+            <button type="button" class="step" id="prev-month" aria-label="Previous month"></button>
+            <button type="button" class="step" id="next-month" aria-label="Next month"></button>
+            <button type="button" class="button" id="print-month">Print month</button>
+          </div>
+        </div>
+        <div class="month-body">
+          <div class="month-main">
+            <table class="grid" role="grid" aria-labelledby="month-title">
+              <thead><tr id="grid-head"></tr></thead>
+              <tbody id="grid-body"></tbody>
+            </table>
+            <section class="month-festivals" id="month-festivals" aria-labelledby="month-festivals-title" hidden>
+              <h2 id="month-festivals-title" class="notes-title">Festivals and holidays this month</h2>
+              <ul class="festival-list"></ul>
+            </section>
+          </div>
+          <div class="side">
+            <aside class="day" id="day-panel" aria-label="Selected day"></aside>
+            <section class="goto" id="goto" aria-labelledby="goto-title">
+              <h2 id="goto-title" class="goto-title">Go to a date</h2>
+              <form id="goto-gregorian" class="goto-form" novalidate>
+                <label for="goto-gregorian-date">Gregorian date</label>
+                <div class="goto-row">
+                  <input type="date" id="goto-gregorian-date" class="field" required aria-describedby="goto-error">
+                  <button type="submit" class="button">Go</button>
+                </div>
+              </form>
+              <form id="goto-solar" class="goto-form" novalidate>
+                <fieldset>
+                  <legend>Solar date</legend>
+                  <div class="goto-row">
+                    <label class="visually-hidden" for="goto-solar-day">Day</label>
+                    <input type="number" id="goto-solar-day" class="field field-day" min="1" max="28" inputmode="numeric" required aria-describedby="goto-error">
+                    <label class="visually-hidden" for="goto-solar-month">Month</label>
+                    <select id="goto-solar-month" class="field field-month" aria-describedby="goto-error"></select>
+                    <label class="visually-hidden" for="goto-solar-year">Year</label>
+                    <input type="number" id="goto-solar-year" class="field field-year" inputmode="numeric" required aria-describedby="goto-error">
+                    <button type="submit" class="button">Go</button>
+                  </div>
+                </fieldset>
+              </form>
+              <p class="goto-error" id="goto-error" role="alert"></p>
+            </section>
+          </div>
+        </div>
+        <p class="print-only month-meaning" id="month-meaning"></p>
+      </section>
+
+      <section id="year-view" class="year" aria-labelledby="year-title" hidden>
+        <div class="year-head">
+          <div>
+            <h1 id="year-title" class="year-name"></h1>
+            <p id="year-span" class="year-meta"></p>
+          </div>
+          <div class="steps">
+            <button type="button" class="step" id="prev-year" aria-label="Previous year"></button>
+            <button type="button" class="step" id="next-year" aria-label="Next year"></button>
+            <button type="button" class="button" id="print-year">Print year</button>
+          </div>
+        </div>
+        <div class="table-scroll" role="region" aria-labelledby="year-title" tabindex="0">
+          <table class="almanac" id="almanac"></table>
+        </div>
+        <div class="year-notes">
+          <section aria-labelledby="seasons-title">
+            <h2 id="seasons-title" class="notes-title">Equinoxes and solstices</h2>
+            <ul id="year-seasons" class="seasons"></ul>
+          </section>
+          <section aria-labelledby="legend-title">
+            <h2 id="legend-title" class="notes-title">The months</h2>
+            <ol id="year-legend" class="legend"></ol>
+          </section>
+        </div>
+        <div class="table-scroll year-festivals" id="year-festivals" role="region" aria-label="Festivals and holidays this year" tabindex="0" hidden>
+          <table class="festival-table">
+            <caption class="notes-title"></caption>
+            <thead><tr><th scope="col">Solar date</th><th scope="col">Gregorian date</th><th scope="col">Festival or holiday</th><th scope="col">Kind</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <section class="calendar-apps" aria-labelledby="apps-title">
+          <h2 id="apps-title" class="notes-title">Add to your calendar</h2>
+          <p class="apps-note">Download this year as a file, or subscribe so your calendar app shows each day’s solar date and stays up to date.</p>
+          <div class="apps-row">
+            <button type="button" class="button" id="download-ics">Download this year</button>
+          </div>
+          <label for="feed-url" class="apps-label">Subscription link</label>
+          <div class="apps-row">
+            <input type="text" class="field feed-url" id="feed-url" readonly>
+            <button type="button" class="button" id="copy-feed">Copy link</button>
+            <a class="button" id="open-feed" href="./feed.ics">Open in calendar app</a>
+          </div>
+          <p class="status" id="feed-status" role="status"></p>
+        </section>
+      </section>
+
+      <footer class="about-calendar">
+        <h2>How this calendar works</h2>
+        <p>Every month has 28 days, exactly four weeks, so the 1st is always a Monday and the 28th is always a Sunday. Thirteen months make 364 days.</p>
+        <p>The year starts on the first Monday on or after the March equinox, so it stays with the seasons. Usually the next start is 364 days later. About one year in six it is 371 days later, and the extra seven days become a leap week at the end of the year.</p>
+        <p>Equinoxes and solstices are calculated to within about a minute. The start of the year uses the date of the equinox in UTC, so the calendar is the same everywhere.</p>
+      </footer>
+    </main>
+  </div>
+
+  <dialog id="about-dialog" class="about" aria-labelledby="about-title"></dialog>
+  <dialog id="location-dialog" class="about" aria-labelledby="location-title">
+    <form id="location-form" novalidate>
+      <div class="about-head">
+        <h2 id="location-title">Your location</h2>
+        <button type="button" class="button" data-close>Close</button>
+      </div>
+      <div class="about-body">
+        <p class="about-origin">Sunrise and sunset depend on where you are. Times are shown in that place’s own time zone. Your location stays in this browser and is never sent anywhere.</p>
+        <p><button type="button" class="button" id="use-my-location">Use my location</button></p>
+        <div class="goto-row">
+          <label for="location-lat">Latitude</label>
+          <input type="number" id="location-lat" class="field" step="any" min="-90" max="90" inputmode="decimal">
+          <label for="location-lon">Longitude</label>
+          <input type="number" id="location-lon" class="field" step="any" min="-180" max="180" inputmode="decimal">
+        </div>
+        <p class="status" id="location-status" role="status"></p>
+        <div class="apps-row">
+          <button type="submit" class="button">Save</button>
+          <button type="button" class="button" id="clear-location">Forget my location</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+  <noscript><p class="page">This calendar needs JavaScript to work out the dates.</p></noscript>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

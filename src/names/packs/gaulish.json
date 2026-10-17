@@ -1,0 +1,203 @@
+{
+  "id": "gaulish",
+  "kind": "historical",
+  "title": "Gaulish",
+  "description": "The month names of the Coligny calendar, the only long record of a Celtic calendar",
+  "culture": "Roman Gaul",
+  "era": "2nd century AD",
+  "lang": "xtg",
+  "origin": "The names come from the Coligny calendar, a bronze tablet of about the 2nd century AD found in eastern France in 1897. It records a lunisolar calendar in Gaulish, with 12 lunar months in a year and an extra month added about every two and a half years. Scholars have reconstructed the names and proposed meanings, but the tablet gives no seasons, so where each month fell in the solar year is a choice. Here Cantlos comes first and Samonios sits in slot 3, which is one of several placements scholars have argued for.",
+  "pronunciation": "A scholarly reconstruction: Latin letters are read as in Latin, with each vowel said separately and w for u or v between vowels. Gaulish is known only from inscriptions like this tablet, so the sounds are a best guess, and the stress is the least certain part. Stress marks follow the usual Celtic pattern of stressing the syllable before the ending, but nobody knows for sure.",
+  "leapWeek": {
+    "name": "Leap week",
+    "gloss": "the extra week",
+    "meaning": "The Coligny calendar kept the moon and sun in step by adding a whole leap month about every two and a half years. This calendar adds a week instead, at the end of the year, about one year in six."
+  },
+  "months": [
+    {
+      "name": "Cantlos",
+      "gloss": "month of chanting",
+      "meaning": "The last month of the Coligny year. Xavier Delamarre suggests month of chanting, and Mary Jones's table has song. Both are guesses.",
+      "certainty": "uncertain",
+      "say": "KAN-tlos",
+      "ipa": "ˈkantlos"
+    },
+    {
+      "name": "Quimonios",
+      "gloss": "meaning unknown",
+      "meaning": "The tablet's first leap month, placed before Samonios. Its name is only partly preserved, as QVIMON, and its meaning is unknown.",
+      "certainty": "uncertain",
+      "notes": "The 13th month. Quimonios is a reconstructed name for the first of the calendar's two leap months. The second is only partly legible.",
+      "say": "kwi-MOH-nee-os",
+      "ipa": "kwiˈmonios"
+    },
+    {
+      "name": "Samonios",
+      "gloss": "assembly month",
+      "meaning": "Delamarre and Matasovic derive it from a Proto-Celtic word for an assembly or feast, perhaps of the living and the dead. Linking it to Gaulish samo, summer, is probably a folk etymology.",
+      "certainty": "likely",
+      "notes": "Where Samonios fell in the solar year is unresolved. Some scholars tie it to the start of winter, near Samhain, and others to early summer, so slot 3 is a choice, not a fact.",
+      "say": "sah-MOH-nee-os",
+      "ipa": "saˈmonios"
+    },
+    {
+      "name": "Dumannios",
+      "gloss": "month of fumigations",
+      "meaning": "Delamarre suggests month of fumigations, linking it to Latin fumus, smoke.",
+      "certainty": "uncertain",
+      "say": "duu-MAN-nee-os",
+      "ipa": "duˈmanːios"
+    },
+    {
+      "name": "Rivros",
+      "gloss": "fat month",
+      "meaning": "Delamarre suggests fat month, comparing Old Irish remor and Welsh rhef, thick or stout. Mary Jones gives frost instead. Both are scholarly guesses.",
+      "certainty": "uncertain",
+      "say": "RI-wros",
+      "ipa": "ˈriwros"
+    },
+    {
+      "name": "Anagantios",
+      "gloss": "month of protection",
+      "meaning": "Read in several ways: the month in which one does not travel, a month of protection, or a month of ritual washing. Scholars have not settled between them.",
+      "certainty": "uncertain",
+      "say": "ah-nah-GAN-tee-os",
+      "ipa": "anaˈɡantios"
+    },
+    {
+      "name": "Ogronios",
+      "gloss": "cold month",
+      "meaning": "Delamarre suggests month of cold or winter. The meaning is a guess from related words.",
+      "certainty": "uncertain",
+      "say": "oh-GROH-nee-os",
+      "ipa": "oˈɡronios"
+    },
+    {
+      "name": "Cutios",
+      "gloss": "month of invocations",
+      "meaning": "Delamarre suggests month of invocations. It is a scholarly guess.",
+      "certainty": "uncertain",
+      "say": "KUU-tee-os",
+      "ipa": "ˈkutios"
+    },
+    {
+      "name": "Giamonios",
+      "gloss": "winter month",
+      "meaning": "Made from the Gaulish word for winter, giamos, which matches Old Irish gam and Welsh gaeaf. The etymology is transparent. Samonios and Giamonios are often taken to open the summer and winter halves of the year.",
+      "certainty": "established",
+      "say": "gyah-MOH-nee-os",
+      "ipa": "ɡjaˈmonios"
+    },
+    {
+      "name": "Simiuisonnios",
+      "gloss": "half-spring month",
+      "meaning": "Possibly half of the sun's course, or half-spring, from simi, half. The second part of the name is debated.",
+      "certainty": "uncertain",
+      "say": "si-mi-wi-SON-nee-os",
+      "ipa": "simiwiˈsonːios"
+    },
+    {
+      "name": "Equos",
+      "gloss": "horse month",
+      "meaning": "Possibly a month of horses or livestock, from the Gaulish word for horse. It is the month that could have 29 or 30 days.",
+      "certainty": "uncertain",
+      "say": "EK-wos",
+      "ipa": "ˈekwos"
+    },
+    {
+      "name": "Elembiuios",
+      "gloss": "stag month",
+      "meaning": "Delamarre reads it as the month of the stag. The reading is plausible, but the name is only partly understood.",
+      "certainty": "uncertain",
+      "say": "eh-lem-BI-wee-os",
+      "ipa": "elemˈbiwios"
+    },
+    {
+      "name": "Edrinios",
+      "gloss": "fire month",
+      "meaning": "Possibly linked to Old Irish aed, fire or heat, which would make it a month of heat. It is a guess.",
+      "certainty": "uncertain",
+      "say": "eh-DRI-nee-os",
+      "ipa": "eˈdrinios"
+    }
+  ],
+  "festivals": [
+    {
+      "name": "Trinox Samonii",
+      "gloss": "three nights of Samonios",
+      "meaning": "The Coligny calendar, a Gaulish bronze tablet from the 100s CE, marks TRINVX SAMO SINDIV on the 17th day of the month Samonios. It is usually read as 'three nights of Samonios', a festival; the reading and its length are debated. It is dated here to days 17 to 19 of Samonios.",
+      "when": {
+        "solar": {
+          "month": 3,
+          "day": 17
+        }
+      },
+      "days": 3,
+      "certainty": "likely",
+      "say": "tree-NOKS sah-MOH-nee",
+      "ipa": "triˈnoks saˈmoːnii"
+    },
+    {
+      "name": "Samhain",
+      "gloss": "Gaelic winter start",
+      "meaning": "Samhain is a Gaelic (Irish) festival, not a Gaulish one. It is included because it is the best-known quarter day of the Insular Celtic year and may match the Coligny feast. Recorded in medieval Irish texts, it is dated to 1 November.",
+      "when": {
+        "gregorian": "11-01"
+      },
+      "certainty": "established",
+      "say": "SOW-in",
+      "ipa": "ˈsˠəunʲ"
+    },
+    {
+      "name": "Imbolc",
+      "gloss": "Gaelic spring start",
+      "meaning": "Imbolc is a Gaelic (Irish) festival, not a Gaulish one, included as one of the four Insular Celtic quarter days. Recorded in medieval Irish texts, it is usually dated to 1 February.",
+      "when": {
+        "gregorian": "02-01"
+      },
+      "certainty": "established",
+      "say": "IM-bolk",
+      "ipa": "ˈimˠbˠolˠɣ"
+    },
+    {
+      "name": "Bealtaine",
+      "gloss": "Gaelic summer start",
+      "meaning": "Bealtaine is a Gaelic (Irish) festival, not a Gaulish one, included as one of the four Insular Celtic quarter days. Recorded in medieval Irish texts, it is usually dated to 1 May.",
+      "when": {
+        "gregorian": "05-01"
+      },
+      "certainty": "established",
+      "say": "BYAL-tin-uh",
+      "ipa": "ˈbʲaulˠtˠənʲə"
+    },
+    {
+      "name": "Lughnasadh",
+      "gloss": "Gaelic harvest start",
+      "meaning": "Lughnasadh is a Gaelic (Irish) festival, not a Gaulish one, included as one of the four Insular Celtic quarter days. Recorded in medieval Irish texts, it is usually dated to 1 August.",
+      "when": {
+        "gregorian": "08-01"
+      },
+      "certainty": "established",
+      "say": "LOO-nuh-suh",
+      "ipa": "ˈlˠuːnˠəsˠə"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Coligny calendar (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Coligny_calendar"
+    },
+    {
+      "title": "Mary Jones, Coligny Calendar (Celtic Encyclopedia)",
+      "url": "https://maryjones.us/jce/coligny.html"
+    },
+    {
+      "title": "Gaulish language (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Gaulish_language"
+    },
+    {
+      "title": "Samhain, Imbolc, Beltane and Lughnasadh (Wikipedia, Gaelic calendar festivals)",
+      "url": "https://en.wikipedia.org/wiki/Gaelic_calendar"
+    }
+  ]
+}

@@ -1,194 +1,76 @@
-# Solar & Gregorian Calendar System
+# Solar calendar
 
-## Overview
-A comprehensive dual-calendar system displaying both Solar (Persian) and Gregorian calendars with full astronomical event tracking and cross-calendar linking.
+A calendar of 13 identical months. Every month has 28 days, exactly four weeks, so the 1st is always a Monday and the 28th is always a Sunday. The year starts on the first Monday on or after the March equinox, so it stays with the seasons. Gregorian dates are shown alongside every day.
 
-## Files
+![The month view in December, with Anglo-Saxon month names, England and Wales bank holidays, and the month's festivals listed under the grid](docs/screenshots/month.png)
 
-### HTML Files
-- **solar-calendar.html** - Solar calendar with Gregorian date references
-- **gregorian-calendar.html** - Gregorian calendar with Solar date references
+| Year view, dark mode | Choosing festivals and holidays |
+|---|---|
+| ![Every day of solar 2026 in one table, with Old Norse month names](docs/screenshots/year.png) | ![The Festivals menu, with Northern Ireland and Scotland bank holidays and Old Norse and Persian festivals chosen](docs/screenshots/festivals.png) |
 
-### JavaScript
-- **calendar-processor.js** - CalendarProcessor class handling all date conversions and calculations
+| On a phone | What a name means |
+|---|---|
+| ![The month view on a phone, with the selected day in a sheet along the bottom](docs/screenshots/phone.png) | ![The meaning dialog for the Persian names, with pronunciations](docs/screenshots/names.png) |
 
-### CSS
-- **calendar-styles.css** - Shared styling for both calendars
+## How the calendar works
 
-## Features
+- **13 x 28 = 364 days.** Usually the next year starts 364 days later. About one year in six it starts 371 days later, and the extra seven days form a leap week at the end of the year.
+- **The equinox is calculated, not looked up.** It uses Jean Meeus's algorithm (*Astronomical Algorithms*, chapter 27), accurate to about a minute. The start of the year uses the equinox's date in UTC, so the calendar is the same everywhere.
+- **Solar year 2026** runs from Monday 23 March 2026 to Sunday 21 March 2027. Solar 2028 ends with a leap week, 19 to 25 March 2029.
 
-### Solar Calendar Display Format
-Each month shows:
-```
-First Month / March-April
-Farvardin / 1/12
-```
-- **English Name**: First Month, Second Month, etc. (ordinal position)
-- **Gregorian Months**: Corresponding Gregorian months that overlap
-- **Persian Name**: Traditional Persian month name (Farvardin, Ordibehesht, etc.)
-- **Month Number**: Position in solar year (1/12, 2/12, etc.)
+## What it does
 
-### Gregorian Calendar Display Format
-Each month shows:
-```
-March / Farvardin-Ordibehesht
-Solar Months: 1-2/12
-```
-- **Gregorian Month**: Standard month name
-- **Solar Months**: Corresponding Persian month names
-- **Solar Numbers**: Position numbers of the solar months
+- Opens on today, with the date in both calendars.
+- Month view: the numbers 1 to 28 never move, and only the Gregorian dates change from month to month. Equinoxes, solstices, and new and full moons are marked.
+- Day details: day of the year, moon phase, and the next equinox or solstice in your local time.
+- Year view: every day of the year in one table, one row per day of the month.
+- Printing: a month or the whole year, each on a single A4 page, in light colours whatever the screen theme.
+- Month name packs: twelve sets of month names to switch between, and read what each name means:
+  - from history: Gregorian, Anglo-Saxon (recorded by Bede), Old Norse, Roman, Gaulish, Persian, ancient Egyptian and Coptic
+  - modern inventions: Nature for each hemisphere, Latin numbers and Sky
+- Pronunciation: a respelling and IPA for every name that isn't English, and a button that reads it aloud.
+- Festivals: the historical packs (apart from Gregorian) mark their own festivals, such as Nowruz or Þorrablót, and Sky marks the meteor showers. Show festivals from several packs at once, listed under each month and year.
+- UK bank holidays and Easter for England and Wales, Scotland and Northern Ireland, any or all at once, kept in step with GOV.UK by a weekly check.
+- Go to a date: type a date in either calendar to find it in the other.
+- Sunrise, sunset and hours of daylight for your location, in its own time zone. Location is opt-in and stays in your browser.
+- Add to your calendar: download a year as an .ics file, or subscribe to a feed that stays up to date.
+- Works offline after the first visit, and can be installed as an app.
+- Dark mode, keyboard navigation, and a phone layout that keeps the selected day in a sheet along the bottom.
 
-### Astronomical Events
-Both calendars display:
-- 🌱 **Vernal Equinox** (March 20) - Spring begins
-- ☀️ **Summer Solstice** (June 21) - Longest day
-- 🍂 **Autumn Equinox** (September 22) - Fall begins
-- ❄️ **Winter Solstice** (December 21) - Shortest day
+## Development
 
-Features:
-- Clickable event cards with hover tooltips
-- Special day highlighting with colored borders
-- Event badges on calendar days
-- Direct navigation to event dates
-
-### Cross-Calendar Linking
-- **Click month headings** to jump to the corresponding month in the other calendar
-- **Click any day** in one calendar to view it in the other calendar
-- URL parameters enable deep linking between calendars
-- Smooth animations and highlighting
-- Bidirectional navigation maintains year context
-
-**Month Heading Links:**
-- Solar calendar month → Opens first corresponding Gregorian month
-- Gregorian calendar month → Opens first corresponding Solar month
-
-**Day Links:**
-- Solar calendar day → Opens exact date in Gregorian calendar
-- Gregorian calendar day → Opens exact date in Solar calendar
-
-### Month Name Origins
-
-The Persian month names come from the **Solar Hijri calendar** (Zoroastrian tradition):
-
-1. **Farvardin** - Guardian spirits
-2. **Ordibehesht** - Best righteousness
-3. **Khordad** - Perfection
-4. **Tir** - Rain/water deity
-5. **Mordad** - Immortality
-6. **Shahrivar** - Desirable dominion
-7. **Mehr** - Love/affection
-8. **Aban** - Waters
-9. **Azar** - Fire
-10. **Dey** - Creator
-11. **Bahman** - Good mind
-12. **Esfand** - Holy devotion
-
-## CalendarProcessor Class
-
-The `CalendarProcessor` class provides:
-
-### Properties
-- `solarMonths` - Complete solar month data with English names, Persian names, and Gregorian mappings
-- `gregorianMonths` - Standard month names
-- `vernalEquinoxData` - Vernal equinox dates for years 1900-2100
-
-### Key Methods
-
-#### Date Conversion
-```javascript
-getGregorianDateForSolarDay(solarYear, solarDay)
-// Convert solar day number to Gregorian date
-
-getSolarDateFromGregorian(gregorianDate, gregorianYear)
-// Convert Gregorian date to solar calendar info
+```bash
+npm install
+npx playwright install   # browsers for the end-to-end tests
+npm run dev              # http://localhost:5173
+npm test                 # unit tests, then end-to-end tests
+npm run typecheck
+npm run build            # static site in dist/, plus the feed Worker in dist-worker/
+npm run holidays:check   # fetch GOV.UK's bank holidays and check the rules still match
 ```
 
-#### Astronomical Events
-```javascript
-getAstronomicalEvents(year)
-// Get all 4 astronomical events for a year
+Run one test file with `npx vitest run tests/unit/core.test.ts` or `npx playwright test --project=chromium`.
 
-checkAstronomicalEvent(date, year)
-// Check if a date is an astronomical event
-```
+## Deployment
 
-#### Formatting
-```javascript
-formatSolarMonthTitle(monthIndex)
-// Returns: { main: "First Month / March-April", sub: "Farvardin / 1/12" }
+The site runs on Cloudflare Workers as static files (`wrangler.jsonc`).
+- **Deploying:** log in once with `npx wrangler login`, then `npm run deploy` builds and deploys.
+- **Security headers:** `public/_headers` sets them, including a strict Content-Security-Policy, so the app uses no inline scripts or styles.
+- **CI:** GitHub Actions runs the type check and all tests on every push and pull request.
 
-formatGregorianMonthTitle(gregorianMonthIndex)
-// Returns: { main: "March / Farvardin-Ordibehesht", sub: "Solar Months: 1-2/12" }
-```
+## Adding a month name pack
 
-## Usage
+Add one JSON file to `src/names/packs/`, starting from `_template.json`. The app finds it automatically. See [docs/name-packs.md](docs/name-packs.md) for the format and writing standard. `npm run test:unit` checks every pack, including that the fonts have every letter it uses.
 
-### Basic Setup
-All three files must be in the same directory:
-```
-solar-calendar.html
-gregorian-calendar.html
-calendar-processor.js
-calendar-styles.css
-```
+## Project layout
 
-### Standalone Use
-Each HTML file works independently and includes all necessary JavaScript inline.
+- `src/core/`: date logic with no DOM. It uses integer day numbers (`days.ts`), equinoxes and solstices (`astro.ts`) and the calendar rules (`solar.ts`).
+- `src/names/`: the name pack format, its loader, and the packs.
+- `src/sky/`: moon phases, using astronomy-engine, which loads only when needed.
+- `src/ui/`: the month view, year view, day panel and name pack menus.
+- `tests/unit/` and `tests/e2e/`: Vitest and Playwright.
+- `docs/redesign.md`: the review of the original app, the decisions behind this version, and the plan.
 
-### Year Selection
-Both calendars support years 1900-2100 through the year input control.
+## Licence
 
-### Theme Toggle
-- Light/Dark mode toggle
-- Preference saved in localStorage
-- System preference detection
-
-### Navigation
-- Previous/Next month buttons
-- Smooth scrolling between months
-- Active month indicator
-- **Clickable month headings** - hover to see link effect, click to navigate to other calendar
-- Month headings show hover state to indicate they are clickable
-
-## Technical Details
-
-### Solar Calendar
-- Based on astronomical observations
-- Starts at Vernal Equinox (Nowruz - Persian New Year)
-- First 6 months: 31 days each
-- Next 5 months: 30 days each  
-- Last month (Esfand): 29 days (30 in leap years)
-
-### Date Calculations
-- Solar year starts March 20/21 (Vernal Equinox)
-- Leap years follow Gregorian leap year rules for simplicity
-- Astronomical event dates are approximations
-
-### Browser Compatibility
-- Modern browsers (Chrome, Firefox, Safari, Edge)
-- ES6+ JavaScript features
-- CSS Grid and Flexbox layouts
-- CSS custom properties (variables)
-
-## Customization
-
-### Styling
-Modify `calendar-styles.css` to customize:
-- Color schemes (CSS custom properties in `:root`)
-- Layout dimensions
-- Typography
-- Animation timing
-
-### Date Processing
-Extend `CalendarProcessor` class to:
-- Add more calendar systems
-- Improve astronomical event accuracy
-- Add cultural holidays
-- Implement custom date calculations
-
-## License
-This calendar system is provided as-is for educational and personal use.
-
-## Credits
-Solar calendar based on the Persian Solar Hijri calendar system.
-Astronomical event calculations are approximate for demonstration purposes.
+GNU GPL v3. See [LICENSE](LICENSE).

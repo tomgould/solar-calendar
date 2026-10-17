@@ -8,3 +8,10 @@ node_modules/
 test-results/
 playwright-report/
 playwright/.cache/
+
+# Vite
+dist/
+
+# Local tool state
+.mullet/
+dist-worker/

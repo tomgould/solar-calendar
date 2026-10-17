@@ -1,0 +1,247 @@
+{
+  "id": "uk-northern-ireland",
+  "title": "Northern Ireland",
+  "description": "Bank holidays in Northern Ireland, with Easter Sunday",
+  "lang": "en-GB",
+  "festivals": [
+    {
+      "name": "New Year’s Day",
+      "gloss": "first day of the year",
+      "meaning": "A bank holiday in Northern Ireland since 1974. When it falls at a weekend, the next Monday is the holiday.",
+      "when": {
+        "gregorian": "01-01"
+      },
+      "from": 1974,
+      "bankHoliday": true,
+      "substituteFrom": 1974
+    },
+    {
+      "name": "St Patrick’s Day",
+      "gloss": "Ireland’s patron saint",
+      "meaning": "A bank holiday in Ireland since 1903, kept in Northern Ireland. When it falls at a weekend, the next Monday is the holiday.",
+      "when": {
+        "gregorian": "03-17"
+      },
+      "from": 1903,
+      "bankHoliday": true,
+      "substituteFrom": 1971
+    },
+    {
+      "name": "Good Friday",
+      "gloss": "the Friday before Easter",
+      "meaning": "Marks the crucifixion. A traditional holiday in Northern Ireland, older than the bank holidays.",
+      "when": {
+        "easter": true,
+        "offset": -2
+      },
+      "bankHoliday": true
+    },
+    {
+      "name": "Easter Sunday",
+      "gloss": "feast of the resurrection",
+      "meaning": "The Christian feast of the resurrection, on the Sunday after the church’s full moon on or after 21 March, so between 22 March and 25 April. It isn’t a bank holiday, being a Sunday.",
+      "when": {
+        "easter": true
+      }
+    },
+    {
+      "name": "Easter Monday",
+      "gloss": "the day after Easter",
+      "meaning": "One of the first bank holidays, set by the Bank Holidays Act 1871.",
+      "when": {
+        "easter": true,
+        "offset": 1
+      },
+      "from": 1871,
+      "bankHoliday": true
+    },
+    {
+      "name": "Early May bank holiday",
+      "gloss": "first Monday in May",
+      "meaning": "Added in 1978. It moved to Monday 8 May in 1995 for the 50th anniversary of VE Day, and to Friday 8 May in 2020 for the 75th.",
+      "when": {
+        "gregorian": "05-01",
+        "weekday": "monday"
+      },
+      "from": 1978,
+      "moves": {
+        "1995": "05-08",
+        "2020": "05-08"
+      },
+      "bankHoliday": true
+    },
+    {
+      "name": "Spring bank holiday",
+      "gloss": "last Monday in May",
+      "meaning": "Took the place of Whit Monday in 1971. It moved into June for Elizabeth II’s Silver, Golden, Diamond and Platinum Jubilees.",
+      "when": {
+        "gregorian": "05-25",
+        "weekday": "monday"
+      },
+      "from": 1971,
+      "moves": {
+        "1977": "06-06",
+        "2002": "06-04",
+        "2012": "06-04",
+        "2022": "06-02"
+      },
+      "bankHoliday": true
+    },
+    {
+      "name": "Battle of the Boyne (Orangemen’s Day)",
+      "gloss": "the Twelfth",
+      "meaning": "Marks William III’s victory at the Boyne in 1690. A public holiday in Northern Ireland. When it falls at a weekend, the next Monday is the holiday.",
+      "when": {
+        "gregorian": "07-12"
+      },
+      "from": 1926,
+      "bankHoliday": true,
+      "substituteFrom": 1971
+    },
+    {
+      "name": "Summer bank holiday",
+      "gloss": "last Monday in August",
+      "meaning": "Moved from the first Monday in August in 1971.",
+      "when": {
+        "gregorian": "08-25",
+        "weekday": "monday"
+      },
+      "from": 1971,
+      "bankHoliday": true
+    },
+    {
+      "name": "Christmas Day",
+      "gloss": "the Nativity",
+      "meaning": "A traditional holiday, older than the bank holidays. When it falls at a weekend, a weekday is given in its place.",
+      "when": {
+        "gregorian": "12-25"
+      },
+      "bankHoliday": true,
+      "substituteFrom": 1971
+    },
+    {
+      "name": "Boxing Day",
+      "gloss": "the day after Christmas",
+      "meaning": "A bank holiday since 1871. When it falls at a weekend, a weekday is given in its place.",
+      "when": {
+        "gregorian": "12-26"
+      },
+      "from": 1871,
+      "bankHoliday": true,
+      "substituteFrom": 1971
+    },
+    {
+      "name": "Royal wedding bank holiday",
+      "gloss": "Anne and Mark Phillips",
+      "meaning": "An extra bank holiday for the wedding of Princess Anne and Mark Phillips.",
+      "when": {
+        "date": "1973-11-14"
+      },
+      "certainty": "likely",
+      "bankHoliday": true
+    },
+    {
+      "name": "Silver Jubilee bank holiday",
+      "gloss": "25 years of Elizabeth II",
+      "meaning": "An extra bank holiday for the Queen’s Silver Jubilee, next to the moved spring bank holiday.",
+      "when": {
+        "date": "1977-06-07"
+      },
+      "bankHoliday": true
+    },
+    {
+      "name": "Royal wedding bank holiday",
+      "gloss": "Charles and Diana",
+      "meaning": "An extra bank holiday for the wedding of Prince Charles and Lady Diana Spencer.",
+      "when": {
+        "date": "1981-07-29"
+      },
+      "bankHoliday": true
+    },
+    {
+      "name": "Millennium bank holiday",
+      "gloss": "the year 2000",
+      "meaning": "An extra bank holiday to mark the new millennium.",
+      "when": {
+        "date": "1999-12-31"
+      },
+      "bankHoliday": true
+    },
+    {
+      "name": "Golden Jubilee bank holiday",
+      "gloss": "50 years of Elizabeth II",
+      "meaning": "An extra bank holiday for the Queen’s Golden Jubilee, next to the moved spring bank holiday.",
+      "when": {
+        "date": "2002-06-03"
+      },
+      "bankHoliday": true
+    },
+    {
+      "name": "Royal wedding bank holiday",
+      "gloss": "William and Catherine",
+      "meaning": "An extra bank holiday for the wedding of Prince William and Catherine Middleton.",
+      "when": {
+        "date": "2011-04-29"
+      },
+      "bankHoliday": true
+    },
+    {
+      "name": "Diamond Jubilee bank holiday",
+      "gloss": "60 years of Elizabeth II",
+      "meaning": "An extra bank holiday for the Queen’s Diamond Jubilee, next to the moved spring bank holiday.",
+      "when": {
+        "date": "2012-06-05"
+      },
+      "bankHoliday": true
+    },
+    {
+      "name": "Platinum Jubilee bank holiday",
+      "gloss": "70 years of Elizabeth II",
+      "meaning": "An extra bank holiday for the Queen’s Platinum Jubilee, next to the moved spring bank holiday.",
+      "when": {
+        "date": "2022-06-03"
+      },
+      "bankHoliday": true
+    },
+    {
+      "name": "State Funeral of Queen Elizabeth II",
+      "gloss": "a national day of mourning",
+      "meaning": "A one-off bank holiday for the Queen’s state funeral.",
+      "when": {
+        "date": "2022-09-19"
+      },
+      "bankHoliday": true
+    },
+    {
+      "name": "Coronation of King Charles III",
+      "gloss": "a coronation holiday",
+      "meaning": "A one-off bank holiday for the coronation, two days after it.",
+      "when": {
+        "date": "2023-05-08"
+      },
+      "bankHoliday": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "GOV.UK: UK bank holidays",
+      "url": "https://www.gov.uk/bank-holidays"
+    },
+    {
+      "title": "Banking and Financial Dealings Act 1971",
+      "url": "https://www.legislation.gov.uk/ukpga/1971/80"
+    },
+    {
+      "title": "Wikipedia: Public holidays in the United Kingdom",
+      "url": "https://en.wikipedia.org/wiki/Public_holidays_in_the_United_Kingdom"
+    },
+    {
+      "title": "Hansard: Bank Holidays, written answer, 8 December 1976",
+      "url": "https://api.parliament.uk/historic-hansard/written-answers/1976/dec/08/bank-holidays"
+    },
+    {
+      "title": "Edinburgh Gazette, 21 January 1977: Silver Jubilee proclamation",
+      "url": "https://www.thegazette.co.uk/Edinburgh/issue/20015/page/75"
+    }
+  ]
+}

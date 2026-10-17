@@ -1,0 +1,110 @@
+{
+  "id": "nature",
+  "kind": "modern",
+  "title": "Nature (northern hemisphere)",
+  "description": "Plain English names for what the seasons do, from Bud in spring to Thaw at the end of winter",
+  "culture": "Modern invention, after the French Republican calendar",
+  "era": "Today",
+  "lang": "en",
+  "origin": "These names are a modern invention. They describe the year in the British Isles and northern Europe, so they assume northern-hemisphere seasons: in the southern hemisphere the seasons are reversed, and Light and Dark would swap places. The precedent is the French Republican calendar, adopted on 24 October 1793, which also had nature names (Germinal, Floréal, Messidor) and began its year at the autumn equinox. Light holds the June solstice and Dark holds the December solstice.",
+  "leapWeek": {
+    "name": "Leap week",
+    "gloss": "the extra week",
+    "meaning": "A spare week at the end of the year, about one year in six, which keeps the seasons in step with the calendar. It falls in late winter, before the thaw."
+  },
+  "months": [
+    {
+      "name": "Bud",
+      "gloss": "spring buds",
+      "meaning": "Buds break on hawthorn and hedgerow trees, blackthorn flowers and the first lambs are in the fields. Swallows and other migrants start to arrive.",
+      "certainty": "established"
+    },
+    {
+      "name": "Bloom",
+      "gloss": "spring flowers",
+      "meaning": "Bluebells carpet the woods and hawthorn blossom, the may, whitens the hedges. Orchards flower and the cuckoo is heard.",
+      "certainty": "established"
+    },
+    {
+      "name": "Meadow",
+      "gloss": "flowering grassland",
+      "meaning": "Hay meadows are at their fullest, with grasses, buttercups and oxeye daisies. Elder flowers and the first hay is cut.",
+      "certainty": "established"
+    },
+    {
+      "name": "Light",
+      "gloss": "longest days",
+      "meaning": "The days are longest, and in northern Scotland it barely gets dark. The June solstice, around 21 June, falls in this month.",
+      "certainty": "established"
+    },
+    {
+      "name": "Heat",
+      "gloss": "high summer",
+      "meaning": "The warmest weeks of the year in the British Isles, with long dry spells in a good summer. Heather comes into bloom on the uplands.",
+      "certainty": "established"
+    },
+    {
+      "name": "Harvest",
+      "gloss": "cutting the corn",
+      "meaning": "Cereal crops are cut and the stubble fields turn gold. Blackberries start to ripen in the hedges.",
+      "certainty": "established"
+    },
+    {
+      "name": "Vintage",
+      "gloss": "fruit gathering",
+      "meaning": "Apples, pears and hedgerow fruit are picked, cider is pressed and English vineyards bring in their grapes.",
+      "certainty": "established"
+    },
+    {
+      "name": "Ember",
+      "gloss": "glowing leaves",
+      "meaning": "Beech, oak and bracken turn copper, orange and red, as if embers were glowing in the woods. The first frosts arrive and the clocks go back.",
+      "certainty": "established"
+    },
+    {
+      "name": "Mist",
+      "gloss": "autumn fog",
+      "meaning": "Leaves fall, and mist and fog lie in the valleys and over the fields. Trees stand bare by the end of the month.",
+      "certainty": "established"
+    },
+    {
+      "name": "Dark",
+      "gloss": "shortest days",
+      "meaning": "The shortest days, with the sun setting before four in the afternoon in southern England. The December solstice, around 21 December, falls in this month.",
+      "certainty": "established"
+    },
+    {
+      "name": "Frost",
+      "gloss": "hard frosts",
+      "meaning": "Among the coldest weeks of the year, with hard frosts, ice on ponds and frozen ground. Hazel catkins appear in sheltered places.",
+      "certainty": "established"
+    },
+    {
+      "name": "Snow",
+      "gloss": "snow and snowdrops",
+      "meaning": "Snow is most likely in these weeks, and snowdrops flower through it. The days lengthen noticeably.",
+      "certainty": "established"
+    },
+    {
+      "name": "Thaw",
+      "gloss": "ice melting",
+      "meaning": "Ice and snow melt, the ground softens and the first frogspawn appears in ponds. Catkins and early daffodils show that spring is close.",
+      "certainty": "established",
+      "notes": "The 13th month."
+    }
+  ],
+  "sources": [
+    {
+      "title": "French Republican calendar (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/French_Republican_calendar"
+    },
+    {
+      "title": "Nature's Calendar (Woodland Trust)",
+      "url": "https://naturescalendar.woodlandtrust.org.uk/"
+    },
+    {
+      "title": "Signs of spring spotter's guide (WWF-UK)",
+      "url": "https://myaction.wwf.org.uk/spotters-guide-signs-of-spring"
+    }
+  ]
+}
