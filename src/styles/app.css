@@ -402,7 +402,8 @@ a.button { display: inline-flex; align-items: center; color: inherit; text-decor
   .print-only { display: block; }
 
   .month-head { margin-bottom: 4mm; }
-  .month-name { font-size: 36pt; }
+  /* Room above for accents on capitals, such as the macron on Ǣ */
+  .month-name { font-size: 36pt; padding-top: 2mm; }
   .month-meta { margin-top: 2mm; }
   .month-body { display: block; }
   .grid { border-top-width: 3mm; }

@@ -6,6 +6,7 @@
   "era": "Today",
   "lang": "la",
   "origin": "These names are a modern invention: Latin ordinal numbers, first to thirteenth, in the masculine to agree with mensis, month, as Roman month names did. The Romans counted months the same way: their year began in March, which is why September, October, November and December mean seventh, eighth, ninth and tenth. This calendar also starts in March, so Septimus to Decimus land almost exactly on September to December.",
+  "pronunciation": "Classical Latin as scholars reconstruct it, with hard c and g, v as w, and long vowels held longer. These are well-attested Latin numbers, so we are quite sure of them. Church Latin and English-style Latin sound different.",
   "leapWeek": {
     "name": "Leap week",
     "gloss": "the extra week",
@@ -16,81 +17,107 @@
       "name": "Primus",
       "gloss": "the first",
       "meaning": "Latin for first. Like the early Roman year, this calendar begins in March.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "PREE-muus",
+      "ipa": "ˈpriːmʊs"
     },
     {
       "name": "Secundus",
       "gloss": "the second",
       "meaning": "Latin for second.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "seh-KUUN-duus",
+      "ipa": "sɛˈkʊndʊs"
     },
     {
       "name": "Tertius",
       "gloss": "the third",
       "meaning": "Latin for third.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "TER-tee-uus",
+      "ipa": "ˈtɛrtiʊs"
     },
     {
       "name": "Quartus",
       "gloss": "the fourth",
       "meaning": "Latin for fourth.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "KWAHR-tuus",
+      "ipa": "ˈkwartʊs"
     },
     {
       "name": "Quintus",
       "gloss": "the fifth",
       "meaning": "Latin for fifth. The Romans called the fifth month Quintilis, which later became July.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "KWIN-tuus",
+      "ipa": "ˈkwintʊs"
     },
     {
       "name": "Sextus",
       "gloss": "the sixth",
       "meaning": "Latin for sixth. The Romans called the sixth month Sextilis, which later became August.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "SEK-stuus",
+      "ipa": "ˈsɛkstʊs"
     },
     {
       "name": "Septimus",
       "gloss": "the seventh",
       "meaning": "Latin for seventh, as in September, the seventh month of the March-based Roman year.",
       "certainty": "established",
-      "notes": "Runs 7 Sep to 4 Oct in 2026, almost exactly September."
+      "notes": "Runs 7 Sep to 4 Oct in 2026, almost exactly September.",
+      "say": "SEP-ti-muus",
+      "ipa": "ˈsɛptimʊs"
     },
     {
       "name": "Octavus",
       "gloss": "the eighth",
       "meaning": "Latin for eighth, as in October.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "ok-TAH-wuus",
+      "ipa": "ɔkˈtaːwʊs"
     },
     {
       "name": "Nonus",
       "gloss": "the ninth",
       "meaning": "Latin for ninth, as in November. The Roman nones, a day in each month, got their name from the same word.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "NOH-nuus",
+      "ipa": "ˈnoːnʊs"
     },
     {
       "name": "Decimus",
       "gloss": "the tenth",
       "meaning": "Latin for tenth, as in December. It holds the December solstice.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "DEH-ki-muus",
+      "ipa": "ˈdɛkimʊs"
     },
     {
       "name": "Undecimus",
       "gloss": "the eleventh",
       "meaning": "Latin for eleventh. In the March-based Roman year, January was the eleventh month.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "uun-DEH-ki-muus",
+      "ipa": "unˈdɛkimʊs"
     },
     {
       "name": "Duodecimus",
       "gloss": "the twelfth",
       "meaning": "Latin for twelfth. In the March-based Roman year, February was the twelfth and last month.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "doo-aw-DEH-ki-muus",
+      "ipa": "duɔˈdɛkimʊs"
     },
     {
       "name": "Tertius Decimus",
       "gloss": "the thirteenth",
       "meaning": "Latin for thirteenth, literally third and tenth, the form classical writers used.",
       "certainty": "established",
-      "notes": "The 13th month."
+      "notes": "The 13th month.",
+      "say": "TER-tee-uus DEH-ki-muus",
+      "ipa": "ˈtɛrtiʊs ˈdɛkimʊs"
     }
   ],
   "sources": [
@@ -105,6 +132,14 @@
     {
       "title": "decimus (Wiktionary)",
       "url": "https://en.wiktionary.org/wiki/decimus"
+    },
+    {
+      "title": "Latin spelling and pronunciation (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Latin_spelling_and_pronunciation"
+    },
+    {
+      "title": "ūndecimus (Wiktionary, classical IPA)",
+      "url": "https://en.wiktionary.org/wiki/undecimus"
     }
   ]
 }

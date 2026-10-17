@@ -6,6 +6,7 @@
   "era": "Before 46 BC",
   "lang": "la",
   "origin": "The Roman Republic used twelve months, and the year began in March, which is why September to December mean seventh to tenth. Ordinary years had 355 days, so the calendar drifted. The priests kept it in step by sometimes inserting a leap month, Mercedonius, after 23 February. The first 12 slots here are the Latin names in their old order, and slot 13 is the leap month, which is roughly where it fell.",
+  "pronunciation": "Classical Latin as scholars reconstruct it, with hard c and g, v as w, and long vowels held longer. We are fairly sure of the sounds, though not of every vowel length in rarer words: Mercedonius is marked mercēdŏnius in Lewis and Short, and November has a short o. Church Latin and English-style Latin sound different, for example with a soft c and a v sound.",
   "leapWeek": {
     "name": "Leap week",
     "gloss": "the extra week",
@@ -16,73 +17,97 @@
       "name": "Martius",
       "gloss": "month of Mars",
       "meaning": "Named after Mars, the Roman god of war. It was the first month of the early Roman year.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "MAHR-tee-uus",
+      "ipa": "ˈmaːrtiʊs"
     },
     {
       "name": "Aprilis",
       "gloss": "origin unclear",
       "meaning": "Its origin is uncertain. Roman writers suggested aperire, to open, for opening buds, but modern scholars are not sure.",
-      "certainty": "uncertain"
+      "certainty": "uncertain",
+      "say": "ah-PREE-lis",
+      "ipa": "aˈpriːlɪs"
     },
     {
       "name": "Maius",
       "gloss": "Maia's month",
       "meaning": "Probably named after Maia, a goddess linked with growth. Ovid also records an ancient view that it comes from maiores, elders, and Iunius from iuniores, the young.",
-      "certainty": "likely"
+      "certainty": "likely",
+      "say": "MAH-yuus",
+      "ipa": "ˈmajjʊs"
     },
     {
       "name": "Iunius",
       "gloss": "Juno's month",
       "meaning": "Probably named after Juno, queen of the gods. Some Roman writers connected it with iuniores, the young, instead.",
-      "certainty": "likely"
+      "certainty": "likely",
+      "say": "YOO-nee-uus",
+      "ipa": "ˈjuːniʊs"
     },
     {
       "name": "Quintilis",
       "gloss": "fifth month",
       "meaning": "From quintus, fifth, counting from March. It was renamed July in 44 BC, after Julius Caesar.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "kwin-TEE-lis",
+      "ipa": "kwinˈtiːlɪs"
     },
     {
       "name": "Sextilis",
       "gloss": "sixth month",
       "meaning": "From sextus, sixth, counting from March. It was renamed August in 8 BC, after Augustus.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "seks-TEE-lis",
+      "ipa": "sɛksˈtiːlɪs"
     },
     {
       "name": "September",
       "gloss": "seventh month",
       "meaning": "From septem, seven. It was the seventh month while the year began in March.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "sep-TEM-ber",
+      "ipa": "sɛpˈtɛmbɛr"
     },
     {
       "name": "October",
       "gloss": "eighth month",
       "meaning": "From octo, eight.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "ok-TOH-ber",
+      "ipa": "ɔkˈtoːbɛr"
     },
     {
       "name": "November",
       "gloss": "ninth month",
       "meaning": "From novem, nine.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "naw-WEM-ber",
+      "ipa": "nɔˈwɛmbɛr"
     },
     {
       "name": "December",
       "gloss": "tenth month",
       "meaning": "From decem, ten.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "deh-KEM-ber",
+      "ipa": "dɛˈkɛmbɛr"
     },
     {
       "name": "Ianuarius",
       "gloss": "month of Janus",
       "meaning": "Named after Janus, the two-faced god of doorways and beginnings. January and February were added to the old ten-month year, and ancient writers credited the king Numa with that.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "yah-noo-AH-ree-uus",
+      "ipa": "jaːnuˈaːriʊs"
     },
     {
       "name": "Februarius",
       "gloss": "purification month",
       "meaning": "Probably from februa, the purification rites held in this month. The origin of that word itself is not certain.",
-      "certainty": "likely"
+      "certainty": "likely",
+      "say": "feb-roo-AH-ree-uus",
+      "ipa": "fɛbruˈaːriʊs"
     },
     {
       "name": "Mercedonius",
@@ -90,7 +115,9 @@
       "gloss": "leap month",
       "meaning": "Rome's leap month, also called Intercalaris or Mercidinus. The pontifex maximus decided in which years to insert it, after 23 February. The name is possibly from merces, wages, but that is only a suggestion.",
       "certainty": "uncertain",
-      "notes": "The 13th month. It was inserted after 23 February in some years, which is close to where month 13 starts here. Ancient and modern accounts differ on its length: Plutarch says 22 days, and modern reconstructions give 27."
+      "notes": "The 13th month. It was inserted after 23 February in some years, which is close to where month 13 starts here. Ancient and modern accounts differ on its length: Plutarch says 22 days, and modern reconstructions give 27.",
+      "say": "mer-kay-DON-ee-uus",
+      "ipa": "mɛrkeːˈdɔniʊs"
     }
   ],
   "sources": [
@@ -105,6 +132,14 @@
     {
       "title": "Plutarch, Life of Numa (LacusCurtius)",
       "url": "https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Plutarch/Lives/Numa*.html"
+    },
+    {
+      "title": "Latin spelling and pronunciation (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Latin_spelling_and_pronunciation"
+    },
+    {
+      "title": "Iānuārius, Māius, Iūnius, Mercēdonius (Wiktionary, classical IPA)",
+      "url": "https://en.wiktionary.org/wiki/Ianuarius"
     }
   ]
 }

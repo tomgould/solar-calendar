@@ -65,6 +65,22 @@ test('explains what each month name means', async ({ page }) => {
   await expect(dialog).toBeHidden();
 });
 
+test('shows how to say each name', async ({ page }) => {
+  await page.goto('./?date=2026-12-10&names=anglo-saxon');
+  // Ǣ is built from Æ and a combining macron, which the display font has
+  await expect(page.locator('#month-name')).toHaveText('Ǣrra Gēola');
+  await expect(page.locator('#month-say')).toHaveText(/^Say [A-Z]/);
+  await page.locator('#about-name').click();
+  await expect(page.locator('#about-dialog li[aria-current] .ipa')).toHaveText(/^\/.+\/$/);
+  await page.locator('#about-dialog .say-key summary').click();
+  await expect(page.locator('#about-dialog .say-key')).toContainText('as in thin');
+  await page.keyboard.press('Escape');
+
+  // English names need no pronunciation
+  await page.goto('./?date=2026-12-10&names=gregorian');
+  await expect(page.locator('#month-say')).toBeHidden();
+});
+
 test('ends a 371-day year with a leap week', async ({ page }) => {
   await page.goto('./?date=2029-03-21&names=gregorian');
   await expect(page.locator('#month-name')).toHaveText('Leap week');
