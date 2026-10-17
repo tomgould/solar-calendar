@@ -160,11 +160,13 @@ test('shows bank holidays and other packs’ festivals, chosen in the Festivals 
   await expect(page.locator('#month-festivals')).toContainText('St Andrew’s Day');
   await page.getByRole('button', { name: 'Year', exact: true }).click();
   await expect(page.locator('#year-festivals')).toContainText('Nowruz');
+  await page.locator('#year-view').getByRole('button', { name: 'Add to calendar' }).click();
   const feedUrl = await page.locator('#feed-url').inputValue();
   expect(feedUrl).toMatch(/&festivals=persian&holidays=uk-northern-ireland,uk-scotland$/);
   const feed = await (await page.request.get(feedUrl)).text();
   expect(feed).toContain('SUMMARY:St Andrew’s Day');
   expect(feed).toContain('SUMMARY:Yalda');
+  await page.locator('#calendar-dialog').getByRole('button', { name: 'Close' }).click();
 
   // Unticking turns them off again
   await page.getByRole('button', { name: 'Month', exact: true }).click();
@@ -289,26 +291,41 @@ test('converts between the calendars with Go to a date', async ({ page }) => {
   await expect(page.locator('#goto-solar-day')).toBeFocused();
 });
 
-test('downloads the year and offers a subscription feed', async ({ page }) => {
-  await page.goto('./?view=year&date=2026-10-17&names=anglo-saxon');
-  const [download] = await Promise.all([page.waitForEvent('download'), page.locator('#download-ics').click()]);
+test('adds the calendar to Google and other calendar apps, or downloads a year', async ({ page }) => {
+  await page.goto('./?date=2026-10-17&names=anglo-saxon');
+  // From the month view, next to Print month
+  await page.locator('#month-view').getByRole('button', { name: 'Add to calendar' }).click();
+  const dialog = page.locator('#calendar-dialog');
+  await expect(dialog).toBeVisible();
+
+  const feedUrl = await dialog.locator('#feed-url').inputValue();
+  // Every region's bank holidays and every other pack's festivals are on by default
+  expect(feedUrl).toMatch(/\/feed\.ics\?names=anglo-saxon&festivals=[a-z,-]+&holidays=uk-england-and-wales,uk-northern-ireland,uk-scotland$/);
+  expect(new URL(feedUrl).searchParams.get('festivals')!.split(',')).toEqual(['coptic', 'egyptian', 'gaulish', 'old-norse', 'persian', 'roman', 'sky']);
+  // Google's add-calendar page gets the feed as a webcal link; Apple and Outlook open it directly
+  const webcal = feedUrl.replace(/^https?:/, 'webcal:');
+  await expect(dialog.getByRole('link', { name: /^Add to Google Calendar/ })).toHaveAttribute('href', `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcal)}`);
+  await expect(dialog.getByRole('link', { name: 'Apple Calendar or Outlook' })).toHaveAttribute('href', webcal);
+
+  // The feed is served by the built Worker bundle
+  const feed = await page.request.get(feedUrl);
+  expect(feed.headers()['content-type']).toBe('text/calendar; charset=utf-8');
+  expect(await feed.text()).toContain('X-WR-CALNAME:Solar calendar (Anglo-Saxon)');
+
+  const [download] = await Promise.all([page.waitForEvent('download'), dialog.getByRole('button', { name: 'Download solar 2026 (.ics)' }).click()]);
   expect(download.suggestedFilename()).toBe('solar-calendar-2026-anglo-saxon.ics');
   const chunks: Buffer[] = [];
   for await (const chunk of (await download.createReadStream())!) chunks.push(chunk as Buffer);
   const file = Buffer.concat(chunks).toString('utf8');
   expect(file.startsWith('BEGIN:VCALENDAR\r\n')).toBe(true);
   expect(file).toContain('SUMMARY:13 Winterfylleþ 2026');
+  await dialog.getByRole('button', { name: 'Close' }).click();
+  await expect(dialog).toBeHidden();
 
-  // The feed is served by the built Worker bundle
-  const feedUrl = await page.locator('#feed-url').inputValue();
-  // Every region's bank holidays are on by default
-  expect(feedUrl).toMatch(/\/feed\.ics\?names=anglo-saxon&festivals=[a-z,-]+&holidays=uk-england-and-wales,uk-northern-ireland,uk-scotland$/);
-  // Every other pack with festivals, but not the chosen names' own
-  expect(new URL(feedUrl).searchParams.get('festivals')!.split(',')).toEqual(['coptic', 'egyptian', 'gaulish', 'old-norse', 'persian', 'roman', 'sky']);
-  await expect(page.locator('#open-feed')).toHaveAttribute('href', /^webcal:/);
-  const feed = await page.request.get(feedUrl);
-  expect(feed.headers()['content-type']).toBe('text/calendar; charset=utf-8');
-  expect(await feed.text()).toContain('X-WR-CALNAME:Solar calendar (Anglo-Saxon)');
+  // The year view has the same button
+  await page.getByRole('button', { name: 'Year', exact: true }).click();
+  await page.locator('#year-view').getByRole('button', { name: 'Add to calendar' }).click();
+  await expect(dialog).toBeVisible();
 });
 
 test('asks for the location on a first visit, explaining why, with a way to say no', async ({ page, context }, testInfo) => {
