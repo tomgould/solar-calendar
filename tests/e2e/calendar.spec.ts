@@ -92,6 +92,7 @@ test('reads names aloud', async ({ page }) => {
       configurable: true,
       value: {
         cancel() {},
+        addEventListener() {},
         getVoices: () => [{ lang: 'en-GB', name: 'English' }, { lang: 'fa-IR', name: 'Persian' }],
         speak: (utterance: Utterance) => spoken.push({ text: utterance.text, lang: utterance.lang }),
       },
@@ -150,10 +151,39 @@ test('keeps the selected day in a sheet along the bottom on phones', async ({ pa
   await expect(sheet.locator('.facts')).toBeHidden();
   await expect(sheet.getByRole('button', { name: 'Details' })).toBeFocused();
 
+  // Keyboard focus moving back to the grid folds it, so it can't cover the focused day
+  await page.keyboard.press('Enter');
+  await expect(sheet.locator('.facts')).toBeVisible();
+  await page.keyboard.press('Shift+Tab');
+  await expect(page.locator(selectedCell)).toBeFocused();
+  await expect(sheet.locator('.facts')).toBeHidden();
+
   // On wider screens it sits beside the grid, with nothing to open
   await page.setViewportSize({ width: 1200, height: 800 });
   await expect(sheet.getByRole('button', { name: 'Details' })).toBeHidden();
   await expect(sheet.locator('.facts')).toBeVisible();
+});
+
+test.describe('when moon data arrives late', () => {
+  // The service worker would fetch the moon library itself, out of the route's reach
+  test.use({ serviceWorkers: 'block' });
+
+  test('keeps focus on the control in the day panel', async ({ page }) => {
+    await page.setViewportSize({ width: 1200, height: 800 });
+    let release!: () => void;
+    const held = new Promise<void>((resolve) => { release = resolve; });
+    await page.route(/astronomy[^/]*\.js$/, async (route) => {
+      await held;
+      await route.continue();
+    });
+    // Firefox counts the held library towards the load event, so don't wait for it
+    await page.goto('./?date=2026-10-17&names=anglo-saxon', { waitUntil: 'commit' });
+    await page.getByRole('button', { name: 'Copy link to this day' }).focus();
+    release();
+    // The month draws again with its moon phases
+    await expect(page.locator('#grid-body .name', { hasText: /moon/ }).first()).toBeAttached();
+    await expect(page.getByRole('button', { name: 'Copy link to this day' })).toBeFocused();
+  });
 });
 
 test('ends a 371-day year with a leap week', async ({ page }) => {

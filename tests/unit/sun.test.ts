@@ -44,6 +44,10 @@ describe('sunrise and sunset', () => {
     expect(new Date(zonedMidnight(2026, 6, 21, 'Australia/Sydney')).toISOString()).toBe('2026-06-20T14:00:00.000Z');
     expect(new Date(zonedMidnight(2026, 3, 29, 'Europe/London')).toISOString()).toBe('2026-03-29T00:00:00.000Z');
     expect(new Date(zonedMidnight(2026, 3, 30, 'Europe/London')).toISOString()).toBe('2026-03-29T23:00:00.000Z');
+    // Where the clocks skip midnight, the day starts at 01:00
+    expect(new Date(zonedMidnight(2026, 9, 6, 'America/Santiago')).toISOString()).toBe('2026-09-06T04:00:00.000Z');
+    expect(new Date(zonedMidnight(2026, 3, 8, 'America/Havana')).toISOString()).toBe('2026-03-08T05:00:00.000Z');
+    expect(new Date(zonedMidnight(2026, 3, 29, 'Asia/Beirut')).toISOString()).toBe('2026-03-28T22:00:00.000Z');
   });
 
   it('validates stored places', () => {

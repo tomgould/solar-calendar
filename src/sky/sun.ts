@@ -21,7 +21,10 @@ export async function placeTimeZone({ lat, lon }: Place): Promise<string | null>
   try {
     const module = await import('@photostructure/tz-lookup');
     const find = ((module as { default?: unknown }).default ?? module) as (lat: number, lon: number) => string;
-    return find(lat, lon);
+    const zone = find(lat, lon);
+    // Older browsers don't know every zone name; fall back to the device's own time then
+    new Intl.DateTimeFormat('en', { timeZone: zone });
+    return zone;
   } catch {
     return null;
   }
@@ -40,6 +43,9 @@ export function zonedMidnight(year: number, month: number, day: number, timeZone
   // Two passes settle the offset, even across a daylight-saving change
   let guess = wall - offset(wall);
   guess = wall - offset(guess);
+  // Where the clocks skip midnight (Santiago, Havana), that lands in the evening
+  // before; the day then starts when the clocks change, an hour later
+  if (guess + offset(guess) < wall) guess += wall - (guess + offset(guess));
   return guess;
 }
 

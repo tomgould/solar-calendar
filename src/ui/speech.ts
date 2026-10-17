@@ -21,10 +21,13 @@ export function canSpeak(): boolean {
   return 'speechSynthesis' in window && typeof SpeechSynthesisUtterance === 'function';
 }
 
+// Chrome lists its voices only after "voiceschanged", so they're loaded ahead of the first press
+let voices: SpeechSynthesisVoice[] = [];
+
 export function speak({ text, lang, say }: Spoken): void {
   const synth = window.speechSynthesis;
   synth.cancel();
-  const voices = synth.getVoices();
+  if (voices.length === 0) voices = synth.getVoices();
   const language = (tag: string) => tag.toLowerCase().split(/[-_]/)[0];
   // A romanised name ("fa-Latn") would be read badly by a voice for the language's own script
   const native = /-latn\b/i.test(lang) ? undefined : voices.find((voice) => language(voice.lang) === language(lang));
@@ -57,6 +60,10 @@ export function hearButton(pack: NamePack, entry: { name: string; original?: str
 
 /** One listener for every "Hear it" button on the page. */
 export function listenForHear(): void {
+  if (!canSpeak()) return;
+  const loadVoices = () => { voices = window.speechSynthesis.getVoices(); };
+  loadVoices();
+  window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
   document.addEventListener('click', (event) => {
     const button = (event.target as Element).closest<HTMLElement>('[data-hear-text]');
     if (!button) return;

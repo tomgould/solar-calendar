@@ -35,7 +35,9 @@ export function ruleProblem(rule: unknown): string | null {
   }
   if ('solar' in r) {
     const solar = r.solar as { month?: unknown; day?: unknown } | null;
-    return solar && isValidSolarDate(2026, Number(solar.month), Number(solar.day)) && Number(solar.month) <= 13
+    // Whole numbers only: fromSolar throws on "3" or 3.5, which would stop the calendar loading
+    return solar && Number.isInteger(solar.month) && Number.isInteger(solar.day)
+      && isValidSolarDate(2026, solar.month as number, solar.day as number) && (solar.month as number) <= 13
       ? null : '"solar" needs a month from 1 to 13 and a day from 1 to 28';
   }
   return 'needs "event", "gregorian" or "solar"';
