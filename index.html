@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solar calendar</title>
+  <meta name="description" content="A calendar of 13 identical 28-day months, with the year starting at the spring equinox.">
+  <script>
+    // Apply a saved theme before the first paint, so dark mode never flashes white
+    try {
+      const theme = localStorage.getItem('theme');
+      if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+    } catch {}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400&family=Big+Shoulders:opsz,wght@10..72,100..900&display=swap">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to the calendar</a>
+  <div class="page">
+    <header class="masthead">
+      <a class="wordmark" href="./">Solar calendar</a>
+      <div class="controls">
+        <button type="button" class="button" id="today-button">Today</button>
+        <div class="segmented" role="group" aria-label="View">
+          <button type="button" data-view="month" aria-pressed="true">Month</button>
+          <button type="button" data-view="year" aria-pressed="false">Year</button>
+        </div>
+        <button type="button" class="button" id="names-button" popovertarget="names-menu">Month names<span class="names-current">: <span id="names-current"></span></span></button>
+        <button type="button" class="button" id="theme-button" aria-pressed="false">Dark mode</button>
+      </div>
+    </header>
+
+    <div id="names-menu" class="names-menu" popover aria-labelledby="names-menu-title">
+      <h2 id="names-menu-title" class="menu-title">Month names</h2>
+      <p class="menu-note">Choose what the months are called. The days stay the same.</p>
+      <div id="names-options" class="pack-options" role="radiogroup" aria-labelledby="names-menu-title"></div>
+    </div>
+
+    <main id="main">
+      <p class="today-line" id="today-line"></p>
+
+      <section id="month-view" class="month" aria-labelledby="month-name">
+        <nav class="strip" aria-label="Months of this year"><ol id="month-strip"></ol></nav>
+        <div class="month-head">
+          <div>
+            <h1 id="month-name" class="month-name"></h1>
+            <p class="month-meta">
+              <span id="month-gloss" class="gloss"></span>
+              <span id="month-place"></span>
+              <button type="button" class="text-button" id="about-name">About this name</button>
+            </p>
+          </div>
+          <div class="steps">
+            <button type="button" class="step" id="prev-month" aria-label="Previous month"></button>
+            <button type="button" class="step" id="next-month" aria-label="Next month"></button>
+          </div>
+        </div>
+        <div class="month-body">
+          <table class="grid" role="grid" aria-labelledby="month-name">
+            <thead><tr id="grid-head"></tr></thead>
+            <tbody id="grid-body"></tbody>
+          </table>
+          <aside class="day" id="day-panel" aria-label="Selected day"></aside>
+        </div>
+      </section>
+
+      <section id="year-view" class="year" aria-labelledby="year-title" hidden>
+        <div class="year-head">
+          <div>
+            <h1 id="year-title" class="year-name"></h1>
+            <p id="year-span" class="year-meta"></p>
+          </div>
+          <div class="steps">
+            <button type="button" class="step" id="prev-year" aria-label="Previous year"></button>
+            <button type="button" class="step" id="next-year" aria-label="Next year"></button>
+            <button type="button" class="button" id="print-year">Print year</button>
+          </div>
+        </div>
+        <div class="table-scroll" role="region" aria-labelledby="year-title" tabindex="0">
+          <table class="almanac" id="almanac"></table>
+        </div>
+        <div class="year-notes">
+          <section aria-labelledby="seasons-title">
+            <h2 id="seasons-title" class="notes-title">Equinoxes and solstices</h2>
+            <ul id="year-seasons" class="seasons"></ul>
+          </section>
+          <section aria-labelledby="legend-title">
+            <h2 id="legend-title" class="notes-title">The months</h2>
+            <ol id="year-legend" class="legend"></ol>
+          </section>
+        </div>
+      </section>
+
+      <footer class="about-calendar">
+        <h2>How this calendar works</h2>
+        <p>Every month has 28 days, exactly four weeks, so the 1st is always a Monday and the 28th is always a Sunday. Thirteen months make 364 days.</p>
+        <p>The year starts on the first Monday on or after the March equinox, so it stays with the seasons. Usually the next start is 364 days later. About one year in six it is 371 days later, and the extra seven days become a leap week at the end of the year.</p>
+        <p>Equinoxes and solstices are calculated to within about a minute. The start of the year uses the date of the equinox in UTC, so the calendar is the same everywhere.</p>
+      </footer>
+    </main>
+  </div>
+
+  <dialog id="about-dialog" class="about" aria-labelledby="about-title"></dialog>
+  <noscript><p class="page">This calendar needs JavaScript to work out the dates.</p></noscript>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
