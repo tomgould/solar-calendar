@@ -7,6 +7,7 @@
   "lang": "cop-Latn",
   "originalLang": "cop",
   "origin": "The Coptic calendar has 12 months of 30 days and a 13th month of five days, or six in the year before a leap year, which the Coptic Church still uses. It descends from the Egyptian civil calendar, reformed under Augustus in 26 or 25 BC to add a leap day every four years. Most month names come from Egyptian gods and festivals, in Bohairic Coptic forms. Real Coptic years start in September with Thout, so this pack puts Paremhat first to match the March equinox, and puts Nasie where the real little month falls, at the end of the summer, as slot 7.",
+  "pronunciation": "Bohairic Coptic as read in Coptic Church services, following the Coptic spellings; the Church reads the Greek-style letters, so th is a real th and Hathor loses its h and is said Athor. This is a living tradition, but stress varies between readers and the stress here is our best judgement, so treat it as approximate. In everyday Egyptian Arabic the months sound different: Baramhat, Barmouda, Bashans, Ba'ouna, Abib, Misra, Tut, Baba, Hatur, Kiyahk, Tuba and Amshir.",
   "leapWeek": {
     "name": "Leap week",
     "gloss": "the extra week",
@@ -18,42 +19,54 @@
       "original": "Ⲡⲁⲣⲉⲙϩⲁⲧ",
       "gloss": "festival of Amenhotep",
       "meaning": "From the Egyptian \"that of Amenhotep\", a festival of the deified king Amenhotep I.",
-      "certainty": "likely"
+      "certainty": "likely",
+      "say": "pah-rem-HAHT",
+      "ipa": "paɾemˈhat"
     },
     {
       "name": "Parmouti",
       "original": "Ⲫⲁⲣⲙⲟⲩⲑⲓ",
       "gloss": "festival of Renenutet",
       "meaning": "From the Egyptian \"that of Renenutet\", the goddess of the harvest and of nourishment.",
-      "certainty": "likely"
+      "certainty": "likely",
+      "say": "par-MOO-thee",
+      "ipa": "paɾˈmuθi"
     },
     {
       "name": "Pashons",
       "original": "Ⲡⲁϣⲟⲛⲥ",
       "gloss": "festival of Khonsu",
       "meaning": "From the Egyptian \"that of Khonsu\", the moon god of Thebes, son of Amun and Mut.",
-      "certainty": "likely"
+      "certainty": "likely",
+      "say": "pah-SHONS",
+      "ipa": "paˈʃons"
     },
     {
       "name": "Paoni",
       "original": "Ⲡⲁⲱⲛⲓ",
       "gloss": "festival of the valley",
       "meaning": "From the Egyptian \"that of the valley\", the Beautiful Festival of the Valley, when the god Amun visited the tombs of the dead on the west bank of Thebes.",
-      "certainty": "likely"
+      "certainty": "likely",
+      "say": "pah-OH-nee",
+      "ipa": "paˈoni"
     },
     {
       "name": "Epip",
       "original": "Ⲉⲡⲓⲡ",
       "gloss": "meaning unknown",
       "meaning": "It comes from the Egyptian name Ipip, but scholars do not know what that means. A popular Coptic tradition links it to the serpent killed by Horus, which no scholarly source supports.",
-      "certainty": "uncertain"
+      "certainty": "uncertain",
+      "say": "EH-pip",
+      "ipa": "ˈepip"
     },
     {
       "name": "Mesori",
       "original": "Ⲙⲉⲥⲱⲣⲓ",
       "gloss": "birth of Ra",
       "meaning": "From the Egyptian Mesut Ra, \"birth of Ra\", the sun god. The same month was also called \"opening of the year\".",
-      "certainty": "likely"
+      "certainty": "likely",
+      "say": "meh-SOH-ree",
+      "ipa": "meˈsoɾi"
     },
     {
       "name": "Nasie",
@@ -61,49 +74,63 @@
       "gloss": "the little month",
       "meaning": "Pi Kogi Enavot is Bohairic Coptic for \"the little month\". Nasie is the name used in English-language Coptic Church sources, from the Arabic al-Nasi', a word for intercalation or postponement. The Sahidic name, Epagomene, comes from the Greek for the extra days brought in to complete the year.",
       "certainty": "established",
-      "notes": "The 13th month. Really it has only five days, or six before a leap year, and falls in early September, which matches slot 7. The Coptic script shown is the Bohairic Pi Kogi Enavot. Nasie is an English rendering of the Arabic name, not a Coptic word."
+      "notes": "The 13th month. Really it has only five days, or six before a leap year, and falls in early September, which matches slot 7. The Coptic script shown is the Bohairic Pi Kogi Enavot. Nasie is an English rendering of the Arabic name, not a Coptic word.",
+      "say": "NAH-see",
+      "ipa": "ˈnasi"
     },
     {
       "name": "Thout",
       "original": "Ⲑⲱⲟⲩⲧ",
       "gloss": "month of Thoth",
       "meaning": "From Thoth, the Egyptian god of writing, wisdom and the moon. The Coptic year begins with this month.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "THOOT",
+      "ipa": "ˈθuːt"
     },
     {
       "name": "Paopi",
       "original": "Ⲡⲁⲟⲡⲓ",
       "gloss": "festival of Opet",
       "meaning": "From \"that of Opet\", the Opet festival, when Amun travelled from Karnak to Luxor. Some popular sources link it instead to Hapy, the Nile god, but the standard account is Opet.",
-      "certainty": "likely"
+      "certainty": "likely",
+      "say": "pah-OH-pee",
+      "ipa": "paˈopi"
     },
     {
       "name": "Hathor",
       "original": "Ⲁⲑⲱⲣ",
       "gloss": "month of Hathor",
       "meaning": "From Hathor, the Egyptian goddess of love, beauty and music.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "ah-THOR",
+      "ipa": "aˈθoɾ"
     },
     {
       "name": "Koiak",
       "original": "Ⲭⲟⲓⲁⲕ",
       "gloss": "spirit upon spirit",
       "meaning": "From the Egyptian Ka-her-ka, \"ka upon ka\" (spirit upon spirit), the name of a festival, probably linked to Osiris. The exact sense is debated.",
-      "certainty": "likely"
+      "certainty": "likely",
+      "say": "KOY-ak",
+      "ipa": "ˈkoiak"
     },
     {
       "name": "Tobi",
       "original": "Ⲧⲱⲃⲓ",
       "gloss": "the offering",
       "meaning": "From the Egyptian for \"the offering\", though the festival it came from is not well known.",
-      "certainty": "uncertain"
+      "certainty": "uncertain",
+      "say": "TOH-bee",
+      "ipa": "ˈtobi"
     },
     {
       "name": "Meshir",
       "original": "Ⲙⲉϣⲓⲣ",
       "gloss": "a festival month",
       "meaning": "The name of an old festival, perhaps shared with a type of basket used in it. This link is only a guess.",
-      "certainty": "uncertain"
+      "certainty": "uncertain",
+      "say": "meh-SHEER",
+      "ipa": "meˈʃiɾ"
     }
   ],
   "sources": [
@@ -118,6 +145,10 @@
     {
       "title": "Egyptian calendar (Wikipedia)",
       "url": "https://en.wikipedia.org/wiki/Egyptian_calendar"
+    },
+    {
+      "title": "Coptic calendar: Coptic and Egyptian Arabic month names (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Coptic_calendar"
     }
   ]
 }

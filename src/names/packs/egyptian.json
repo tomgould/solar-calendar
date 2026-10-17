@@ -6,6 +6,7 @@
   "era": "Old Kingdom to Ptolemaic period",
   "lang": "egy-Latn",
   "origin": "The Egyptian civil calendar had three seasons of four months, each of 30 days, plus five extra days at the end of the year, 365 in all. Egyptologists number the months, such as Akhet I, because the names used in daily life came from festivals. The year had no leap day, so it drifted against the seasons and the star Sirius until the Canopus decree tried to add one. Ancient Egypt never had a 13th month: here the five extra days, Heriu Renpet, are stretched to a full month, and the order is rotated to start with Shemu so that the extra days fall between the harvest and the flood.",
+  "pronunciation": "Egyptologists' conventional pronunciation: Egyptian writing left out the vowels, so the e sounds are inserted by modern convention and the real ancient vowels are unknown. Stress is also a convention. The Roman numeral is read as an English number, such as one for I.",
   "leapWeek": {
     "name": "Leap week",
     "gloss": "the extra week",
@@ -16,25 +17,33 @@
       "name": "Shemu I",
       "gloss": "first month of harvest",
       "meaning": "The first month of Shemu, the harvest season, when the Nile was low and the grain was cut. It was the ninth month of the civil year. Months came to be named after festivals, but Egyptologists number them by season.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "SHEH-moo wun",
+      "ipa": "ˈʃemu wʌn"
     },
     {
       "name": "Shemu II",
       "gloss": "second month of harvest",
       "meaning": "The second month of Shemu, the harvest season. Egyptologists number the months within each season.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "SHEH-moo too",
+      "ipa": "ˈʃemu tuː"
     },
     {
       "name": "Shemu III",
       "gloss": "third month of harvest",
       "meaning": "The third month of Shemu, the harvest season.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "SHEH-moo three",
+      "ipa": "ˈʃemu θriː"
     },
     {
       "name": "Shemu IV",
       "gloss": "fourth month of harvest",
       "meaning": "The last month of Shemu, and of the civil year. Its Greek name, Mesore, comes from Mesut Ra, \"birth of Ra\". It was also called Wep Renpet, \"opening of the year\".",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "SHEH-moo for",
+      "ipa": "ˈʃemu fɔː"
     },
     {
       "name": "Heriu Renpet",
@@ -42,55 +51,73 @@
       "gloss": "those upon the year",
       "meaning": "The five extra days at the end of the civil year, celebrated as the birthdays of Osiris, Horus, Set, Isis and Nephthys, and considered dangerous. Egyptians treated them as outside the year proper.",
       "certainty": "established",
-      "notes": "The 13th month. In Egypt it was only five days long; here it is stretched to 28. It sits where the real extra days fell, between the last Shemu month and Akhet I, the month of the Sirius flood."
+      "notes": "The 13th month. In Egypt it was only five days long; here it is stretched to 28. It sits where the real extra days fell, between the last Shemu month and Akhet I, the month of the Sirius flood.",
+      "say": "HEH-ree-oo REN-pet",
+      "ipa": "ˈheɾiu ˈɾenpet"
     },
     {
       "name": "Akhet I",
       "gloss": "first month of flood",
       "meaning": "The first month of Akhet, the inundation, when the Nile flooded the fields. In the ideal calendar the year began here, with the rising of Sirius.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "AH-khet wun",
+      "ipa": "ˈaxet wʌn"
     },
     {
       "name": "Akhet II",
       "gloss": "second month of flood",
       "meaning": "The second month of Akhet, the inundation season.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "AH-khet too",
+      "ipa": "ˈaxet tuː"
     },
     {
       "name": "Akhet III",
       "gloss": "third month of flood",
       "meaning": "The third month of Akhet, the inundation season.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "AH-khet three",
+      "ipa": "ˈaxet θriː"
     },
     {
       "name": "Akhet IV",
       "gloss": "fourth month of flood",
       "meaning": "The last month of Akhet, the inundation season.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "AH-khet for",
+      "ipa": "ˈaxet fɔː"
     },
     {
       "name": "Peret I",
       "gloss": "first month of growth",
       "meaning": "The first month of Peret, the season of emergence or growth, when the land came out of the floodwater and was sown.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "PEH-ret wun",
+      "ipa": "ˈpeɾet wʌn"
     },
     {
       "name": "Peret II",
       "gloss": "second month of growth",
       "meaning": "The second month of Peret, the season of emergence or growth.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "PEH-ret too",
+      "ipa": "ˈpeɾet tuː"
     },
     {
       "name": "Peret III",
       "gloss": "third month of growth",
       "meaning": "The third month of Peret, the season of emergence or growth.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "PEH-ret three",
+      "ipa": "ˈpeɾet θriː"
     },
     {
       "name": "Peret IV",
       "gloss": "fourth month of growth",
       "meaning": "The last month of Peret, the season of emergence or growth, just before the harvest.",
-      "certainty": "established"
+      "certainty": "established",
+      "say": "PEH-ret for",
+      "ipa": "ˈpeɾet fɔː"
     }
   ],
   "sources": [
@@ -105,6 +132,10 @@
     {
       "title": "Intercalary month, Egypt (Wikipedia)",
       "url": "https://en.wikipedia.org/wiki/Intercalary_month_(Egypt)"
+    },
+    {
+      "title": "Egyptian calendar: Akhet, Peret, Shemu, Heriu Renpet (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Egyptian_calendar"
     }
   ]
 }
