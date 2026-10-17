@@ -1,0 +1,41 @@
+name: Bank holidays
+
+# Every Monday, fetch GOV.UK's list of bank holidays. If it has changed (a new
+# one-off holiday, a moved one, or another year published), open a pull
+# request with the new list, saying whether src/holidays/ still matches it.
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run holidays:update
+      - id: check
+        run: npx vitest run tests/unit/holidays.test.ts
+        continue-on-error: true
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: update-bank-holidays
+          delete-branch: true
+          commit-message: Update GOV.UK bank holidays
+          title: ${{ steps.check.outcome == 'success' && 'GOV.UK bank holidays updated' || 'GOV.UK has a bank holiday the calendar is missing' }}
+          body: |
+            GOV.UK's list of bank holidays (https://www.gov.uk/bank-holidays.json) has changed.
+
+            ${{ steps.check.outcome == 'success' && 'The rules in `src/holidays/` still give exactly its dates, so this can be merged as it is.' || 'The rules in `src/holidays/` no longer match it. Add the new or moved holiday to the region''s file in `src/holidays/` (a `date` rule for a one-off, or `moves` for a moved holiday), run `npx vitest run tests/unit/holidays.test.ts`, push to this branch, then merge.' }}
+
+            Pull requests opened by this workflow don't start CI themselves. Close and reopen this one to run it.

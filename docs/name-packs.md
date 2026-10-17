@@ -63,11 +63,26 @@ A pack can list the festivals of its culture in `festivals`. Each has a `name`, 
 
 | Rule | Example | Meaning |
 |---|---|---|
-| `{ "event": "march-equinox" }` | Nowruz | The day of an equinox or solstice: `march-equinox`, `june-solstice`, `september-equinox` or `december-solstice` |
+| `{ "event": "june-solstice" }` | Līþa | The day of an equinox or solstice: `march-equinox`, `june-solstice`, `september-equinox` or `december-solstice` |
 | `{ "gregorian": "01-19", "weekday": "friday" }` | Þorrablót | A Gregorian date, or with `weekday`, the first such weekday on or after it |
 | `{ "solar": { "month": 3, "day": 17 } }` | Trinox Samonii | A day of a solar month |
+| `{ "easter": true, "offset": -2 }` | Good Friday | Western Easter Sunday, here 2 days before it |
+| `{ "date": "2023-05-08" }` | The coronation | One day only |
+| `{ "julian": "12-25" }` | Coptic Christmas | A date in the Julian calendar, which Orthodox and Coptic feasts follow |
+| `{ "coptic": { "month": 1, "day": 1 } }` | Nayrouz | A date in the Coptic calendar (month 13 is the 5 or 6 extra days) |
+| `{ "persian": { "month": 1, "day": 13 } }` | Sizdah Bedar | A date in the Iranian calendar, whose year starts at Nowruz by the Tehran-noon rule |
 
-- Any rule can take an `offset` in days, such as `"offset": 12` for Sizdah Bedar, 12 days after Nowruz.
+- Any rule can take `before`, a weekday: the last such weekday before the date. Chaharshanbe Suri is `{ "persian": { "month": 1, "day": 1 }, "before": "wednesday", "offset": -1 }`, the Tuesday evening before the last Wednesday of the year.
+- Any rule can take an `offset` in days, applied last.
 - `days` gives the length of a festival that lasts more than one day.
+- `from` and `until` limit it to a range of Gregorian years, and `moves` gives the date in years it moved, such as `{ "2020": "05-08" }`.
 - Use `certainty` for the date and meaning together. Where the historical date is a reconstruction, say so in `meaning`.
 - The dialog describes each rule in words ("The first Friday on or after 19 January"), so check that the description reads correctly.
+
+## Bank holidays
+
+Public holidays live apart from the name packs, in `src/holidays/`, one file per region, so they can be shown with any month names. A holiday set has an `id` (the file name), `title`, `description`, `lang`, `sources` and `festivals` in the format above, plus two fields:
+- **`bankHoliday: true`** marks a day off. It gets a flag in the grid rather than a star.
+- **`substituteFrom`** is the year from which a day off at the weekend also gives the next free weekday, shown as "(substitute day)".
+
+The UK sets are checked against GOV.UK's own list, saved in `tests/fixtures/gov-uk-bank-holidays.json`. `npm run holidays:check` fetches the latest list and runs the test. A weekly GitHub workflow (`.github/workflows/holidays.yml`) does the same and opens a pull request when GOV.UK changes. If the test fails there, add the new holiday: a `date` rule for a one-off, or `moves` for a holiday moved in one year.
