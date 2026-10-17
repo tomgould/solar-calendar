@@ -128,6 +128,34 @@ test('marks festivals and explains them', async ({ page }) => {
   await expect(page.locator('.pack-group').first().locator('.pack-title').first()).toHaveText('Gregorian names');
 });
 
+test('keeps the selected day in a sheet along the bottom on phones', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('./?date=2026-01-23&names=old-norse');
+  const sheet = page.locator('#day-panel');
+  const toggle = sheet.getByRole('button', { name: 'Details' });
+  await expect(sheet.locator('.day-title')).toBeInViewport();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(sheet.locator('.facts')).toBeHidden();
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(sheet.locator('.facts')).toContainText('Bóndadagur (Þorrablót)');
+  // It stays open while picking another day
+  await page.locator('#grid-body .cell').first().click();
+  await expect(sheet.locator('.facts')).toBeVisible();
+  await expect(sheet.getByRole('button', { name: 'Details' })).toHaveAttribute('aria-expanded', 'true');
+
+  await sheet.getByRole('button', { name: 'Copy link to this day' }).focus();
+  await page.keyboard.press('Escape');
+  await expect(sheet.locator('.facts')).toBeHidden();
+  await expect(sheet.getByRole('button', { name: 'Details' })).toBeFocused();
+
+  // On wider screens it sits beside the grid, with nothing to open
+  await page.setViewportSize({ width: 1200, height: 800 });
+  await expect(sheet.getByRole('button', { name: 'Details' })).toBeHidden();
+  await expect(sheet.locator('.facts')).toBeVisible();
+});
+
 test('ends a 371-day year with a leap week', async ({ page }) => {
   await page.goto('./?date=2029-03-21&names=gregorian');
   await expect(page.locator('#month-name')).toHaveText('Leap week');
