@@ -134,6 +134,46 @@
       "ipa": "meˈʃiɾ"
     }
   ],
+  "festivals": [
+    {
+      "name": "Nayrouz",
+      "gloss": "Coptic new year",
+      "meaning": "The Coptic new year, 1 Thout. It falls on 11 September, or 12 September in the year before a Gregorian leap year, which a fixed date cannot show, so the date here is one day early in those years.",
+      "when": {
+        "gregorian": "09-11"
+      },
+      "certainty": "established",
+      "say": "nay-ROOZ",
+      "ipa": "nɑjˈɾuːz"
+    },
+    {
+      "name": "Feast of the Cross",
+      "gloss": "feast of the Cross",
+      "meaning": "Held on 17 Thout, most often said to commemorate the finding of the Cross by Empress Helena. Some sources link it to the consecration of the Church of the Resurrection instead. It falls on 27 September, or 28 September in the year before a Gregorian leap year, so the date here is one day early in those years.",
+      "when": {
+        "gregorian": "09-27"
+      },
+      "certainty": "likely"
+    },
+    {
+      "name": "Coptic Christmas",
+      "gloss": "Nativity of Christ",
+      "meaning": "The Nativity, usually dated 29 Koiak, which is 25 December in the Julian calendar. It falls on 7 January in the Gregorian calendar until 2100.",
+      "when": {
+        "gregorian": "01-07"
+      },
+      "certainty": "established"
+    },
+    {
+      "name": "Theophany",
+      "gloss": "baptism of Christ",
+      "meaning": "The baptism of Christ, usually dated 11 Tobi and called Eid al-Ghitas in Egypt. It is 6 January in the Julian calendar, which falls on 19 January in the Gregorian calendar until 2100.",
+      "when": {
+        "gregorian": "01-19"
+      },
+      "certainty": "established"
+    }
+  ],
   "sources": [
     {
       "title": "Coptic calendar (Wikipedia)",
@@ -150,6 +190,14 @@
     {
       "title": "Coptic calendar: Coptic and Egyptian Arabic month names (Wikipedia)",
       "url": "https://en.wikipedia.org/wiki/Coptic_calendar"
+    },
+    {
+      "title": "Feast of the Cross (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Feast_of_the_Cross"
+    },
+    {
+      "title": "Epiphany (holiday) (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Epiphany_(holiday)"
     }
   ]
 }

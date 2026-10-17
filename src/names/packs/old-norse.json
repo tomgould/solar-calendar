@@ -123,6 +123,67 @@
       "ipa": "ˈkouːa"
     }
   ],
+  "festivals": [
+    {
+      "name": "Bóndadagur (Þorrablót)",
+      "gloss": "first day of Þorri",
+      "meaning": "The first day of the month Þorri, kept in Iceland as Husband's Day and the start of the midwinter Þorrablót feasts. The date rule is the Friday from 19 to 25 January in the Gregorian calendar. A midwinter sacrifice called Þorrablót is mentioned in medieval sources, but the modern feasts were revived in the 1800s.",
+      "when": {
+        "gregorian": "01-19",
+        "weekday": "friday"
+      },
+      "certainty": "established",
+      "say": "BOHN-dah-dah-ghur",
+      "ipa": "ˈpountaˌtaɣʏr"
+    },
+    {
+      "name": "Konudagur",
+      "gloss": "first day of Góa",
+      "meaning": "The first day of Góa, kept in Iceland as Women's Day. It falls on the Sunday from 18 to 24 February in the Gregorian calendar.",
+      "when": {
+        "gregorian": "02-18",
+        "weekday": "sunday"
+      },
+      "certainty": "established",
+      "say": "KOH-nuh-dah-ghur",
+      "ipa": "ˈkʰɔːnʏˌtaɣʏr"
+    },
+    {
+      "name": "Sumardagurinn fyrsti",
+      "gloss": "first day of summer",
+      "meaning": "The first day of summer in the old Icelandic calendar, a public holiday in Iceland. It falls on the Thursday from 19 to 25 April in the Gregorian calendar.",
+      "when": {
+        "gregorian": "04-19",
+        "weekday": "thursday"
+      },
+      "certainty": "established",
+      "say": "SUU-mahr-dah-ghuh-rin FIR-sti",
+      "ipa": "ˈsʏːmarˌtaɣʏrɪn ˈfɪrsti"
+    },
+    {
+      "name": "Fyrsti vetrardagur",
+      "gloss": "first day of winter",
+      "meaning": "The first day of winter in the old Icelandic calendar, when the winter half of the year began. It falls on the Saturday from 21 to 27 October in the Gregorian calendar.",
+      "when": {
+        "gregorian": "10-21",
+        "weekday": "saturday"
+      },
+      "certainty": "established",
+      "say": "FIR-sti VEH-trar-dah-ghur",
+      "ipa": "ˈfɪrsti ˈvɛːtrarˌtaɣʏr"
+    },
+    {
+      "name": "Jól",
+      "gloss": "midwinter feast",
+      "meaning": "The Norse midwinter feast, which Snorri Sturluson says King Hákon the Good moved to coincide with Christmas. Here it is dated to the December solstice by modern convention, since the sources do not fix a day.",
+      "when": {
+        "event": "december-solstice"
+      },
+      "certainty": "likely",
+      "say": "YOHL",
+      "ipa": "ˈjouːl"
+    }
+  ],
   "sources": [
     {
       "title": "Icelandic calendar (Wikipedia)",
@@ -135,6 +196,14 @@
     {
       "title": "Icelandic phonology (Wikipedia)",
       "url": "https://en.wikipedia.org/wiki/Icelandic_phonology"
+    },
+    {
+      "title": "Public holidays in Iceland (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Public_holidays_in_Iceland"
+    },
+    {
+      "title": "Bóndadagur, Konudagur and Fyrsti vetrardagur dates (Norden)",
+      "url": "https://www.norden.org/is/info-norden/helgidagar-islandi"
     }
   ]
 }

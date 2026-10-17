@@ -120,6 +120,35 @@
       "ipa": "ˈhreːθˌmoːnɑθ"
     }
   ],
+  "festivals": [
+    {
+      "name": "Mōdraniht",
+      "gloss": "mothers' night",
+      "meaning": "Bede, writing in 725, says the English year began on 25 December and that the night before was called Modranecht, 'mothers' night', probably because of rites held then. He does not describe the rites. Here it falls on 24 December.",
+      "when": {
+        "gregorian": "12-24"
+      },
+      "certainty": "likely"
+    },
+    {
+      "name": "Gēola",
+      "gloss": "midwinter feast",
+      "meaning": "Bede names the months around midwinter Giuli, and Yule is the feast the name points to, though he does not describe it. Here it is dated to the December solstice, a modern choice, since Bede ties the year's start to 25 December.",
+      "when": {
+        "event": "december-solstice"
+      },
+      "certainty": "uncertain"
+    },
+    {
+      "name": "Līþa",
+      "gloss": "midsummer season",
+      "meaning": "Bede gives Litha as the name of both the June and July months, which he glosses as 'gentle' or 'navigable' for the calm winds and seas. He describes no festival. Here the season is marked at the June solstice by modern convention.",
+      "when": {
+        "event": "june-solstice"
+      },
+      "certainty": "uncertain"
+    }
+  ],
   "sources": [
     {
       "title": "Germanic calendar (Wikipedia)",
