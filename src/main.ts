@@ -207,7 +207,7 @@ async function readUrl(): Promise<void> {
     state.pack = await loadPack(DEFAULT_PACK_ID);
     $('#names-status').textContent = 'Couldn’t load your chosen names, so the Gregorian names are shown. Check your connection.';
   }
-  // A list of regions; unset means England and Wales on UK time, and none stores ""
+  // A list of regions; unset means all of them, and none stores ""
   state.holidays = holidaySets(storage.get('holidays') ?? defaultHolidaySetIds());
   await loadExtraPacks((storage.get('festivals') ?? '').split(','));
 }
@@ -356,14 +356,57 @@ function setUpLocation(): void {
   });
   $('#clear-location').addEventListener('click', () => {
     storage.remove('location');
+    // Forgetting is a choice too, so the first-visit notice doesn't come back
+    storage.set('locationPrompt', 'declined');
     dialog.close();
     render();
     document.querySelector<HTMLElement>('#day-panel [data-set-location]')?.focus();
   });
 }
 
+/**
+ * On a first visit, a notice explains why the calendar would like the
+ * viewer's location. The browser's permission prompt only appears when they
+ * choose "Use my location"; "No thanks" is remembered.
+ */
+function setUpLocationNotice(): void {
+  const notice = $('#location-notice');
+  const status = $('#notice-status');
+  notice.hidden = !('geolocation' in navigator) || readPlace() !== null || storage.get('locationPrompt') === 'declined';
+  // Focus goes to the calendar's heading once the notice has gone
+  const close = () => {
+    notice.hidden = true;
+    const heading = $(state.view === 'year' ? '#year-title' : '#month-title');
+    heading.tabIndex = -1;
+    heading.focus();
+  };
+  $('#notice-dismiss').addEventListener('click', () => {
+    storage.set('locationPrompt', 'declined');
+    close();
+  });
+  $('#notice-use-location').addEventListener('click', () => {
+    status.textContent = 'Finding your location…';
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        // About a kilometre is plenty for sunrise and sunset
+        storage.set('location', JSON.stringify({ lat: Number(coords.latitude.toFixed(2)), lon: Number(coords.longitude.toFixed(2)) }));
+        render();
+        close();
+      },
+      (error) => {
+        if (error.code === error.PERMISSION_DENIED) storage.set('locationPrompt', 'declined');
+        status.textContent = error.code === error.PERMISSION_DENIED
+          ? 'Location access is blocked, so nothing was shared. You can type a latitude and longitude under Sunrise and sunset instead.'
+          : 'Couldn’t find your location. Try again, or type a latitude and longitude under Sunrise and sunset.';
+      },
+      { timeout: 10_000, maximumAge: 3_600_000 },
+    );
+  });
+}
+
 function wire(): void {
   setUpLocation();
+  setUpLocationNotice();
   listenForHear();
   monthView = new MonthView($('#month-view'), { select, goToMonth, shiftMonth });
   goTo = new GoToDate($('#goto'), [FIRST_DAY, LAST_DAY], (day) => select(day));
