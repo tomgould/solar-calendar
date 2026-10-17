@@ -1,11 +1,13 @@
 // Cloudflare Workers with static assets: the built site in dist/ is served as
-// files. When the ICS feed arrives (phase 4), add "main" with a Worker script and
-// "run_worker_first": ["/feed.ics"] under "assets", so only that path runs code.
+// files, and only /feed.ics runs the Worker (src/worker.ts, built into
+// dist-worker/ by `npm run build`).
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "solar-calendar",
   "compatibility_date": "2026-10-17",
+  "main": "dist-worker/worker.js",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "run_worker_first": ["/feed.ics"]
   }
 }

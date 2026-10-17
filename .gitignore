@@ -14,3 +14,4 @@ dist/
 
 # Local tool state
 .mullet/
+dist-worker/

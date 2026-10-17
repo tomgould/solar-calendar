@@ -299,6 +299,13 @@ a { color: inherit; text-underline-offset: 3px; }
 .legend-name { font-weight: 700; }
 .legend-gloss { color: var(--muted); font-style: italic; }
 
+.calendar-apps { max-width: 62ch; margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--rule); }
+.apps-note { margin: 0 0 var(--space-3); color: var(--muted); }
+.apps-label { display: block; margin: var(--space-4) 0 var(--space-1); color: var(--muted); font-size: var(--step--1); }
+.apps-row { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+a.button { display: inline-flex; align-items: center; color: inherit; text-decoration: none; }
+.feed-url { flex: 1; min-width: 14em; font-size: var(--step--1); }
+
 /* Name packs -------------------------------------------------------------- */
 
 .names-menu {
@@ -378,7 +385,7 @@ a { color: inherit; text-underline-offset: 3px; }
   }
   body { font-size: 9pt; }
   .page { max-width: none; padding: 0; }
-  .masthead, .today-line, .about-calendar, .steps, .skip-link, .strip, .side, .text-button { display: none !important; }
+  .masthead, .today-line, .about-calendar, .steps, .skip-link, .strip, .side, .text-button, .calendar-apps { display: none !important; }
   .print-only { display: block; }
 
   .month-head { margin-bottom: 4mm; }
