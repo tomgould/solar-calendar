@@ -10,7 +10,7 @@ A web app for a 13-month solar calendar: 13 identical 28-day months, with the ye
 
 ```bash
 npm run dev            # Vite dev server, http://localhost:5173
-npm run build          # static site in dist/ (relative asset paths, base './')
+npm run build          # static site in dist/ (relative asset paths, base './'), then the feed Worker in dist-worker/
 npm run deploy         # build, then wrangler deploy to Cloudflare (npx wrangler login once first)
 npm run typecheck      # tsc for src, then tsc -p tests (tests get Node types)
 npm test               # test:unit then test:e2e
@@ -18,7 +18,8 @@ npx vitest run tests/unit/core.test.ts              # one unit test file
 npx playwright test --project=chromium -g "leap"    # one e2e test, one project
 ```
 
-- The e2e tests start their own server (`webServer` in `playwright.config.ts`: build, then `vite preview` on port 4173).
+- The e2e tests always build and start their own server (`webServer` in `playwright.config.ts`: build, then `vite preview` on port 4173). They never reuse a running server, because a leftover one serves stale files.
+- Port 4173 must be free when the e2e tests run.
 - The e2e projects are Chromium, Firefox, WebKit and a phone, all in London time, plus Chromium in New York, Tokyo and Kiritimati. The time-zone projects guard against the original app's off-by-one-day bug.
 
 ## Architecture
@@ -34,6 +35,7 @@ npx playwright test --project=chromium -g "leap"    # one e2e test, one project
   - The core only knows month numbers; names come from packs in the UI.
   - Pack ids appear in URLs (`?names=`), so never rename one.
   - `DEFAULT_PACK_ID` in `registry.ts` is `gregorian`.
+  - There are 11 packs. Add new ones from `_template.json`, following `docs/name-packs.md`. `tests/unit/fonts.test.ts` reads the real font files and fails if a pack uses a letter the fonts lack: Big Shoulders for `name`, Andika for other text. `original` is exempt, because it may be in another script.
 - **`src/sky/moon.ts`** dynamically imports astronomy-engine, so its 43 KB gzipped stays out of the main bundle. Quarter names appear only on the day the quarter happens, matching the grid marks.
 - **`src/ui/`:**
   - `MonthView` builds its 28 cells once and only updates labels, marks and the month colour when the month changes.
@@ -46,4 +48,16 @@ npx playwright test --project=chromium -g "leap"    # one e2e test, one project
 - **No inline scripts or `style` attributes.** `public/_headers` sends a strict Content-Security-Policy (`script-src 'self'; style-src 'self'`), and an e2e test runs the app under it. Set styles through classes or the CSSOM (`element.style`), never `style="…"` in HTML strings. The theme is applied before first paint by `public/theme.js`, a plain file Vite copies as-is.
 - **Hosting:** Cloudflare Workers with static assets (`wrangler.jsonc` serves `dist/`). Everything in `public/` (`_headers`, `theme.js`, `favicon.svg`) is copied to `dist/` unchanged. `.github/workflows/ci.yml` runs the type check, unit tests and e2e tests on every push and pull request.
 - **History:** changing view, year or month pushes a history entry; days within a month replace it. The `popstate` handler re-reads the URL.
+- **Calendar feed:** `src/feed/ics.ts` builds RFC 5545 text (CRLF, 75-octet folding, escaping), and the unit tests parse it with ical.js.
+  - `src/worker.ts` serves `/feed.ics` and bundles every pack with an eager `import.meta.glob`. It is built by `vite.worker.config.mts`, because wrangler's bundler can't do the glob.
+  - `wrangler.jsonc` routes only `/feed.ics` to it (`run_worker_first`).
+  - The dev server (source) and the preview server (built bundle) both answer `/feed.ics` through a plugin in `vite.config.mts`, so the e2e tests cover the real Worker.
+- **Sun:** `src/sky/sun.ts` uses astronomy-engine's `SearchRiseSet` for the local day, and handles polar day and night. The place lives in `localStorage.location`, either from geolocation rounded to 2 decimals or typed in. `_headers` allows `geolocation=(self)`.
+- **Lazy loads:** every lazy load (packs, the moon, the sun) has a `.catch` that shows a message, so a failed import never surfaces as an unhandled rejection.
+- **Offline:** `vite-plugin-pwa` precaches the app, all packs, astronomy-engine and the Latin-script fonts.
+  - It uses `clientsClaim`, so the first visit already works offline.
+  - Registration is the external `registerSW.js`, so the CSP holds.
+  - The PWA icons in `public/icons/` were rendered once from the favicon design.
+  - The CSP e2e test blocks service workers. Otherwise they answer requests before `page.route` can add the policy.
+- **Converter:** `src/ui/goto.ts` shows the selected day in both forms. It only skips the field being typed in.
 - **Printing:** prints whichever view is on screen, on one A4 landscape page. The print block in `app.css` forces light tokens using a selector that matches the dark rules' specificity. The e2e test generates a PDF in Chromium and checks that it has exactly one page; if you change month or year layout, keep that test passing.

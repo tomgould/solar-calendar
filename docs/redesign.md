@@ -401,8 +401,8 @@ Each month has:
    - Checks: axe accessibility tests (WCAG 2.2 AA, light and dark) and a strict Content-Security-Policy in `public/_headers`, which the e2e suite runs under.
    - Infrastructure: CI in GitHub Actions and `wrangler.jsonc` for Workers with static assets.
    - Waiting: the first deploy needs `npx wrangler login`. After that, connect the GitHub repo with Workers Builds (Cloudflare dashboard) for automatic deploys and per-PR preview links, with no tokens to manage.
-3. **Year view, converter and print styles.** Print output is checked with Playwright's PDF export, which also replaces the hand-made PDFs. Every name pack gets its full meanings, each checked against its sources. The pack template and `docs/name-packs.md` land in this phase too.
-4. **Extras.** Sun and moon data (location is opt-in and stored only in the browser), ICS download per year plus a subscribable feed, and the offline PWA.
+3. **Year view, converter and print styles.** Status: done on 17 Oct 2026. There are now 11 packs, each fact-checked by a separate reviewer; a Go to a date converter; month and year printing; and the pack template and guide. Print output is checked with Playwright's PDF export, which also replaces the hand-made PDFs. Every name pack gets its full meanings, each checked against its sources. The pack template and `docs/name-packs.md` land in this phase too.
+4. **Extras.** Status: done on 17 Oct 2026. Sunrise and sunset; the ICS download and a `/feed.ics` Worker, tested locally against the built bundle; and the offline PWA. The feed goes live with the first deploy. Sun and moon data (location is opt-in and stored only in the browser), ICS download per year plus a subscribable feed, and the offline PWA.
 5. **Launch.** Deploy to Cloudflare. The cleanup planned for this phase was done early: the original app was removed, and the README and `CLAUDE.md` were rewritten, on 17 Oct 2026.
 
 ## 6. Hosting
