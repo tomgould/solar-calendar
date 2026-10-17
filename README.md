@@ -2,6 +2,12 @@
 
 A calendar of 13 identical months. Every month has 28 days, exactly four weeks, so the 1st is always a Monday and the 28th is always a Sunday. The year starts on the first Monday on or after the March equinox, so it stays with the seasons. Gregorian dates are shown alongside every day.
 
+![The month view, with Anglo-Saxon month names](docs/screenshots/month.png)
+
+| Year view, dark mode | On a phone | What a name means |
+|---|---|---|
+| ![Every day of solar 2026 in one table, with Old Norse month names](docs/screenshots/year.png) | ![The month view on a phone, with the selected day in a sheet along the bottom](docs/screenshots/phone.png) | ![The meaning dialog for the Persian names, with pronunciations](docs/screenshots/names.png) |
+
 ## How the calendar works
 
 - **13 x 28 = 364 days.** Usually the next year starts 364 days later. About one year in six it starts 371 days later, and the extra seven days form a leap week at the end of the year.
@@ -15,14 +21,16 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
 - Day details: day of the year, moon phase, and the next equinox or solstice in your local time.
 - Year view: every day of the year in one table, one row per day of the month.
 - Printing: a month or the whole year, each on a single A4 page, in light colours whatever the screen theme.
-- Month name packs: eleven sets of month names to switch between, and read what each name means:
-  - historical: Gregorian, Anglo-Saxon (recorded by Bede), Old Norse, Roman, Gaulish, Persian, ancient Egyptian and Coptic
-  - modern: Nature, Latin numbers and Sky
+- Month name packs: twelve sets of month names to switch between, and read what each name means:
+  - from history: Gregorian, Anglo-Saxon (recorded by Bede), Old Norse, Roman, Gaulish, Persian, ancient Egyptian and Coptic
+  - modern inventions: Nature for each hemisphere, Latin numbers and Sky
+- Pronunciation: a respelling and IPA for every name that isn't English, and a button that reads it aloud.
+- Festivals: the historical packs (apart from Gregorian) mark their own festivals, such as Nowruz or Þorrablót, and Sky marks the meteor showers.
 - Go to a date: type a date in either calendar to find it in the other.
-- Sunrise, sunset and hours of daylight for your location. Location is opt-in and stays in your browser.
+- Sunrise, sunset and hours of daylight for your location, in its own time zone. Location is opt-in and stays in your browser.
 - Add to your calendar: download a year as an .ics file, or subscribe to a feed that stays up to date.
 - Works offline after the first visit, and can be installed as an app.
-- Dark mode, keyboard navigation and phone layouts.
+- Dark mode, keyboard navigation, and a phone layout that keeps the selected day in a sheet along the bottom.
 
 ## Development
 

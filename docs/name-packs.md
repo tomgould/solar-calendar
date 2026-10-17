@@ -5,7 +5,7 @@ A name pack gives the 13 solar months, and the leap week, a set of names, each w
 ## Steps
 
 1. Copy `src/names/packs/_template.json` to `src/names/packs/<id>.json`. The `id` is lowercase words joined by hyphens, such as `old-norse`, and must match the file name. Files that start with `_` are ignored.
-2. Fill it in. `src/names/schema.ts` defines every field.
+2. Fill it in. `src/names/schema.ts` defines every field. Set `kind` to `historical` for names a culture used, or `modern` for an invented set; it decides the group in the names menu.
 3. Run `npx vitest run tests/unit/names.test.ts tests/unit/fonts.test.ts`. The tests fail if anything is missing, or if a name uses a letter the fonts don't have.
 4. Run `npm run dev`, pick the pack from "Month names", and read it through in "About this name".
 
@@ -54,3 +54,20 @@ Respellings use hyphens between syllables, with the stressed syllable in capital
 | ee | see | u | cup | y | yes |
 | i | sit | ur | fur | uh | the a in about |
 | eye | eye | aw | law | | |
+
+The "Hear it" button reads a name aloud with the browser's speech synthesis. If the device has a voice for the pack's language, it reads the name itself, or `original` when `originalLang` is set (Persian script, for example). Otherwise an English voice reads `say`, so a good respelling matters even where IPA is given.
+
+## Festivals
+
+A pack can list the festivals of its culture in `festivals`. Each has a `name`, `gloss` and `meaning` like a month, optional `say`, `ipa` and `certainty`, and a `when` rule:
+
+| Rule | Example | Meaning |
+|---|---|---|
+| `{ "event": "march-equinox" }` | Nowruz | The day of an equinox or solstice: `march-equinox`, `june-solstice`, `september-equinox` or `december-solstice` |
+| `{ "gregorian": "01-19", "weekday": "friday" }` | Þorrablót | A Gregorian date, or with `weekday`, the first such weekday on or after it |
+| `{ "solar": { "month": 3, "day": 17 } }` | Trinox Samonii | A day of a solar month |
+
+- Any rule can take an `offset` in days, such as `"offset": 12` for Sizdah Bedar, 12 days after Nowruz.
+- `days` gives the length of a festival that lasts more than one day.
+- Use `certainty` for the date and meaning together. Where the historical date is a reconstruction, say so in `meaning`.
+- The dialog describes each rule in words ("The first Friday on or after 19 January"), so check that the description reads correctly.
