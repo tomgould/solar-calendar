@@ -109,6 +109,25 @@ test('converts between the calendars with Go to a date', async ({ page }) => {
   await expect(page.locator('#goto-solar-month option')).toHaveCount(13);
 });
 
+test('downloads the year and offers a subscription feed', async ({ page }) => {
+  await page.goto('./?view=year&date=2026-10-17&names=anglo-saxon');
+  const [download] = await Promise.all([page.waitForEvent('download'), page.locator('#download-ics').click()]);
+  expect(download.suggestedFilename()).toBe('solar-calendar-2026-anglo-saxon.ics');
+  const chunks: Buffer[] = [];
+  for await (const chunk of (await download.createReadStream())!) chunks.push(chunk as Buffer);
+  const file = Buffer.concat(chunks).toString('utf8');
+  expect(file.startsWith('BEGIN:VCALENDAR\r\n')).toBe(true);
+  expect(file).toContain('SUMMARY:13 Winterfylleþ 2026');
+
+  // The feed is served by the built Worker bundle
+  const feedUrl = await page.locator('#feed-url').inputValue();
+  expect(feedUrl).toMatch(/\/feed\.ics\?names=anglo-saxon$/);
+  await expect(page.locator('#open-feed')).toHaveAttribute('href', /^webcal:/);
+  const feed = await page.request.get(feedUrl);
+  expect(feed.headers()['content-type']).toBe('text/calendar; charset=utf-8');
+  expect(await feed.text()).toContain('X-WR-CALNAME:Solar calendar (Anglo-Saxon)');
+});
+
 test('switches theme, offering the other mode', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('./');

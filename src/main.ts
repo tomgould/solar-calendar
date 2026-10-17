@@ -8,6 +8,7 @@ import { type SkyEvent, nextSeasonEvent, seasonEvents } from './core/sky';
 import { LEAP_WEEK, MAX_YEAR, MIN_YEAR, MONTHS, daysInMonth, fromSolar, hasLeapWeek, monthSpan, toSolar, yearStart } from './core/solar';
 import { DEFAULT_PACK_ID, isPackId, loadAllPacks, loadPack } from './names/registry';
 import type { NamePack } from './names/schema';
+import { buildIcs } from './feed/ics';
 import { moonPhaseName, moonQuarters } from './sky/moon';
 import { renderDayPanel } from './ui/day-panel';
 import { GoToDate } from './ui/goto';
@@ -92,6 +93,7 @@ function render(focus = false): void {
     $<HTMLButtonElement>('#next-month').disabled = selected - date.day + daysInMonth(date.month) > LAST_DAY;
   } else {
     yearView.render({ year: date.year, today, pack });
+    renderCalendarApps(date.year, pack);
   }
 
   document.title = `${solarLong(pack, date)}, solar calendar`;
@@ -121,6 +123,24 @@ async function readUrl(): Promise<void> {
   state.view = params.get('view') === 'year' ? 'year' : 'month';
   const requested = params.get('names') ?? storage.get('names');
   state.pack = await loadPack(isPackId(requested) ? requested : DEFAULT_PACK_ID);
+}
+
+// "Add to your calendar": a one-year download, and the subscription feed
+function renderCalendarApps(year: number, pack: NamePack): void {
+  const feed = new URL(`/feed.ics?names=${pack.id}`, location.origin).href;
+  $('#download-ics').textContent = `Download solar ${year} (.ics)`;
+  $<HTMLInputElement>('#feed-url').value = feed;
+  $<HTMLAnchorElement>('#open-feed').href = feed.replace(/^https?:/, 'webcal:');
+}
+
+function downloadYear(): void {
+  const { year } = toSolar(state.selected);
+  const text = buildIcs({ pack: state.pack, from: yearStart(year), to: yearStart(year + 1) - 1, now: Date.now() });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(new Blob([text], { type: 'text/calendar' }));
+  link.download = `solar-calendar-${year}-${state.pack.id}.ics`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
 }
 
 function select(day: DayNumber, { focus = false } = {}): void {
@@ -207,6 +227,16 @@ function wire(): void {
   // Printing shows whichever view is on screen
   $('#print-year').addEventListener('click', () => window.print());
   $('#print-month').addEventListener('click', () => window.print());
+  $('#download-ics').addEventListener('click', downloadYear);
+  $('#copy-feed').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText($<HTMLInputElement>('#feed-url').value);
+      $('#feed-status').textContent = 'Link copied';
+    } catch {
+      $<HTMLInputElement>('#feed-url').select();
+      $('#feed-status').textContent = 'Press Ctrl+C or Cmd+C to copy the selected link';
+    }
+  });
   setUpTheme();
 
   const menu = $('#names-menu');

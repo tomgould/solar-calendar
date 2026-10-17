@@ -117,6 +117,20 @@
             <ol id="year-legend" class="legend"></ol>
           </section>
         </div>
+        <section class="calendar-apps" aria-labelledby="apps-title">
+          <h2 id="apps-title" class="notes-title">Add to your calendar</h2>
+          <p class="apps-note">Download this year as a file, or subscribe so your calendar app shows each day’s solar date and stays up to date.</p>
+          <div class="apps-row">
+            <button type="button" class="button" id="download-ics">Download this year</button>
+          </div>
+          <label for="feed-url" class="apps-label">Subscription link</label>
+          <div class="apps-row">
+            <input type="text" class="field feed-url" id="feed-url" readonly>
+            <button type="button" class="button" id="copy-feed">Copy link</button>
+            <a class="button" id="open-feed" href="./feed.ics">Open in calendar app</a>
+          </div>
+          <p class="status" id="feed-status" role="status"></p>
+        </section>
       </section>
 
       <footer class="about-calendar">
