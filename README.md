@@ -2,11 +2,15 @@
 
 A calendar of 13 identical months. Every month has 28 days, exactly four weeks, so the 1st is always a Monday and the 28th is always a Sunday. The year starts on the first Monday on or after the March equinox, so it stays with the seasons. Gregorian dates are shown alongside every day.
 
-![The month view, with Anglo-Saxon month names](docs/screenshots/month.png)
+![The month view in December, with Anglo-Saxon month names, England and Wales bank holidays, and the month's festivals listed under the grid](docs/screenshots/month.png)
 
-| Year view, dark mode | On a phone | What a name means |
-|---|---|---|
-| ![Every day of solar 2026 in one table, with Old Norse month names](docs/screenshots/year.png) | ![The month view on a phone, with the selected day in a sheet along the bottom](docs/screenshots/phone.png) | ![The meaning dialog for the Persian names, with pronunciations](docs/screenshots/names.png) |
+| Year view, dark mode | Choosing festivals and holidays |
+|---|---|
+| ![Every day of solar 2026 in one table, with Old Norse month names](docs/screenshots/year.png) | ![The Festivals menu, with Scotland's bank holidays and Old Norse and Persian festivals chosen](docs/screenshots/festivals.png) |
+
+| On a phone | What a name means |
+|---|---|
+| ![The month view on a phone, with the selected day in a sheet along the bottom](docs/screenshots/phone.png) | ![The meaning dialog for the Persian names, with pronunciations](docs/screenshots/names.png) |
 
 ## How the calendar works
 
