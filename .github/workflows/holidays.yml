@@ -3,39 +3,65 @@ name: Bank holidays
 # Every Monday, fetch GOV.UK's list of bank holidays. If it has changed (a new
 # one-off holiday, a moved one, or another year published), open a pull
 # request with the new list, saying whether src/holidays/ still matches it.
+#
+# The repository setting "Allow GitHub Actions to create and approve pull
+# requests" (Settings, Actions, General) must be on for the second job.
 on:
   schedule:
     - cron: '17 6 * * 1'
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
-  update:
+  # Installs and runs the project's code, so it gets read-only access
+  check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      matches: ${{ steps.test.outcome == 'success' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
       - run: npm ci
       - run: npm run holidays:update
-      - id: check
+      - id: test
         run: npx vitest run tests/unit/holidays.test.ts
         continue-on-error: true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gov-uk-bank-holidays
+          path: tests/fixtures/gov-uk-bank-holidays.json
+          retention-days: 7
+
+  # Runs nothing from the project, and opens the pull request if the list changed
+  pull-request:
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: gov-uk-bank-holidays
+          path: tests/fixtures
       - uses: peter-evans/create-pull-request@v7
         with:
           branch: update-bank-holidays
           delete-branch: true
           commit-message: Update GOV.UK bank holidays
-          title: ${{ steps.check.outcome == 'success' && 'GOV.UK bank holidays updated' || 'GOV.UK has a bank holiday the calendar is missing' }}
+          title: ${{ needs.check.outputs.matches == 'true' && 'GOV.UK bank holidays updated' || 'GOV.UK has a bank holiday the calendar is missing' }}
           body: |
             GOV.UK's list of bank holidays (https://www.gov.uk/bank-holidays.json) has changed.
 
-            ${{ steps.check.outcome == 'success' && 'The rules in `src/holidays/` still give exactly its dates, so this can be merged as it is.' || 'The rules in `src/holidays/` no longer match it. Add the new or moved holiday to the region''s file in `src/holidays/` (a `date` rule for a one-off, or `moves` for a moved holiday), run `npx vitest run tests/unit/holidays.test.ts`, push to this branch, then merge.' }}
+            ${{ needs.check.outputs.matches == 'true' && 'The rules in `src/holidays/` still give exactly its dates, so this can be merged as it is.' || 'The rules in `src/holidays/` no longer match it. Add the new or moved holiday to the region''s file in `src/holidays/` (a `date` rule for a one-off, or `moves` for a moved holiday) on a branch of your own, check it with `npm run holidays:check`, and merge that. Then run this workflow again from the Actions tab, and this pull request will pass.' }}
 
-            Pull requests opened by this workflow don't start CI themselves. Close and reopen this one to run it.
+            Don't push to this branch: the workflow rewrites it each time it runs. Pull requests opened by a workflow don't start CI themselves; close and reopen this one to run it.

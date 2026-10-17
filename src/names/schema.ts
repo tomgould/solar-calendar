@@ -96,6 +96,8 @@ export interface HolidaySet {
   lang: string;
   festivals: Festival[];
   sources: { title: string; url: string }[];
+  /** Added on loading: holidays from several sets merge when they fall on the same day */
+  kind: 'holidays';
 }
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
@@ -167,7 +169,7 @@ export function validateHolidaySet(data: unknown, source: string): HolidaySet {
   else festivalProblems(data.festivals, problems);
   sourceProblems(data.sources, problems);
   if (problems.length > 0) throw new Error(`${source}:\n  - ${problems.join('\n  - ')}`);
-  return data as unknown as HolidaySet;
+  return { ...data, kind: 'holidays' } as unknown as HolidaySet;
 }
 
 function festivalProblems(festivals: unknown, problems: string[]): void {
@@ -190,7 +192,7 @@ function festivalProblems(festivals: unknown, problems: string[]): void {
     for (const key of ['from', 'until', 'substituteFrom']) if (festival[key] !== undefined && !isYear(festival[key])) problems.push(`${where} "${key}" must be a year`);
     if (festival.bankHoliday !== undefined && typeof festival.bankHoliday !== 'boolean') problems.push(`${where} "bankHoliday" must be true or false`);
     if (festival.moves !== undefined && !(isObject(festival.moves)
-      && Object.entries(festival.moves).every(([year, date]) => /^\d{4}$/.test(year) && ruleProblem({ date: `${year}-${date}` }) === null))) {
+      && Object.entries(festival.moves).every(([year, date]) => /^\d{4}$/.test(year) && typeof date === 'string' && ruleProblem({ date: `${year}-${date}` }) === null))) {
       problems.push(`${where} "moves" must map years to month and day, such as { "2020": "05-08" }`);
     }
   });

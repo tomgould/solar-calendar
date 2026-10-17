@@ -1,7 +1,7 @@
 import { utcDayOfInstant } from './core/days';
 import { MAX_YEAR, MIN_YEAR, solarYearOf, yearStart } from './core/solar';
 import { buildIcs } from './feed/ics';
-import { holidaySet } from './holidays/registry';
+import { holidaySets } from './holidays/registry';
 import type { FestivalSource } from './names/festivals';
 import { DEFAULT_PACK_ID } from './names/registry';
 import { type NamePack, validatePack } from './names/schema';
@@ -9,7 +9,7 @@ import { type NamePack, validatePack } from './names/schema';
 /**
  * The Cloudflare Worker behind /feed.ics: a subscribable calendar covering
  * last solar year to next, in the requested name pack, with any other packs'
- * festivals (?festivals=persian,roman) and bank holidays (?holidays=uk-scotland)
+ * festivals (?festivals=persian,roman) and bank holidays (?holidays=uk-scotland,uk-northern-ireland)
  * asked for. Everything else on
  * the site is static files; wrangler.jsonc routes only /feed.ics here.
  */
@@ -30,8 +30,7 @@ export function feedResponse(url: URL, now = Date.now()): Response {
   // Unknown ids are skipped, as are repeats and the names' own pack
   const extraIds = new Set((url.searchParams.get('festivals') ?? '').split(','));
   const extra: FestivalSource[] = [...packs.values()].filter((other) => extraIds.has(other.id) && other.id !== pack.id);
-  const holidays = holidaySet(url.searchParams.get('holidays'));
-  if (holidays) extra.push(holidays);
+  extra.push(...holidaySets(url.searchParams.get('holidays')));
   const body = buildIcs({ pack, extra, from: yearStart(year - 1), to: yearStart(year + 2) - 1, now });
   return new Response(body, {
     headers: {

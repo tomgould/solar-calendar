@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { dayFromCivil, toIsoDate } from '../../src/core/days';
-import { HOLIDAY_SETS, defaultHolidaySetId, holidaySet } from '../../src/holidays/registry';
-import { festivalLabel, festivalOccurrences } from '../../src/names/festivals';
+import { HOLIDAY_SETS, defaultHolidaySetIds, holidaySet, holidaySets } from '../../src/holidays/registry';
+import { festivalLabel, festivalOccurrences, festivalsFrom } from '../../src/names/festivals';
+import { validateHolidaySet } from '../../src/names/schema';
 import govUk from '../fixtures/gov-uk-bank-holidays.json';
 
 /**
@@ -48,9 +49,30 @@ describe('UK bank holidays', () => {
     expect(daysOff('uk-scotland', 2006)).not.toContain('2006-11-30');
   });
 
+  it('reject a holiday file with a malformed move', () => {
+    const set = structuredClone(holidaySet('uk-england-and-wales')!);
+    set.festivals[0].moves = { 2020: ['05-08'] } as unknown as Record<string, string>;
+    expect(() => validateHolidaySet(set, 'test.json')).toThrow(/"moves"/);
+  });
+
   it('are on by default only on UK time', () => {
     expect(HOLIDAY_SETS.map((set) => set.title)).toEqual(['England and Wales', 'Northern Ireland', 'Scotland']);
-    expect(defaultHolidaySetId('Europe/London')).toBe('uk-england-and-wales');
-    expect(defaultHolidaySetId('America/New_York')).toBeNull();
+    expect(defaultHolidaySetIds('Europe/London')).toBe('uk-england-and-wales');
+    expect(defaultHolidaySetIds('America/New_York')).toBe('');
+  });
+
+  it('show a holiday kept in several regions once, naming them all', () => {
+    const shown = (ids: string, from: [number, number, number], to: [number, number, number]) =>
+      festivalsFrom(holidaySets(ids), dayFromCivil(...from), dayFromCivil(...to), true)
+        .map((entry) => [toIsoDate(entry.day), festivalLabel(entry), entry.regions]);
+    const all = 'uk-england-and-wales,uk-northern-ireland,uk-scotland';
+    expect(shown(all, [2026, 12, 25], [2026, 12, 25])).toEqual([['2026-12-25', 'Christmas Day', ['England and Wales', 'Northern Ireland', 'Scotland']]]);
+    // Easter Monday isn't a Scottish holiday, and St Andrew's Day is only Scottish
+    expect(shown(all, [2026, 4, 6], [2026, 4, 6])).toEqual([['2026-04-06', 'Easter Monday', ['England and Wales', 'Northern Ireland']]]);
+    expect(shown(all, [2026, 11, 30], [2026, 11, 30])).toEqual([['2026-11-30', 'St Andrew’s Day', ['Scotland']]]);
+    // Same name, different days: Scotland's summer holiday is early in August
+    expect(shown('uk-england-and-wales,uk-scotland', [2026, 8, 1], [2026, 8, 31]).map(([date, name]) => `${date} ${name}`))
+      .toEqual(['2026-08-03 Summer bank holiday', '2026-08-31 Summer bank holiday']);
+    expect(holidaySets('uk-scotland,nope,uk-england-and-wales').map((set) => set.id)).toEqual(['uk-england-and-wales', 'uk-scotland']);
   });
 });

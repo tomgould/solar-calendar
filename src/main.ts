@@ -11,7 +11,7 @@ import './styles/app.css';
 import { type DayNumber, parseIsoDate, today as todayNumber, toIsoDate } from './core/days';
 import { type SkyEvent, nextSeasonEvent, seasonEvents } from './core/sky';
 import { LEAP_WEEK, MAX_YEAR, MIN_YEAR, MONTHS, daysInMonth, fromSolar, hasLeapWeek, monthSpan, toSolar, yearStart } from './core/solar';
-import { holidaySet, defaultHolidaySetId } from './holidays/registry';
+import { defaultHolidaySetIds, holidaySets } from './holidays/registry';
 import { type FestivalSource, festivalsFrom } from './names/festivals';
 import { DEFAULT_PACK_ID, isPackId, loadAllPacks, loadPack } from './names/registry';
 import type { HolidaySet, NamePack } from './names/schema';
@@ -38,15 +38,15 @@ const state = {
   selected: 0 as DayNumber,
   view: 'month' as View,
   pack: null as unknown as NamePack,
-  /** Bank holidays shown, if any */
-  holidays: null as HolidaySet | null,
+  /** Bank holidays shown: any of the UK regions */
+  holidays: [] as HolidaySet[],
   /** Other packs whose festivals are shown too */
   extraPacks: [] as NamePack[],
 };
 
 /** Everything whose festivals are shown: the chosen names, any other packs ticked, and the bank holidays. */
 function festivalSources(): FestivalSource[] {
-  return [state.pack, ...state.extraPacks.filter((pack) => pack.id !== state.pack.id), ...(state.holidays ? [state.holidays] : [])];
+  return [state.pack, ...state.extraPacks.filter((pack) => pack.id !== state.pack.id), ...state.holidays];
 }
 
 const $ = <T extends Element = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
@@ -100,13 +100,13 @@ function monthEvents(year: number, month: number): SkyEvent[] {
 }
 
 /**
- * Rewriting the day panel or the "Say" line drops focus from the control in it,
+ * Rewriting the day panel, the "Say" line or a festival list drops focus from the control in it,
  * which happens when moon data arrives. This puts focus back on the control in
  * the same place, unless something else has taken it.
  */
 function keepFocusInPlace(): () => void {
   const active = document.activeElement;
-  const container = active?.closest<HTMLElement>('#day-panel, #month-say');
+  const container = active?.closest<HTMLElement>('#day-panel, #month-say, #month-festivals, #year-festivals');
   if (!(active instanceof HTMLElement) || !container) return () => {};
   const controls = () => [...container.querySelectorAll<HTMLElement>('button, a[href], input, select')];
   const index = controls().indexOf(active);
@@ -207,9 +207,8 @@ async function readUrl(): Promise<void> {
     state.pack = await loadPack(DEFAULT_PACK_ID);
     $('#names-status').textContent = 'Couldn’t load your chosen names, so the Gregorian names are shown. Check your connection.';
   }
-  // Bank holidays are on by default on UK time; choosing None stores ""
-  const holidays = storage.get('holidays');
-  state.holidays = holidaySet(holidays === null ? defaultHolidaySetId() : holidays);
+  // A list of regions; unset means England and Wales on UK time, and none stores ""
+  state.holidays = holidaySets(storage.get('holidays') ?? defaultHolidaySetIds());
   await loadExtraPacks((storage.get('festivals') ?? '').split(','));
 }
 
@@ -222,7 +221,8 @@ async function loadExtraPacks(ids: string[]): Promise<void> {
 /** The festivals and holidays shown, as feed parameters: "&festivals=persian&holidays=uk-scotland" */
 function festivalParams(): string {
   const extras = state.extraPacks.map((pack) => pack.id).join(',');
-  return `${extras ? `&festivals=${extras}` : ''}${state.holidays ? `&holidays=${state.holidays.id}` : ''}`;
+  const holidays = state.holidays.map((set) => set.id).join(',');
+  return `${extras ? `&festivals=${extras}` : ''}${holidays ? `&holidays=${holidays}` : ''}`;
 }
 
 // "Add to your calendar": a one-year download, and the subscription feed
@@ -433,18 +433,21 @@ function wire(): void {
     if ((event as ToggleEvent).newState !== 'open') return;
     anchorMenu(festivalsMenu, $('#festivals-button'));
     try {
-      renderFestivalsMenu($('#festivals-options'), await loadAllPacks(), state.pack, state.holidays?.id ?? null, state.extraPacks.map((pack) => pack.id));
+      renderFestivalsMenu($('#festivals-options'), await loadAllPacks(), state.pack, state.holidays.map((set) => set.id), state.extraPacks.map((pack) => pack.id));
     } catch {
       $('#festivals-status').textContent = 'Couldn’t load the list of festivals. Check your connection and try again.';
     }
   });
   festivalsMenu.addEventListener('change', async (event) => {
     const input = event.target as HTMLInputElement;
+    const ticked = () => [...festivalsMenu.querySelectorAll<HTMLInputElement>(`input[name="${input.name}"]:checked`)].map((box) => box.value).join(',');
     if (input.name === 'holidays') {
-      state.holidays = holidaySet(input.value);
-      storage.set('holidays', input.value);
+      storage.set('holidays', ticked());
+      state.holidays = holidaySets(ticked());
     } else if (input.name === 'festival-pack') {
-      const ids = [...festivalsMenu.querySelectorAll<HTMLInputElement>('input[name="festival-pack"]:checked')].map((box) => box.value);
+      // The chosen names' own pack isn't in the menu, so keep it if it was ticked before
+      const kept = state.extraPacks.some((pack) => pack.id === state.pack.id) ? [state.pack.id] : [];
+      const ids = [...kept, ...ticked().split(',').filter(Boolean)];
       storage.set('festivals', ids.join(','));
       await loadExtraPacks(ids);
     }

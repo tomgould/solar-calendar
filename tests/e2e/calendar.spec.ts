@@ -134,16 +134,19 @@ test('shows bank holidays and other packs’ festivals, chosen in the Festivals 
   await page.goto('./?date=2026-12-25&names=gregorian');
   await page.locator('#festivals-button').click();
   const menu = page.locator('#festivals-menu');
+  await menu.getByLabel('England and Wales').uncheck();
   await menu.getByLabel('Scotland').check();
+  await menu.getByLabel('Northern Ireland').check();
   await menu.getByRole('checkbox', { name: /^Persian/ }).check();
   await page.keyboard.press('Escape');
 
-  // Listed under the month, and named in the day panel with where they come from
+  // Listed under the month, once even when both regions keep it, and named in
+  // the day panel with where they come from
   const list = page.locator('#month-festivals');
-  await expect(list).toContainText('Christmas Day');
-  await expect(list).toContainText('Scotland bank holiday');
+  await expect(list.getByRole('button', { name: /^Christmas Day/ })).toHaveCount(1);
+  await expect(list).toContainText('Northern Ireland and Scotland bank holiday');
   await expect(list).toContainText('Yalda');
-  await expect(page.locator('#day-panel')).toContainText('Christmas Day (Scotland)');
+  await expect(page.locator('#day-panel')).toContainText('Christmas Day (Northern Ireland and Scotland)');
   await list.getByRole('button', { name: /Yalda/ }).click();
   await expect(page.locator('#day-panel .day-greg')).toContainText('Monday 21 December 2026');
   await expect(page.locator(selectedCell)).toBeFocused();
@@ -154,15 +157,15 @@ test('shows bank holidays and other packs’ festivals, chosen in the Festivals 
   await page.getByRole('button', { name: 'Year', exact: true }).click();
   await expect(page.locator('#year-festivals')).toContainText('Nowruz');
   const feedUrl = await page.locator('#feed-url').inputValue();
-  expect(feedUrl).toMatch(/&festivals=persian&holidays=uk-scotland$/);
+  expect(feedUrl).toMatch(/&festivals=persian&holidays=uk-northern-ireland,uk-scotland$/);
   const feed = await (await page.request.get(feedUrl)).text();
   expect(feed).toContain('SUMMARY:St Andrew’s Day');
   expect(feed).toContain('SUMMARY:Yalda');
 
-  // None turns the bank holidays off again
+  // Unticking turns them off again
   await page.getByRole('button', { name: 'Month', exact: true }).click();
   await page.locator('#festivals-button').click();
-  await menu.getByLabel('None').check();
+  await menu.getByLabel('Scotland').uncheck();
   await page.keyboard.press('Escape');
   await expect(page.locator('#month-festivals')).not.toContainText('St Andrew’s Day');
 });

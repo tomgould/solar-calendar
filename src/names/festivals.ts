@@ -8,6 +8,8 @@ export interface FestivalSource {
   title: string;
   lang: string;
   festivals?: Festival[];
+  /** "holidays" for a set of public holidays, such as one UK region's */
+  kind?: string;
 }
 
 export interface FestivalDay {
@@ -18,6 +20,8 @@ export interface FestivalDay {
   substitute?: boolean;
   /** A day off: a bank holiday on a weekday, or a substitute day */
   dayOff?: boolean;
+  /** For a holiday kept in several of the sets shown: each set's title, such as "Scotland" */
+  regions?: string[];
 }
 
 const isWeekend = (day: DayNumber) => weekday(day) >= 5;
@@ -60,9 +64,27 @@ export function festivalsBetween(source: FestivalSource, first: DayNumber, last:
     .filter((entry) => entry.day >= first && entry.day <= last);
 }
 
-/** The festivals of several sources together, in date order. */
+/**
+ * The festivals of several sources together, in date order. A holiday that
+ * several holiday sets share on the same day, such as Christmas Day in each
+ * UK region, appears once, listing every set it comes from.
+ */
 export function festivalsFrom(sources: FestivalSource[], first: DayNumber, last: DayNumber, occurrences = false): FestivalDay[] {
+  const merged = new Map<string, FestivalDay>();
   return sources.flatMap((source) => (occurrences ? festivalOccurrences : festivalsBetween)(source, first, last))
+    .flatMap((entry) => {
+      if (entry.source.kind !== 'holidays') return [entry];
+      const key = `${entry.day} ${festivalLabel(entry)}`;
+      const same = merged.get(key);
+      if (!same) {
+        const kept = { ...entry, regions: [entry.source.title] };
+        merged.set(key, kept);
+        return [kept];
+      }
+      same.regions!.push(entry.source.title);
+      same.dayOff ||= entry.dayOff;
+      return [];
+    })
     .sort((a, b) => a.day - b.day);
 }
 
