@@ -5,6 +5,8 @@ import '@fontsource/andika/700.css';
 // Scripts Andika lacks, for packs' original forms; each downloads only when its letters appear
 import '@fontsource/vazirmatn/arabic-400.css';
 import '@fontsource/noto-sans-coptic/coptic-400.css';
+// Greek letters Andika lacks, such as the θ used in IPA pronunciations
+import '@fontsource/noto-sans/greek-400.css';
 import './styles/app.css';
 import { type DayNumber, parseIsoDate, today as todayNumber, toIsoDate } from './core/days';
 import { type SkyEvent, nextSeasonEvent, seasonEvents } from './core/sky';

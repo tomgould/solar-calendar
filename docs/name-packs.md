@@ -50,6 +50,7 @@ Respellings use hyphens between syllables, with the stressed syllable in capital
 | air | hair | oo | food | kh | Scottish loch |
 | ay | day | uu | foot | gh | a softer kh, as in Dutch g |
 | e | bed | ow | now | zh | vision |
-| ee | see | oy | boy | ng | sing |
-| i | sit | u | cup | y | yes |
-| eye | eye | ur | fur | uh | the a in about |
+| eh | bed, ending a syllable | oy | boy | ng | sing |
+| ee | see | u | cup | y | yes |
+| i | sit | ur | fur | uh | the a in about |
+| eye | eye | aw | law | | |

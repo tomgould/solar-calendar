@@ -1,6 +1,6 @@
 import { LEAP_WEEK } from '../core/solar';
 import { type NamePack, RESPELLING_KEY } from '../names/schema';
-import { escapeHtml, hueClass } from './format';
+import { escapeHtml, forDisplayFont, hueClass } from './format';
 
 const certaintyText = { established: 'Meaning well established', likely: 'Meaning likely', uncertain: 'Meaning uncertain' };
 
@@ -16,7 +16,7 @@ export function renderNamesMenu(container: HTMLElement, packs: NamePack[], curre
       <input type="radio" name="name-pack" value="${pack.id}"${pack.id === currentId ? ' checked' : ''}>
       <span class="pack-title">${escapeHtml(pack.title)}</span>
       <span class="pack-desc">${escapeHtml(pack.description)}</span>
-      <span class="pack-sample" lang="${pack.lang}">${pack.months.slice(0, 3).map((month) => escapeHtml(month.name)).join(', ')} …</span>
+      <span class="pack-sample" lang="${escapeHtml(pack.lang)}">${pack.months.slice(0, 3).map((month) => escapeHtml(forDisplayFont(month.name))).join(', ')} …</span>
     </label>`).join('');
 }
 
@@ -28,7 +28,7 @@ export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, cur
     <li class="${hueClass(i + 1)}"${i + 1 === currentMonth ? ' aria-current="true"' : ''}>
       <span class="about-num" aria-hidden="true">${i + 1}</span>
       <div>
-        <h3 class="about-name" ${lang}>${escapeHtml(month.name)}</h3>
+        <h3 class="about-name" ${lang}>${escapeHtml(forDisplayFont(month.name))}</h3>
         <p class="about-gloss">${escapeHtml(month.gloss)}${month.original ? `. Also written <span ${originalLang}>${escapeHtml(month.original)}</span>` : ''}</p>
         ${sayLine(month.say, month.ipa)}
         <p>${escapeHtml(month.meaning)}</p>
@@ -59,7 +59,7 @@ export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, cur
         <li class="${hueClass(LEAP_WEEK)}"${currentMonth === LEAP_WEEK ? ' aria-current="true"' : ''}>
           <span class="about-num" aria-hidden="true">+</span>
           <div>
-            <h3 class="about-name" ${lang}>${escapeHtml(pack.leapWeek.name)}</h3>
+            <h3 class="about-name" ${lang}>${escapeHtml(forDisplayFont(pack.leapWeek.name))}</h3>
             <p class="about-gloss">${escapeHtml(pack.leapWeek.gloss)}</p>
             ${sayLine(pack.leapWeek.say, pack.leapWeek.ipa)}
             <p>${escapeHtml(pack.leapWeek.meaning)}</p>

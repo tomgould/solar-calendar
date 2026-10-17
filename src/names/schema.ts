@@ -27,8 +27,8 @@ export interface PackMonth {
 /** The respelling key shown with pronunciations; docs/name-packs.md has the same table. */
 export const RESPELLING_KEY: readonly [string, string][] = [
   ['CAPITALS', 'the stressed syllable'],
-  ['a', 'cat'], ['ah', 'father'], ['air', 'hair'], ['ay', 'day'], ['e', 'bed'], ['ee', 'see'],
-  ['i', 'sit'], ['eye', 'eye'], ['o', 'hot'], ['oh', 'go'], ['oo', 'food'], ['uu', 'foot'],
+  ['a', 'cat'], ['ah', 'father'], ['air', 'hair'], ['ay', 'day'], ['e', 'bed'], ['eh', 'bed, ending a syllable'], ['ee', 'see'],
+  ['i', 'sit'], ['eye', 'eye'], ['o', 'hot'], ['aw', 'law'], ['oh', 'go'], ['oo', 'food'], ['uu', 'foot'],
   ['ow', 'now'], ['oy', 'boy'], ['u', 'cup'], ['ur', 'fur'], ['uh', 'the a in about'],
   ['th', 'thin'], ['dh', 'this'], ['kh', 'Scottish loch'], ['gh', 'a softer kh, as in Dutch g'],
   ['zh', 'vision'], ['ng', 'sing'], ['y', 'yes'],

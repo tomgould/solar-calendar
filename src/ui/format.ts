@@ -26,6 +26,19 @@ export function gregorianDate(n: DayNumber): string {
   return `${day} ${GREGORIAN_MONTHS[month - 1]} ${year}`;
 }
 
+// Letters the display font (Big Shoulders) lacks as one glyph but has the parts
+// for. tests/unit/fonts.test.ts fails if a pack needs one that isn't listed.
+const BUILD_FROM_PARTS = /[Ǣǣ]/g; // Ǣ ǣ
+
+/**
+ * A name prepared for the display font: letters it lacks, such as Ǣ, are split
+ * into base letter and accent (Æ + combining macron), which it does have.
+ * Without this, Firefox and Safari draw a missing letter from another font.
+ */
+export function forDisplayFont(text: string): string {
+  return text.normalize('NFC').replace(BUILD_FROM_PARTS, (letter) => letter.normalize('NFD'));
+}
+
 export function monthName(pack: NamePack, month: number): string {
   return month === LEAP_WEEK ? pack.leapWeek.name : pack.months[month - 1].name;
 }

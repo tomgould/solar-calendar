@@ -18,7 +18,7 @@
   --font-display: 'Big Shoulders Variable', 'Arial Narrow', sans-serif;
   /* Vazirmatn (Persian) and Noto Sans Coptic only cover their own scripts, so
      the browser uses them just for those letters */
-  --font-text: 'Andika', 'Vazirmatn', 'Noto Sans Coptic', system-ui, sans-serif;
+  --font-text: 'Andika', 'Noto Sans', 'Vazirmatn', 'Noto Sans Coptic', system-ui, sans-serif;
 
   --step--1: 0.8125rem;
   --step-0: 1rem;
