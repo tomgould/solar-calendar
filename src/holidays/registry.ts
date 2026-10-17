@@ -14,7 +14,13 @@ export function holidaySet(id: string | null | undefined): HolidaySet | null {
   return HOLIDAY_SETS.find((set) => set.id === id) ?? null;
 }
 
+/** The sets named in a list of ids, such as "uk-scotland,uk-northern-ireland", in menu order. Unknown ids are skipped. */
+export function holidaySets(ids: string | null | undefined): HolidaySet[] {
+  const wanted = new Set((ids ?? '').split(','));
+  return HOLIDAY_SETS.filter((set) => wanted.has(set.id));
+}
+
 /** Bank holidays are on by default for devices on UK time. */
-export function defaultHolidaySetId(timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone): string | null {
-  return timeZone === 'Europe/London' ? 'uk-england-and-wales' : null;
+export function defaultHolidaySetIds(timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone): string {
+  return timeZone === 'Europe/London' ? 'uk-england-and-wales' : '';
 }

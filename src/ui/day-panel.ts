@@ -5,7 +5,7 @@ import { type FestivalDay, festivalLabel } from '../names/festivals';
 import type { NamePack } from '../names/schema';
 import type { SunTimes } from '../sky/sun';
 import { LOCALE, daysAway, escapeHtml, eventTime, gregorianLong, solarLong } from './format';
-import { festivalKind } from './festivals';
+import { festivalKind, sourceTitle } from './festivals';
 import { chevron } from './icons';
 import { hearButton } from './speech';
 
@@ -40,7 +40,7 @@ export function renderDayPanel(root: HTMLElement, { selected, today, pack, event
   const festivalText = (entry: FestivalDay) => {
     const { festival, source } = entry;
     return `
-    <p class="festival"><strong lang="${escapeHtml(source.lang)}">${escapeHtml(festivalLabel(entry))}</strong>${source.id === pack.id ? '' : ` <span class="festival-source">(${escapeHtml(source.title)})</span>`}, ${escapeHtml(festival.gloss)}.${festival.say ? ` <span class="say"><span class="say-label">Say</span> ${escapeHtml(festival.say)}</span>. ${hearButton(source, festival)}` : ''}
+    <p class="festival"><strong lang="${escapeHtml(source.lang)}">${escapeHtml(festivalLabel(entry))}</strong>${source.id === pack.id ? '' : ` <span class="festival-source">(${escapeHtml(sourceTitle(entry))})</span>`}, ${escapeHtml(festival.gloss)}.${festival.say ? ` <span class="say"><span class="say-label">Say</span> ${escapeHtml(festival.say)}</span>. ${hearButton(source, festival)}` : ''}
     ${escapeHtml(festival.meaning)}</p>`;
   };
   const festivalRow = (['Bank holiday', 'Holiday', 'Festival'] as const).map((kind) => {

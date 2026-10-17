@@ -1,5 +1,5 @@
 import { toSolar } from '../core/solar';
-import { HOLIDAY_SETS, holidaySet } from '../holidays/registry';
+import { HOLIDAY_SETS } from '../holidays/registry';
 import { type FestivalDay, festivalLabel } from '../names/festivals';
 import type { NamePack } from '../names/schema';
 import { escapeHtml, gregorianLong, gregorianShort, solarLong } from './format';
@@ -7,28 +7,40 @@ import { escapeHtml, gregorianLong, gregorianShort, solarLong } from './format';
 /** What kind of day an entry is: a day off, another holiday (Easter Sunday), or a festival */
 export function festivalKind(entry: FestivalDay): 'Bank holiday' | 'Holiday' | 'Festival' {
   if (entry.dayOff) return 'Bank holiday';
-  return holidaySet(entry.source.id) ? 'Holiday' : 'Festival';
+  return entry.source.kind === 'holidays' ? 'Holiday' : 'Festival';
 }
 
-/** Where an entry comes from, as a reader would say it: "Persian festival", "Scotland bank holiday" */
+/**
+ * Where an entry comes from: "Persian", "Scotland", or for a holiday kept in
+ * several regions, "England, Wales and Scotland", or "UK" when it's kept in all.
+ */
+export function sourceTitle(entry: FestivalDay): string {
+  const regions = entry.regions ?? [entry.source.title];
+  if (regions.length === 1) return regions[0];
+  if (regions.length === HOLIDAY_SETS.length) return 'UK';
+  const places = regions.flatMap((title) => title.split(' and '));
+  return `${places.slice(0, -1).join(', ')} and ${places.at(-1)}`;
+}
+
+/** Where an entry comes from, as a reader would say it: "Persian festival", "UK bank holiday" */
 export function sourceName(entry: FestivalDay): string {
-  return `${entry.source.title} ${festivalKind(entry).toLowerCase()}`;
+  return `${sourceTitle(entry)} ${festivalKind(entry).toLowerCase()}`;
 }
 
 /** The Festivals menu: which bank holidays, and which other packs' festivals, to show. */
-export function renderFestivalsMenu(container: HTMLElement, packs: NamePack[], current: NamePack, holidayId: string | null, extraIds: string[]): void {
-  const holidays = [{ id: '', title: 'None' }, ...HOLIDAY_SETS].map((set) => `
-    <label class="choice"><input type="radio" name="holidays" value="${set.id}"${(holidayId ?? '') === set.id ? ' checked' : ''}> ${escapeHtml(set.title)}</label>`).join('');
+export function renderFestivalsMenu(container: HTMLElement, packs: NamePack[], current: NamePack, holidayIds: string[], extraIds: string[]): void {
+  const holidays = HOLIDAY_SETS.map((set) => `
+    <label class="choice"><input type="checkbox" name="holidays" value="${escapeHtml(set.id)}"${holidayIds.includes(set.id) ? ' checked' : ''}> ${escapeHtml(set.title)}</label>`).join('');
   const others = packs.filter((pack) => pack.id !== current.id && pack.festivals?.length).sort((a, b) => a.title.localeCompare(b.title));
   const own = current.festivals?.length
     ? `<p class="choice-note">${escapeHtml(current.title)} festivals always show with ${escapeHtml(current.title)} month names.</p>` : '';
   const packChoices = others.map((pack) => `
     <label class="choice">
-      <input type="checkbox" name="festival-pack" value="${pack.id}"${extraIds.includes(pack.id) ? ' checked' : ''}>
+      <input type="checkbox" name="festival-pack" value="${escapeHtml(pack.id)}"${extraIds.includes(pack.id) ? ' checked' : ''}>
       <span>${escapeHtml(pack.title)} <span class="choice-sample" lang="${escapeHtml(pack.lang)}">${pack.festivals!.slice(0, 3).map((festival) => escapeHtml(festival.name)).join(', ')}${pack.festivals!.length > 3 ? ' …' : ''}</span></span>
     </label>`).join('');
   container.innerHTML = `
-    <fieldset class="choice-group"><legend>UK bank holidays</legend>${holidays}</fieldset>
+    <fieldset class="choice-group"><legend>UK bank holidays</legend><p class="choice-note">A holiday kept in more than one region shows once.</p>${holidays}</fieldset>
     <fieldset class="choice-group"><legend>Also show festivals from</legend>${own}${packChoices}</fieldset>`;
 }
 

@@ -85,4 +85,6 @@ Public holidays live apart from the name packs, in `src/holidays/`, one file per
 - **`bankHoliday: true`** marks a day off. It gets a flag in the grid rather than a star.
 - **`substituteFrom`** is the year from which a day off at the weekend also gives the next free weekday, shown as "(substitute day)".
 
-The UK sets are checked against GOV.UK's own list, saved in `tests/fixtures/gov-uk-bank-holidays.json`. `npm run holidays:check` fetches the latest list and runs the test. A weekly GitHub workflow (`.github/workflows/holidays.yml`) does the same and opens a pull request when GOV.UK changes. If the test fails there, add the new holiday: a `date` rule for a one-off, or `moves` for a holiday moved in one year.
+Any number of sets can be shown at once. A holiday with the same name on the same day in several of them, such as Christmas Day, shows once, as "UK" or the regions it's kept in.
+
+The UK sets are checked against GOV.UK's own list, saved in `tests/fixtures/gov-uk-bank-holidays.json`. `npm run holidays:check` fetches the latest list and runs the test. A weekly GitHub workflow (`.github/workflows/holidays.yml`) does the same and opens a pull request when GOV.UK changes. If the test fails there, add the new holiday on a branch of your own (a `date` rule for a one-off, or `moves` for a holiday moved in one year) and merge it, then run the workflow again. Don't push to the workflow's branch, which it rewrites on every run. The workflow needs the repository setting "Allow GitHub Actions to create and approve pull requests".

@@ -471,3 +471,5 @@ Status:
 - [x] Festivals menu, lists under the month and the year, next dates in the meaning dialog, holidays in the feed.
 - [x] `npm run holidays:check` and the weekly workflow.
 - [x] Lighthouse re-run after Phase 7: unchanged, 98 performance on mobile and 100 on desktop, 100 for accessibility, best practices and SEO. Main bundle 24 KB gzipped. README screenshots retaken, with one of the Festivals menu.
+- [x] Regions can be shown together (requested 17 Oct 2026): checkboxes, with a holiday kept in several regions on the same day shown once, as "UK" or the regions' names.
+- [x] Review fixes: focus kept when the festival lists redraw, a ticked pack kept when it's also the chosen names, `moves` values must be text, and the holidays workflow split so the job that runs the project's code can't write.
