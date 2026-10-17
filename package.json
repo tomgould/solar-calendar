@@ -17,7 +17,9 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.52.0",
+    "@types/fontkit": "^2.0.9",
     "@types/node": "^22.20.5",
+    "fontkit": "^2.0.4",
     "typescript": "^7.0.2",
     "vite": "^8.3.4",
     "vitest": "^5.0.5",
