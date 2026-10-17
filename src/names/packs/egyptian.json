@@ -1,5 +1,6 @@
 {
   "id": "egyptian",
+  "kind": "historical",
   "title": "Ancient Egyptian",
   "description": "The three seasons of the ancient Egyptian civil year, with the epagomenal days stretched into a month",
   "culture": "Ancient Egypt",

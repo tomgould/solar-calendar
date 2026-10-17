@@ -1,5 +1,6 @@
 {
   "id": "roman",
+  "kind": "historical",
   "title": "Roman",
   "description": "The month names of the Roman Republic, before Julius Caesar reformed the calendar in 46 BC",
   "culture": "Roman Republic",

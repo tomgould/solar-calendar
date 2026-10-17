@@ -1,5 +1,6 @@
 {
   "id": "sky",
+  "kind": "modern",
   "title": "Sky",
   "description": "The 13 constellations the sun passes in front of along the ecliptic, from Pisces to Aquarius",
   "culture": "Modern invention, from Greek and Roman star lore",

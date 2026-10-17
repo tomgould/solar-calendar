@@ -1,5 +1,6 @@
 {
   "id": "old-norse",
+  "kind": "historical",
   "title": "Old Norse",
   "description": "The old Icelandic month names, from a calendar with a 364-day year and a leap week",
   "culture": "Medieval Iceland",

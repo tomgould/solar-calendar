@@ -1,5 +1,6 @@
 {
   "id": "coptic",
+  "kind": "historical",
   "title": "Coptic",
   "description": "The Egyptian Christian month names, from pharaonic gods and festivals, with Nasie, the little month, as the 13th",
   "culture": "Coptic Egypt",

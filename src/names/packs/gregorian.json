@@ -1,5 +1,6 @@
 {
   "id": "gregorian",
+  "kind": "historical",
   "title": "Gregorian names",
   "description": "The Gregorian month names, March to February, then Sol: the names this calendar started with",
   "culture": "Roman and Gregorian",

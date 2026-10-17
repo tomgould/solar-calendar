@@ -1,5 +1,6 @@
 {
   "id": "gaulish",
+  "kind": "historical",
   "title": "Gaulish",
   "description": "The month names of the Coligny calendar, the only long record of a Celtic calendar",
   "culture": "Roman Gaul",

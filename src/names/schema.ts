@@ -1,3 +1,5 @@
+import { type FestivalRule, ruleProblem } from '../core/festivals';
+
 /**
  * The name pack format. A pack is one JSON file in src/names/packs/; the file
  * name (without .json) must equal the pack's id. See docs/redesign.md.
@@ -34,8 +36,25 @@ export const RESPELLING_KEY: readonly [string, string][] = [
   ['zh', 'vision'], ['ng', 'sing'], ['y', 'yes'],
 ];
 
+export interface Festival {
+  name: string;
+  /** Two to four words, such as "midwinter feast" */
+  gloss: string;
+  meaning: string;
+  when: FestivalRule;
+  /** How many days it lasts, 1 if left out */
+  days?: number;
+  certainty?: Certainty;
+  say?: string;
+  ipa?: string;
+}
+
+export type PackKind = 'historical' | 'modern';
+
 export interface NamePack {
   id: string;
+  /** Groups the names menu: names from history, or modern inventions */
+  kind: PackKind;
   title: string;
   description: string;
   culture: string;
@@ -51,6 +70,8 @@ export interface NamePack {
   pronunciation?: string;
   leapWeek: { name: string; gloss: string; meaning: string; say?: string; ipa?: string };
   months: PackMonth[];
+  /** Festivals and holidays in this tradition, shown in the calendar */
+  festivals?: Festival[];
   sources: { title: string; url: string }[];
 }
 
@@ -67,6 +88,25 @@ export function validatePack(data: unknown, source: string): NamePack {
     if (!isText(data[key])) problems.push(`"${key}" must be a non-empty string`);
   }
   if (isText(data.id) && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(data.id)) problems.push('"id" must be lowercase words joined by hyphens');
+  if (data.kind !== 'historical' && data.kind !== 'modern') problems.push('"kind" must be "historical" or "modern"');
+  if (data.festivals !== undefined) {
+    if (!Array.isArray(data.festivals)) {
+      problems.push('"festivals" must be a list');
+    } else {
+      data.festivals.forEach((festival: unknown, i) => {
+        const where = `festival ${i + 1}`;
+        if (!isObject(festival)) return problems.push(`${where} must be an object`);
+        for (const key of ['name', 'gloss', 'meaning']) if (!isText(festival[key])) problems.push(`${where} needs a "${key}"`);
+        const problem = ruleProblem(festival.when);
+        if (problem) problems.push(`${where} "when" ${problem}`);
+        if (festival.days !== undefined && !(Number.isInteger(festival.days) && (festival.days as number) >= 1 && (festival.days as number) <= 31)) {
+          problems.push(`${where} "days" must be a whole number from 1 to 31`);
+        }
+        if (festival.certainty !== undefined && !CERTAINTIES.includes(festival.certainty as Certainty)) problems.push(`${where} "certainty" must be one of ${CERTAINTIES.join(', ')}`);
+        for (const key of ['say', 'ipa']) if (festival[key] !== undefined && !isText(festival[key])) problems.push(`${where} "${key}" must be text if present`);
+      });
+    }
+  }
   for (const key of ['dir', 'originalDir']) {
     if (data[key] !== undefined && data[key] !== 'ltr' && data[key] !== 'rtl') problems.push(`"${key}" must be "ltr" or "rtl"`);
   }

@@ -417,3 +417,14 @@ The site is static files plus one dynamic URL: the ICS feed, which calendar apps
 | AWS (S3 + CloudFront + Lambda) | Very capable | Far more setup and cost than this needs |
 
 **Recommendation:** keep the code on GitHub and use GitHub Actions for tests. Deploy to Cloudflare as Workers with static assets, with a custom domain. Cloudflare's docs now say to start new projects on Workers rather than Pages (checked 17 Oct 2026). Use Workers Builds, which connects the repo in the dashboard, for production deploys from `main` and preview links on other branches. The ICS feed later becomes a small Worker script on `run_worker_first: ["/feed.ics"]`. Fasthosts isn't needed for this project.
+
+### Phase 6: extras (requested 17 Oct 2026, before launch)
+
+- [ ] Festivals per pack: `festivals` in the pack format (rules: an equinox or solstice, a Gregorian date with an optional weekday, or a solar date, plus an offset and a length in days). Shown as marks in the grid, in the day panel, the meaning dialog, the printed month and the ICS feed. Engine and schema done; content being researched.
+- [ ] "Hear it" buttons: the browser's speech synthesis. Use a native voice where the device has one (Icelandic, Persian), otherwise read the respelling with an English voice.
+- [ ] Names menu grouped by the pack's `kind` (done in data: historical or modern).
+- [ ] Sunrise and sunset in the place's own time zone, through an offline time-zone lookup by coordinates.
+- [ ] A southern-hemisphere Nature pack (`nature-south`). The northern pack is now titled "Nature (northern hemisphere)".
+- [ ] A slide-up day panel on phones.
+- [ ] Lighthouse audit, then README screenshots.
+

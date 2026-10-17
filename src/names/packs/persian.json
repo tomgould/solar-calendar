@@ -1,5 +1,6 @@
 {
   "id": "persian",
+  "kind": "historical",
   "title": "Persian",
   "description": "The Solar Hijri month names, from the Avestan spirits of the Zoroastrian year, with the Old Persian Bāgayādiš as the 13th",
   "culture": "Iran and the Zoroastrian tradition",
