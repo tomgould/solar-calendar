@@ -29,6 +29,9 @@ export interface NamePack {
   /** BCP 47 language tag of the names, such as "ang" or "is" */
   lang: string;
   dir?: 'ltr' | 'rtl';
+  /** Language and direction of the months' "original" forms, when they differ (such as Persian script) */
+  originalLang?: string;
+  originalDir?: 'ltr' | 'rtl';
   origin: string;
   leapWeek: { name: string; gloss: string; meaning: string };
   months: PackMonth[];
@@ -48,7 +51,10 @@ export function validatePack(data: unknown, source: string): NamePack {
     if (!isText(data[key])) problems.push(`"${key}" must be a non-empty string`);
   }
   if (isText(data.id) && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(data.id)) problems.push('"id" must be lowercase words joined by hyphens');
-  if (data.dir !== undefined && data.dir !== 'ltr' && data.dir !== 'rtl') problems.push('"dir" must be "ltr" or "rtl"');
+  for (const key of ['dir', 'originalDir']) {
+    if (data[key] !== undefined && data[key] !== 'ltr' && data[key] !== 'rtl') problems.push(`"${key}" must be "ltr" or "rtl"`);
+  }
+  if (data.originalLang !== undefined && !isText(data.originalLang)) problems.push('"originalLang" must be a language tag if present');
 
   const leapWeek = data.leapWeek;
   if (!isObject(leapWeek) || !['name', 'gloss', 'meaning'].every((key) => isText(leapWeek[key]))) {

@@ -18,12 +18,13 @@ export function renderNamesMenu(container: HTMLElement, packs: NamePack[], curre
 /** The "About this name" dialog: every month of the pack, with the current one marked. */
 export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, currentMonth: number): void {
   const lang = `lang="${pack.lang}"`;
+  const originalLang = `lang="${pack.originalLang ?? pack.lang}"${pack.originalDir ? ` dir="${pack.originalDir}"` : ''}`;
   const months = pack.months.map((month, i) => `
     <li class="${hueClass(i + 1)}"${i + 1 === currentMonth ? ' aria-current="true"' : ''}>
       <span class="about-num" aria-hidden="true">${i + 1}</span>
       <div>
         <h3 class="about-name" ${lang}>${escapeHtml(month.name)}</h3>
-        <p class="about-gloss">${escapeHtml(month.gloss)}${month.original ? `. Also written <span ${lang}>${escapeHtml(month.original)}</span>` : ''}</p>
+        <p class="about-gloss">${escapeHtml(month.gloss)}${month.original ? `. Also written <span ${originalLang}>${escapeHtml(month.original)}</span>` : ''}</p>
         <p>${escapeHtml(month.meaning)}</p>
         ${month.notes ? `<p class="about-note">${escapeHtml(month.notes)}</p>` : ''}
         <p class="certainty">${certaintyText[month.certainty]}</p>
