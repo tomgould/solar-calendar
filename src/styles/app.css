@@ -88,6 +88,9 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* The scrollbar arrives with the calendar; keeping its space stops the page shifting */
+html { scrollbar-gutter: stable; }
+
 body {
   margin: 0;
   background: var(--paper);
@@ -110,6 +113,7 @@ a { color: inherit; text-underline-offset: 3px; }
 }
 .skip-link:focus { top: var(--space-2); }
 
+.is-loading { visibility: hidden; }
 .page { max-width: 1120px; margin: 0 auto; padding: 0 var(--space-4) var(--space-8); }
 @media (min-width: 720px) { .page { padding-inline: var(--space-6); } }
 
