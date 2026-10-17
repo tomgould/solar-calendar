@@ -12,5 +12,5 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true
   },
-  "include": ["src", "tests/unit", "vite.config.mts"]
+  "include": ["src", "vite.config.mts"]
 }
