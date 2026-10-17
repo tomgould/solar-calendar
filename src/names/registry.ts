@@ -2,11 +2,11 @@ import defaultPack from './packs/gregorian.json';
 import { type NamePack, validatePack } from './schema';
 
 // Every JSON file in packs/ is a pack. Files starting with "_" (such as a
-// template) are skipped. Each pack becomes its own chunk, loaded when picked.
+// template) are left out of the build. Each pack becomes its own chunk, loaded
+// when picked.
 const loaders = Object.fromEntries(
-  Object.entries(import.meta.glob<unknown>('./packs/*.json', { import: 'default' }))
-    .map(([path, load]) => [path.slice(path.lastIndexOf('/') + 1, -'.json'.length), { path, load }] as const)
-    .filter(([id]) => !id.startsWith('_')),
+  Object.entries(import.meta.glob<unknown>(['./packs/*.json', '!./packs/_*.json'], { import: 'default' }))
+    .map(([path, load]) => [path.slice(path.lastIndexOf('/') + 1, -'.json'.length), { path, load }] as const),
 );
 
 export const DEFAULT_PACK_ID = 'gregorian';
