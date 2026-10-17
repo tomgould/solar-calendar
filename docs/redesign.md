@@ -396,6 +396,11 @@ Each month has:
 0. **Prototype** (built 17 Oct 2026 on the `redesign` branch). A minimal core (days, astro, solar), plus static month view, year view and day panel in light and dark, at desktop and mobile sizes, with real dates. It includes the name-pack switcher and the meaning panel, with two packs. Screenshots for sign-off. You confirm the typefaces and the default pack here.
 1. **Core library** (done 17 Oct 2026). Built with the unit tests above. astronomy-engine stands in for the published table, and agrees to within 2 minutes.
 2. **App shell.** Vite and TypeScript, tokens, theme, router, month view opening on today, day panel and keyboard navigation. e2e with `webServer` and the time-zone matrix (set up early, during the cleanup).
+   - Status, 17 Oct 2026: done apart from the first deploy.
+   - Added: self-hosted fonts, the phone header and Back/Forward support.
+   - Checks: axe accessibility tests (WCAG 2.2 AA, light and dark) and a strict Content-Security-Policy in `public/_headers`, which the e2e suite runs under.
+   - Infrastructure: CI in GitHub Actions and `wrangler.jsonc` for Workers with static assets.
+   - Waiting: the first deploy needs `npx wrangler login`. After that, connect the GitHub repo with Workers Builds (Cloudflare dashboard) for automatic deploys and per-PR preview links, with no tokens to manage.
 3. **Year view, converter and print styles.** Print output is checked with Playwright's PDF export, which also replaces the hand-made PDFs. Every name pack gets its full meanings, each checked against its sources. The pack template and `docs/name-packs.md` land in this phase too.
 4. **Extras.** Sun and moon data (location is opt-in and stored only in the browser), ICS download per year plus a subscribable feed, and the offline PWA.
 5. **Launch.** Deploy to Cloudflare. The cleanup planned for this phase was done early: the original app was removed, and the README and `CLAUDE.md` were rewritten, on 17 Oct 2026.
@@ -411,4 +416,4 @@ The site is static files plus one dynamic URL: the ICS feed, which calendar apps
 | Fasthosts | Already paid for. PHP could generate the feed. | Shared hosting: FTP-style deploys, no CDN, no previews, and PHP would mean a second copy of the date logic, which was the problem with the original `RealTime.php`. |
 | AWS (S3 + CloudFront + Lambda) | Very capable | Far more setup and cost than this needs |
 
-**Recommendation:** keep the code on GitHub and use GitHub Actions for tests. Deploy to Cloudflare, either as Workers with static assets or as Pages (check Cloudflare's current guidance when setting up), with a custom domain. Fasthosts isn't needed for this project.
+**Recommendation:** keep the code on GitHub and use GitHub Actions for tests. Deploy to Cloudflare as Workers with static assets, with a custom domain. Cloudflare's docs now say to start new projects on Workers rather than Pages (checked 17 Oct 2026). Use Workers Builds, which connects the repo in the dashboard, for production deploys from `main` and preview links on other branches. The ICS feed later becomes a small Worker script on `run_worker_first: ["/feed.ics"]`. Fasthosts isn't needed for this project.

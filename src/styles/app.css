@@ -15,7 +15,7 @@
   --hue-c: 0.13;
   --hue: oklch(var(--hue-l) 0 0);
 
-  --font-display: 'Big Shoulders', 'Arial Narrow', sans-serif;
+  --font-display: 'Big Shoulders Variable', 'Arial Narrow', sans-serif;
   --font-text: 'Andika', system-ui, sans-serif;
 
   --step--1: 0.8125rem;
@@ -63,6 +63,24 @@
   --hue-l: 0.76;
   --hue-c: 0.11;
 }
+
+/* Month colours: 13 hues stepped evenly round the wheel (360 / 13 degrees),
+   starting at spring green; the leap week is grey. Set by class, not inline
+   style, so the Content-Security-Policy can forbid inline styles. */
+.hue-1 { --hue: oklch(var(--hue-l) var(--hue-c) 145); }
+.hue-2 { --hue: oklch(var(--hue-l) var(--hue-c) 117.3); }
+.hue-3 { --hue: oklch(var(--hue-l) var(--hue-c) 89.6); }
+.hue-4 { --hue: oklch(var(--hue-l) var(--hue-c) 61.9); }
+.hue-5 { --hue: oklch(var(--hue-l) var(--hue-c) 34.2); }
+.hue-6 { --hue: oklch(var(--hue-l) var(--hue-c) 6.5); }
+.hue-7 { --hue: oklch(var(--hue-l) var(--hue-c) 338.8); }
+.hue-8 { --hue: oklch(var(--hue-l) var(--hue-c) 311.2); }
+.hue-9 { --hue: oklch(var(--hue-l) var(--hue-c) 283.5); }
+.hue-10 { --hue: oklch(var(--hue-l) var(--hue-c) 255.8); }
+.hue-11 { --hue: oklch(var(--hue-l) var(--hue-c) 228.1); }
+.hue-12 { --hue: oklch(var(--hue-l) var(--hue-c) 200.4); }
+.hue-13 { --hue: oklch(var(--hue-l) var(--hue-c) 172.7); }
+.hue-14 { --hue: oklch(var(--hue-l) 0 0); }
 
 /* Base -------------------------------------------------------------------- */
 
@@ -128,10 +146,20 @@ a { color: inherit; text-underline-offset: 3px; }
   gap: var(--space-3); padding-block: var(--space-4); border-bottom: 1px solid var(--rule);
 }
 .wordmark {
+  margin-right: auto;
   font: 800 var(--step-3) / 1 var(--font-display); letter-spacing: 0.01em; text-decoration: none;
 }
 .controls { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
-@media (max-width: 560px) { .names-current { display: none; } }
+.theme-button { display: inline-flex; align-items: center; gap: 6px; }
+.narrow-only { display: none; }
+
+/* Phones: the wordmark and theme toggle share a row, the controls get their own */
+@media (max-width: 600px) {
+  .masthead { display: grid; grid-template-columns: 1fr auto; }
+  .controls { grid-column: 1 / -1; grid-row: 2; }
+  .wide-only { display: none; }
+  .narrow-only { display: inline; }
+}
 
 .today-line { margin: var(--space-5) 0 var(--space-5); max-width: 62ch; font-size: var(--step-1); }
 

@@ -2,7 +2,7 @@ import { type DayNumber, civilFromDay } from '../core/days';
 import { SKY_EVENT_NAMES, type SkyEvent } from '../core/sky';
 import { LEAP_WEEK, daysInMonth, fromSolar, monthsInYear, toSolar } from '../core/solar';
 import type { NamePack } from '../names/schema';
-import { WEEKDAYS, escapeHtml, gregorianLong, gregorianShort, monthGloss, monthHue, monthName, solarLong } from './format';
+import { WEEKDAYS, escapeHtml, gregorianLong, gregorianShort, hueClass, monthGloss, monthName, solarLong } from './format';
 import { EVENT_ICONS } from './icons';
 
 export interface MonthViewState {
@@ -52,7 +52,10 @@ export class MonthView {
         cell.type = 'button';
         cell.className = 'cell';
         cell.tabIndex = -1;
-        cell.innerHTML = `<span class="num">${index + 1}</span><span class="greg"></span><span class="marks"></span>`;
+        // The visible parts are hidden from screen readers; the hidden name reads
+        // in full and starts with the visible numeral, for voice control users
+        cell.innerHTML = `<span class="num" aria-hidden="true">${index + 1}</span><span class="greg" aria-hidden="true"></span>`
+          + '<span class="marks" aria-hidden="true"></span><span class="visually-hidden name"></span>';
         cell.addEventListener('click', () => {
           const day = this.dayAt(index);
           if (day !== null) this.handlers.select(day, { focus: true });
@@ -70,7 +73,8 @@ export class MonthView {
     const first = fromSolar(date.year, date.month, 1);
     const length = daysInMonth(date.month);
 
-    this.root.style.setProperty('--hue', monthHue(date.month));
+    this.root.classList.remove(...[...this.root.classList].filter((name) => name.startsWith('hue-')));
+    this.root.classList.add(hueClass(date.month));
     const name = this.root.querySelector<HTMLElement>('#month-name')!;
     name.textContent = monthName(pack, date.month);
     name.lang = pack.lang;
@@ -99,12 +103,12 @@ export class MonthView {
       else cell.removeAttribute('aria-current');
       cell.parentElement!.setAttribute('aria-selected', String(day === selected));
       cell.tabIndex = day === selected ? 0 : -1;
-      cell.setAttribute('aria-label', [
+      cell.querySelector('.name')!.textContent = [
         solarLong(pack, toSolar(day)),
         gregorianLong(day),
         day === today ? 'today' : '',
         ...dayEvents.map((event) => SKY_EVENT_NAMES[event.kind]),
-      ].filter(Boolean).join(', '));
+      ].filter(Boolean).join(', ');
     });
 
     // The one motion moment: numerals stay put while the Gregorian layer fades in
@@ -122,10 +126,10 @@ export class MonthView {
       const month = i + 1;
       const name = escapeHtml(monthName(pack, month));
       const isTodaysMonth = now.year === year && now.month === month;
-      return `<li><button type="button" data-month="${month}" style="--hue:${monthHue(month)}"`
-        + `${month === active ? ' aria-current="true"' : ''}${isTodaysMonth ? ' class="is-today"' : ''}`
-        + ` title="${name}" aria-label="${name}${isTodaysMonth ? ', this month' : ''}">`
-        + `<span class="bar"></span><span class="label">${month === LEAP_WEEK ? '+' : month}</span></button></li>`;
+      return `<li><button type="button" data-month="${month}" class="${hueClass(month)}${isTodaysMonth ? ' is-today' : ''}"`
+        + `${month === active ? ' aria-current="true"' : ''}`
+        + ` title="${name}"><span class="bar"></span><span class="label" aria-hidden="true">${month === LEAP_WEEK ? '+' : month}</span>`
+        + `<span class="visually-hidden">${month === LEAP_WEEK ? '' : `${month} `}${name}${isTodaysMonth ? ', this month' : ''}</span></button></li>`;
     }).join('');
   }
 

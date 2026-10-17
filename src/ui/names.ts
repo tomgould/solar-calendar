@@ -1,6 +1,6 @@
 import { LEAP_WEEK } from '../core/solar';
 import type { NamePack } from '../names/schema';
-import { escapeHtml, monthHue } from './format';
+import { escapeHtml, hueClass } from './format';
 
 const certaintyText = { established: 'Meaning well established', likely: 'Meaning likely', uncertain: 'Meaning uncertain' };
 
@@ -19,7 +19,7 @@ export function renderNamesMenu(container: HTMLElement, packs: NamePack[], curre
 export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, currentMonth: number): void {
   const lang = `lang="${pack.lang}"`;
   const months = pack.months.map((month, i) => `
-    <li style="--hue:${monthHue(i + 1)}"${i + 1 === currentMonth ? ' aria-current="true"' : ''}>
+    <li class="${hueClass(i + 1)}"${i + 1 === currentMonth ? ' aria-current="true"' : ''}>
       <span class="about-num" aria-hidden="true">${i + 1}</span>
       <div>
         <h3 class="about-name" ${lang}>${escapeHtml(month.name)}</h3>
@@ -41,7 +41,7 @@ export function renderAboutDialog(dialog: HTMLDialogElement, pack: NamePack, cur
     <div class="about-body">
       <p class="about-origin">${escapeHtml(pack.origin)}</p>
       <ol class="about-months">${months}
-        <li style="--hue:${monthHue(LEAP_WEEK)}"${currentMonth === LEAP_WEEK ? ' aria-current="true"' : ''}>
+        <li class="${hueClass(LEAP_WEEK)}"${currentMonth === LEAP_WEEK ? ' aria-current="true"' : ''}>
           <span class="about-num" aria-hidden="true">+</span>
           <div>
             <h3 class="about-name" ${lang}>${escapeHtml(pack.leapWeek.name)}</h3>

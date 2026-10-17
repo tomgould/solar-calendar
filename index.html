@@ -5,16 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Solar calendar</title>
   <meta name="description" content="A calendar of 13 identical 28-day months, with the year starting at the spring equinox.">
-  <script>
-    // Apply a saved theme before the first paint, so dark mode never flashes white
-    try {
-      const theme = localStorage.getItem('theme');
-      if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
-    } catch {}
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400&family=Big+Shoulders:opsz,wght@10..72,100..900&display=swap">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <!-- Blocking on purpose: applies a saved theme before the first paint -->
+  <script src="./theme.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to the calendar</a>
@@ -27,12 +20,15 @@
           <button type="button" data-view="month" aria-pressed="true">Month</button>
           <button type="button" data-view="year" aria-pressed="false">Year</button>
         </div>
-        <button type="button" class="button" id="names-button" popovertarget="names-menu">Month names<span class="names-current">: <span id="names-current"></span></span></button>
-        <button type="button" class="button" id="theme-button" aria-pressed="false">Dark mode</button>
+        <button type="button" class="button" id="names-button" popovertarget="names-menu"><span class="narrow-only">Names</span><span class="wide-only">Month names: <span id="names-current"></span></span></button>
       </div>
+      <button type="button" class="button theme-button" id="theme-button" aria-pressed="false" aria-label="Dark mode">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M13.6 10.3A6 6 0 0 1 5.7 2.4a6 6 0 1 0 7.9 7.9z" fill="currentColor"/></svg>
+        <span class="wide-only" aria-hidden="true">Dark mode</span>
+      </button>
     </header>
 
-    <div id="names-menu" class="names-menu" popover aria-labelledby="names-menu-title">
+    <div id="names-menu" class="names-menu" popover role="dialog" aria-labelledby="names-menu-title">
       <h2 id="names-menu-title" class="menu-title">Month names</h2>
       <p class="menu-note">Choose what the months are called. The days stay the same.</p>
       <div id="names-options" class="pack-options" role="radiogroup" aria-labelledby="names-menu-title"></div>

@@ -1,3 +1,7 @@
+import '@fontsource-variable/big-shoulders/opsz.css';
+import '@fontsource/andika/400.css';
+import '@fontsource/andika/400-italic.css';
+import '@fontsource/andika/700.css';
 import './styles/app.css';
 import { type DayNumber, parseIsoDate, today as todayNumber, toIsoDate } from './core/days';
 import { type SkyEvent, nextSeasonEvent, seasonEvents } from './core/sky';
@@ -88,13 +92,32 @@ function render(focus = false): void {
   }
 
   document.title = `${solarLong(pack, date)}, solar calendar`;
-  const params = new URLSearchParams({ date: toIsoDate(selected), names: pack.id });
-  if (view === 'year') params.set('view', 'year');
+  syncUrl(view === 'year' ? `year ${date.year}` : `month ${date.year}-${date.month}`);
+}
+
+// Changing view, year or month adds a history entry so Back works; moving
+// between days in the same month only updates the address.
+let shownPlace = '';
+let restoringFromHistory = false;
+
+function syncUrl(place: string): void {
+  const params = new URLSearchParams({ date: toIsoDate(state.selected), names: state.pack.id });
+  if (state.view === 'year') params.set('view', 'year');
+  const push = shownPlace !== '' && place !== shownPlace && !restoringFromHistory;
+  shownPlace = place;
   try {
-    history.replaceState(null, '', `${location.pathname}?${params}`);
+    history[push ? 'pushState' : 'replaceState'](null, '', `${location.pathname}?${params}`);
   } catch {
     // Some embedded previews refuse URL changes; the calendar works without them
   }
+}
+
+async function readUrl(): Promise<void> {
+  const params = new URLSearchParams(location.search);
+  state.selected = Math.min(LAST_DAY, Math.max(FIRST_DAY, parseIsoDate(params.get('date') ?? '') ?? state.today));
+  state.view = params.get('view') === 'year' ? 'year' : 'month';
+  const requested = params.get('names') ?? storage.get('names');
+  state.pack = await loadPack(isPackId(requested) ? requested : DEFAULT_PACK_ID);
 }
 
 function select(day: DayNumber, { focus = false } = {}): void {
@@ -176,10 +199,11 @@ function wire(): void {
   const menu = $('#names-menu');
   menu.addEventListener('toggle', async (event) => {
     if ((event as ToggleEvent).newState !== 'open') return;
-    // Anchor the menu under its button
+    // Anchor the menu under its button, kept inside the viewport
     const anchor = $('#names-button').getBoundingClientRect();
+    const width = Math.min(440, window.innerWidth - 32);
     menu.style.top = `${anchor.bottom + 8}px`;
-    menu.style.right = `${Math.max(16, window.innerWidth - anchor.right)}px`;
+    menu.style.right = `${Math.min(Math.max(16, window.innerWidth - anchor.right), window.innerWidth - width - 16)}px`;
     renderNamesMenu($('#names-options'), await loadAllPacks(), state.pack.id);
   });
   menu.addEventListener('change', (event) => {
@@ -211,13 +235,15 @@ function wire(): void {
 }
 
 async function start(): Promise<void> {
-  const params = new URLSearchParams(location.search);
-  state.selected = Math.min(LAST_DAY, Math.max(FIRST_DAY, parseIsoDate(params.get('date') ?? '') ?? state.today));
-  state.view = params.get('view') === 'year' ? 'year' : 'month';
-  const requested = params.get('names') ?? storage.get('names');
-  state.pack = await loadPack(isPackId(requested) ? requested : DEFAULT_PACK_ID);
+  await readUrl();
   wire();
   render();
+  window.addEventListener('popstate', async () => {
+    await readUrl();
+    restoringFromHistory = true;
+    render();
+    restoringFromHistory = false;
+  });
 }
 
 start().catch((error: unknown) => {

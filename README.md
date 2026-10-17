@@ -30,6 +30,13 @@ npm run build            # static site in dist/
 
 Run one test file with `npx vitest run tests/unit/core.test.ts` or `npx playwright test --project=chromium`.
 
+## Deployment
+
+The site runs on Cloudflare Workers as static files (`wrangler.jsonc`).
+- **Deploying:** log in once with `npx wrangler login`, then `npm run deploy` builds and deploys.
+- **Security headers:** `public/_headers` sets them, including a strict Content-Security-Policy, so the app uses no inline scripts or styles.
+- **CI:** GitHub Actions runs the type check and all tests on every push and pull request.
+
 ## Adding a month name pack
 
 Add one JSON file to `src/names/packs/`. The app finds it automatically, and the file name must match the pack's `id`. `src/names/schema.ts` describes the format, and `npm run test:unit` checks every pack. Give each meaning a source, and mark disputed meanings as uncertain.
