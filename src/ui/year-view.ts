@@ -2,7 +2,7 @@ import { type DayNumber, civilFromDay } from '../core/days';
 import { SKY_EVENT_NAMES, seasonEvents } from '../core/sky';
 import { DAYS_PER_MONTH, LEAP_WEEK, MAX_YEAR, MIN_YEAR, fromSolar, monthsInYear, yearLength, yearStart } from '../core/solar';
 import type { NamePack } from '../names/schema';
-import { WEEKDAYS, escapeHtml, eventTime, gregorianDate, gregorianLong, gregorianShort, monthGloss, monthHue, monthName } from './format';
+import { WEEKDAYS, escapeHtml, eventTime, gregorianDate, gregorianLong, gregorianShort, hueClass, monthGloss, monthName } from './format';
 
 export interface YearViewState {
   year: number;
@@ -35,7 +35,7 @@ export class YearView {
     this.root.querySelector<HTMLButtonElement>('#next-year')!.disabled = year >= MAX_YEAR;
 
     const head = `<thead><tr><th scope="col"><span class="visually-hidden">Day</span></th>${Array.from({ length: months }, (_, i) =>
-      `<th scope="col" style="--hue:${monthHue(i + 1)}" ${lang}>${escapeHtml(monthName(pack, i + 1))}</th>`).join('')}</tr></thead>`;
+      `<th scope="col" class="${hueClass(i + 1)}" ${lang}>${escapeHtml(monthName(pack, i + 1))}</th>`).join('')}</tr></thead>`;
 
     const rows = Array.from({ length: DAYS_PER_MONTH }, (_, r) => {
       const dayOfMonth = r + 1;
@@ -62,7 +62,7 @@ export class YearView {
 
     this.root.querySelector('#year-legend')!.innerHTML = Array.from({ length: months }, (_, i) => {
       const month = i + 1;
-      return `<li style="--hue:${monthHue(month)}"><span class="swatch"></span><span><span class="legend-name" ${lang}>${escapeHtml(monthName(pack, month))}</span> <span class="legend-gloss">${escapeHtml(monthGloss(pack, month))}</span></span></li>`;
+      return `<li class="${hueClass(month)}"><span class="swatch"></span><span><span class="legend-name" ${lang}>${escapeHtml(monthName(pack, month))}</span> <span class="legend-gloss">${escapeHtml(monthGloss(pack, month))}</span></span></li>`;
     }).join('');
   }
 

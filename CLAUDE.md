@@ -11,6 +11,7 @@ A web app for a 13-month solar calendar: 13 identical 28-day months, with the ye
 ```bash
 npm run dev            # Vite dev server, http://localhost:5173
 npm run build          # static site in dist/ (relative asset paths, base './')
+npm run deploy         # build, then wrangler deploy to Cloudflare (npx wrangler login once first)
 npm run typecheck      # tsc for src, then tsc -p tests (tests get Node types)
 npm test               # test:unit then test:e2e
 npx vitest run tests/unit/core.test.ts              # one unit test file
@@ -40,5 +41,8 @@ npx playwright test --project=chromium -g "leap"    # one e2e test, one project
   - `main.ts` holds state (selected day number, view, pack) and keeps the URL in step (`?date=YYYY-MM-DD&names=…&view=year`).
 - **Styles** live in `src/styles/app.css`.
   - Tokens sit on `:root`, and the dark theme is redefined under `prefers-color-scheme` (guarded by `:not([data-theme='light'])`) and under `[data-theme='dark']`.
-  - Month colours come from `monthHue()`: 13 OKLCH hues at equal lightness and chroma. Text is never set in a month hue.
-  - The typefaces are Big Shoulders for numerals and month names, and Andika for everything else. Big Shoulders lacks `ǣ`, so pack `name` fields use `Æ` and put the full spelling in `original`.
+  - Month colours come from the `.hue-1` to `.hue-14` classes in `app.css`, applied with `hueClass()`: 13 OKLCH hues at equal lightness and chroma, plus grey for the leap week. Text is never set in a month hue.
+  - The typefaces are self-hosted through Fontsource: Big Shoulders (variable, with an optical-size axis) for numerals and month names, and Andika for everything else. Big Shoulders lacks `ǣ`, so pack `name` fields use `Æ` and put the full spelling in `original`.
+- **No inline scripts or `style` attributes.** `public/_headers` sends a strict Content-Security-Policy (`script-src 'self'; style-src 'self'`), and an e2e test runs the app under it. Set styles through classes or the CSSOM (`element.style`), never `style="…"` in HTML strings. The theme is applied before first paint by `public/theme.js`, a plain file Vite copies as-is.
+- **Hosting:** Cloudflare Workers with static assets (`wrangler.jsonc` serves `dist/`). Everything in `public/` (`_headers`, `theme.js`, `favicon.svg`) is copied to `dist/` unchanged. `.github/workflows/ci.yml` runs the type check, unit tests and e2e tests on every push and pull request.
+- **History:** changing view, year or month pushes a history entry; days within a month replace it. The `popstate` handler re-reads the URL.

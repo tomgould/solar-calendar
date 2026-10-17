@@ -1,5 +1,5 @@
 import { type DayNumber, civilFromDay, weekday } from '../core/days';
-import { LEAP_WEEK, MONTHS, type SolarDate } from '../core/solar';
+import { LEAP_WEEK, type SolarDate } from '../core/solar';
 import type { NamePack } from '../names/schema';
 
 export const LOCALE = 'en-GB';
@@ -40,11 +40,12 @@ export function solarLong(pack: NamePack, date: SolarDate): string {
   return `${date.day} ${monthName(pack, date.month)} ${date.year}`;
 }
 
-/** Thirteen hues stepped evenly round the colour wheel, starting at spring green. */
-export function monthHue(month: number): string {
-  if (month === LEAP_WEEK) return 'oklch(var(--hue-l) 0 0)';
-  const hue = (((145 - (month - 1) * (360 / MONTHS)) % 360) + 360) % 360;
-  return `oklch(var(--hue-l) var(--hue-c) ${hue.toFixed(1)})`;
+/**
+ * The class that gives an element its month's colour (--hue). The 13 hues and
+ * the leap week's grey are defined in app.css, so no inline styles are needed.
+ */
+export function hueClass(month: number): string {
+  return `hue-${month}`;
 }
 
 /** A sky event's time in the viewer's time zone: "21 December 2026 at 20:50 GMT" */
