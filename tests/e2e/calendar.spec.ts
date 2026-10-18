@@ -492,16 +492,17 @@ test('works offline after the first visit', async ({ page, context }, testInfo) 
 
 const LEGAL_PAGES = ['./privacy', './terms', './disclaimer'];
 
-test('links to the privacy policy, terms, disclaimer and source code from every page', async ({ page }) => {
+test('links to the privacy policy, terms, disclaimer, source code and other projects from every page', async ({ page }) => {
   await page.goto('./');
   const footer = page.locator('.site-footer');
   await expect(footer.getByRole('link', { name: 'Source code on GitHub' })).toHaveAttribute('href', 'https://github.com/tomgould/solar-calendar');
+  await expect(footer.getByRole('link', { name: 'More projects from Deal Mobile' })).toHaveAttribute('href', 'https://www.dealmobile.co.uk');
   // Each page has the same footer, and a way back to the calendar
   for (const [link, heading] of [['Privacy policy', 'Privacy policy'], ['Terms of use', 'Terms of use'], ['Disclaimer', 'Disclaimer']]) {
     await footer.getByRole('link', { name: link }).click();
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(heading);
     await expect(page).toHaveTitle(`${heading}, Solar calendar`);
-    await expect(footer.getByRole('link')).toHaveCount(4);
+    await expect(footer.getByRole('link')).toHaveCount(5);
     await page.getByRole('link', { name: 'Back to the calendar' }).click();
     await expect(page.locator('#today-line')).toContainText('Today is');
   }
