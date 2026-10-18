@@ -9,7 +9,7 @@ import '@fontsource/noto-sans-coptic/coptic-400.css';
 import '@fontsource/noto-sans/greek-400.css';
 import './styles/app.css';
 import { type DayNumber, parseIsoDate, today as todayNumber, toIsoDate } from './core/days';
-import { type SkyEvent, nextSeasonEvent, seasonEvents } from './core/sky';
+import { SKY_EVENT_NAMES, type SkyEvent, nextSeasonEvent, seasonEvents } from './core/sky';
 import { LEAP_WEEK, MAX_YEAR, MIN_YEAR, MONTHS, daysInMonth, fromSolar, hasLeapWeek, monthSpan, toSolar, yearStart } from './core/solar';
 import { defaultHolidaySetIds, holidaySets } from './holidays/registry';
 import { type FestivalSource, festivalsFrom } from './names/festivals';
@@ -21,7 +21,7 @@ import { type Place, isPlace, placeTimeZone, sunTimes } from './sky/sun';
 import { renderDayPanel, sunText } from './ui/day-panel';
 import { GoToDate } from './ui/goto';
 import { renderFestivalsMenu, renderMonthFestivals, renderYearFestivals } from './ui/festivals';
-import { escapeHtml, gregorianLong, solarLong } from './ui/format';
+import { daysAway, escapeHtml, gregorianLong, solarLong } from './ui/format';
 import { THEME_ICONS, chevron } from './ui/icons';
 import { MonthView } from './ui/month-view';
 import { renderAboutDialog, renderNamesMenu } from './ui/names';
@@ -115,12 +115,19 @@ function keepFocusInPlace(): () => void {
   };
 }
 
+/** "The December solstice is in 64 days.", or "It’s the March equinox today." */
+function seasonCountdown(today: DayNumber): string {
+  const season = seasonEvents(today, today)[0] ?? nextSeasonEvent(today);
+  const name = SKY_EVENT_NAMES[season.kind];
+  return season.day === today ? `It’s the ${name} today.` : `The ${name} is ${daysAway(today, season.day)}.`;
+}
+
 function render(focus = false): void {
   const { selected, today, pack, view } = state;
   const date = toSolar(selected);
   const restoreFocus = keepFocusInPlace();
 
-  $('#today-line').innerHTML = `Today is <strong lang="${pack.lang}">${escapeHtml(solarLong(pack, toSolar(today)))}</strong>. In the Gregorian calendar it’s ${gregorianLong(today)}.`;
+  $('#today-line').innerHTML = `Today is <strong lang="${pack.lang}">${escapeHtml(solarLong(pack, toSolar(today)))}</strong>. In the Gregorian calendar it’s ${gregorianLong(today)}. ${seasonCountdown(today)}`;
   $('#names-current').textContent = pack.title;
   for (const button of document.querySelectorAll<HTMLButtonElement>('[data-view]')) {
     button.setAttribute('aria-pressed', String(button.dataset.view === view));
