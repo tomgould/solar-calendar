@@ -41,6 +41,9 @@ describe('festival rules', () => {
     expect(ruleProblem({ event: 'march-equinox' })).toBeNull();
     expect(ruleProblem({ gregorian: '02-30' })).toMatch(/month and day/);
     expect(ruleProblem({ gregorian: '01-19', weekday: 'fri' })).toMatch(/weekday/);
+    expect(ruleProblem({ gregorian: '02-01', weekday: 'monday', staysOn: 'friday' })).toBeNull();
+    expect(ruleProblem({ gregorian: '02-01', staysOn: 'friday' })).toMatch(/staysOn/);
+    expect(ruleProblem({ gregorian: '02-01', weekday: 'monday', staysOn: 'fri' })).toMatch(/staysOn/);
     expect(ruleProblem({ solar: { month: 14, day: 1 } })).toMatch(/1 to 13/);
     expect(ruleProblem({ solar: { month: '3', day: 17 } })).toMatch(/1 to 13/);
     expect(ruleProblem({ solar: { month: 3, day: 17.5 } })).toMatch(/1 to 13/);

@@ -1,0 +1,116 @@
+{
+  "id": "us-federal",
+  "title": "United States",
+  "country": "US",
+  "dayOffName": "federal holiday",
+  "weekendRule": "nearest-weekday",
+  "substituteLabel": "observed",
+  "description": "US federal holidays, from 1971, when most moved to Mondays",
+  "lang": "en-US",
+  "festivals": [
+    {
+      "name": "New Year’s Day",
+      "gloss": "first day of the year",
+      "meaning": "A federal holiday. When a federal holiday falls on a Saturday, the Friday before is the day off; on a Sunday, the Monday after. So New Year’s Day on a Saturday is observed on 31 December.",
+      "when": { "gregorian": "01-01" },
+      "from": 1971,
+      "bankHoliday": true,
+      "substituteFrom": 1971
+    },
+    {
+      "name": "Birthday of Martin Luther King, Jr.",
+      "gloss": "Martin Luther King Jr. Day",
+      "meaning": "For the civil rights leader, born on 15 January 1929. A federal holiday since 1986, on the third Monday in January.",
+      "when": { "gregorian": "01-15", "weekday": "monday" },
+      "from": 1986,
+      "bankHoliday": true,
+      "substituteFrom": 1986
+    },
+    {
+      "name": "Washington’s Birthday",
+      "gloss": "Presidents’ Day",
+      "meaning": "For George Washington, born on 22 February 1732. Since 1971 it has been the third Monday in February, so it never falls on his birthday, and it’s widely called Presidents’ Day.",
+      "when": { "gregorian": "02-15", "weekday": "monday" },
+      "from": 1971,
+      "bankHoliday": true,
+      "substituteFrom": 1971
+    },
+    {
+      "name": "Memorial Day",
+      "gloss": "for the war dead",
+      "meaning": "Remembers those who died serving in the US armed forces. The last Monday in May since 1971; before that it was 30 May.",
+      "when": { "gregorian": "05-25", "weekday": "monday" },
+      "from": 1971,
+      "bankHoliday": true,
+      "substituteFrom": 1971
+    },
+    {
+      "name": "Juneteenth National Independence Day",
+      "gloss": "end of slavery",
+      "meaning": "Marks 19 June 1865, when Union troops brought word of emancipation to enslaved people in Galveston, Texas. A federal holiday since 2021.",
+      "when": { "gregorian": "06-19" },
+      "from": 2021,
+      "bankHoliday": true,
+      "substituteFrom": 2021
+    },
+    {
+      "name": "Independence Day",
+      "gloss": "the Fourth of July",
+      "meaning": "The Continental Congress adopted the Declaration of Independence on 4 July 1776.",
+      "when": { "gregorian": "07-04" },
+      "from": 1971,
+      "bankHoliday": true,
+      "substituteFrom": 1971
+    },
+    {
+      "name": "Labor Day",
+      "gloss": "for workers",
+      "meaning": "Honours working people. A federal holiday since 1894, on the first Monday in September.",
+      "when": { "gregorian": "09-01", "weekday": "monday" },
+      "from": 1971,
+      "bankHoliday": true,
+      "substituteFrom": 1971
+    },
+    {
+      "name": "Columbus Day",
+      "gloss": "second Monday in October",
+      "meaning": "Marks Christopher Columbus reaching the Americas on 12 October 1492. The second Monday in October since 1971. Many states and cities keep the day as Indigenous Peoples’ Day instead.",
+      "when": { "gregorian": "10-08", "weekday": "monday" },
+      "from": 1971,
+      "bankHoliday": true,
+      "substituteFrom": 1971
+    },
+    {
+      "name": "Veterans Day",
+      "gloss": "for military veterans",
+      "meaning": "Honours those who served in the US armed forces, on the anniversary of the 1918 armistice. From 1971 to 1977 it was the fourth Monday in October, then it went back to 11 November.",
+      "when": { "gregorian": "11-11" },
+      "from": 1971,
+      "moves": { "1971": "10-25", "1972": "10-23", "1973": "10-22", "1974": "10-28", "1975": "10-27", "1976": "10-25", "1977": "10-24" },
+      "bankHoliday": true,
+      "substituteFrom": 1971
+    },
+    {
+      "name": "Thanksgiving Day",
+      "gloss": "harvest thanksgiving",
+      "meaning": "A day of thanks, on the fourth Thursday in November, as Congress set in 1941.",
+      "when": { "gregorian": "11-22", "weekday": "thursday" },
+      "from": 1971,
+      "bankHoliday": true,
+      "substituteFrom": 1971
+    },
+    {
+      "name": "Christmas Day",
+      "gloss": "feast of the nativity",
+      "meaning": "The Christian feast of the birth of Jesus.",
+      "when": { "gregorian": "12-25" },
+      "from": 1971,
+      "bankHoliday": true,
+      "substituteFrom": 1971
+    }
+  ],
+  "sources": [
+    { "title": "5 U.S.C. 6103: Holidays", "url": "https://www.law.cornell.edu/uscode/text/5/6103" },
+    { "title": "OPM: Federal holidays", "url": "https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/" }
+  ]
+}
