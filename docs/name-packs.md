@@ -27,19 +27,19 @@ Put each name in the slot closest to its historical season. Most traditions have
 
 ## Writing standard
 
-- **Sources:** cite at least one source you checked for every pack, and prefer two. Wikipedia is fine as a start; add a scholarly or primary source where you can.
-- **Certainty:** `established`, `likely` or `uncertain` describes how sure scholars are of the meaning. When they disagree, choose `uncertain` and say so in the meaning.
-- **`gloss`:** two to four words, lower case except proper nouns, such as "winter full moon".
-- **`meaning`:** one to three plain sentences in British English.
-- **Fonts:** `name` is shown in the display font, Big Shoulders, which lacks a few letters such as `ǣ`. Use the nearest plain form in `name`, and put the exact spelling or script in `original`. For an original in another script, set `originalLang`, and `originalDir: "rtl"` for right-to-left scripts. Other scripts use system fonts.
-- **Ids:** an `id` appears in shared links and feed URLs, so don't rename a pack once it's published.
+- Sources: cite at least one source you checked for every pack, and prefer two. Wikipedia is fine as a start; add a scholarly or primary source where you can.
+- Certainty: `established`, `likely` or `uncertain` describes how sure scholars are of the meaning. When they disagree, choose `uncertain` and say so in the meaning.
+- `gloss`: two to four words, lower case except proper nouns, such as "winter full moon".
+- `meaning`: one to three plain sentences in British English.
+- Fonts: `name` is shown in the display font, Big Shoulders, which lacks a few letters such as `ǣ`. Use the nearest plain form in `name`, and put the exact spelling or script in `original`. For an original in another script, set `originalLang`, and `originalDir: "rtl"` for right-to-left scripts. Other scripts use system fonts.
+- Ids: an `id` appears in shared links and feed URLs, so don't rename a pack once it's published.
 
 ## Pronunciation
 
 Packs whose names aren't English need pronunciations. They take three fields:
-- **`say`** on every month (all 13 or none), and on the leap week if its name isn't English. It's a respelling for English speakers, such as `WIN-ter-fil-leth`.
-- **`ipa`:** the same sound in the International Phonetic Alphabet, without slashes. Optional, but give it where you can.
-- **`pronunciation`** on the pack: one or two sentences on which pronunciation you've given and how sure it is. For example, modern Icelandic, classical Latin as reconstructed, or Egyptologists' convention, where the vowels are a modern guess.
+- `say` on every month (all 13 or none), and on the leap week if its name isn't English. It's a respelling for English speakers, such as `WIN-ter-fil-leth`.
+- `ipa`: the same sound in the International Phonetic Alphabet, without slashes. Optional, but give it where you can.
+- `pronunciation` on the pack: one or two sentences on which pronunciation you've given and how sure it is. For example, modern Icelandic, classical Latin as reconstructed, or Egyptologists' convention, where the vowels are a modern guess.
 
 Respellings use hyphens between syllables, with the stressed syllable in capitals. Use these sounds (the same key is shown in the app, from `RESPELLING_KEY` in `src/names/schema.ts`):
 
@@ -84,14 +84,14 @@ A pack can list the festivals of its culture in `festivals`. Each has a `name`, 
 Public holidays live apart from the name packs, in `src/holidays/`, one file per region or country, so they can be shown with any month names. There are five: England and Wales, Scotland and Northern Ireland (UK bank holidays, from 1971), Ireland (from 1997) and United States (federal holidays, from 1971).
 
 A holiday set has an `id` (the file name), `title`, `description`, `lang`, `sources` and `festivals` in the format above, plus:
-- **`country`**, such as `"UK"`. A holiday kept in every set of a country is shown under the country's name, so Christmas Day is "UK, Ireland and US".
-- **`dayOffName`**, what a day off is called there: `"bank holiday"`, `"public holiday"` or `"federal holiday"`. Where countries differ, the calendar says "public holiday".
-- **`weekendRule`** (optional): where a day off goes when the holiday falls at a weekend. `"next-free-weekday"`, the default, is the UK's rule: the next weekday that isn't already a day off. `"nearest-weekday"` is the US rule: Friday for a Saturday, Monday for a Sunday.
-- **`substituteLabel`** (optional): what that day is called, `"substitute day"` unless set. The US set uses `"observed"`.
+- `country`, such as `"UK"`. A holiday kept in every set of a country is shown under the country's name, so Christmas Day is "UK, Ireland and US".
+- `dayOffName`, what a day off is called there: `"bank holiday"`, `"public holiday"` or `"federal holiday"`. Where countries differ, the calendar says "public holiday".
+- `weekendRule` (optional): where a day off goes when the holiday falls at a weekend. `"next-free-weekday"`, the default, is the UK's rule: the next weekday that isn't already a day off. `"nearest-weekday"` is the US rule: Friday for a Saturday, Monday for a Sunday.
+- `substituteLabel` (optional): what that day is called, `"substitute day"` unless set. The US set uses `"observed"`.
 
 Each holiday can also have:
-- **`bankHoliday: true`**, which marks a day off. It gets a flag in the grid rather than a star.
-- **`substituteFrom`**, the year from which a day off at the weekend also gives another day, by the set's `weekendRule`. Ireland's holidays have none: by law they don't move, and employers give a day off within a month, an extra day of leave or an extra day's pay instead.
+- `bankHoliday: true`, which marks a day off. It gets a flag in the grid rather than a star.
+- `substituteFrom`, the year from which a day off at the weekend also gives another day, by the set's `weekendRule`. Ireland's holidays have none: by law they don't move, and employers give a day off within a month, an extra day of leave or an extra day's pay instead.
 
 Any number of sets can be shown at once. A holiday with the same name on the same day in several of them shows once, naming every place it's kept.
 
@@ -101,8 +101,8 @@ What the sets leave out:
 - US closures by executive order, such as Christmas Eve in some years or a national day of mourning. Staff get the day off with pay, but they aren't federal holidays.
 
 Each set is checked against an official list, saved in `tests/fixtures/`:
-- **UK:** GOV.UK's bank holidays (`gov-uk-bank-holidays.json`).
-- **US:** OPM's federal holidays (`opm-federal-holidays.json`, from its iCalendar file, which covers about ten years).
-- **Ireland:** publishes no list a program can read, so the check uses Nager.Date's (`nager-ireland-public-holidays.json`), which lacks the one-off holiday of 18 March 2022. The test knows about that gap.
+- UK: GOV.UK's bank holidays (`gov-uk-bank-holidays.json`).
+- US: OPM's federal holidays (`opm-federal-holidays.json`, from its iCalendar file, which covers about ten years).
+- Ireland: publishes no list a program can read, so the check uses Nager.Date's (`nager-ireland-public-holidays.json`), which lacks the one-off holiday of 18 March 2022. The test knows about that gap.
 
 `npm run holidays:check` fetches the latest lists and runs the test. A weekly GitHub workflow (`.github/workflows/holidays.yml`) does the same and opens a pull request when a list changes. If the test fails there, add the new holiday on a branch of your own (a `date` rule for a one-off, or `moves` for a holiday moved in one year) and merge it, then run the workflow again. Don't push to the workflow's branch, which it rewrites on every run. The workflow needs the repository setting "Allow GitHub Actions to create and approve pull requests".

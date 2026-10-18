@@ -18,9 +18,9 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
 
 ## How the calendar works
 
-- **13 x 28 = 364 days.** Usually the next year starts 364 days later. About one year in six it starts 371 days later, and the extra seven days form a leap week at the end of the year.
-- **The equinox is calculated, not looked up.** It uses Jean Meeus's algorithm (*Astronomical Algorithms*, chapter 27), accurate to about a minute. The start of the year uses the equinox's date in UTC, so the calendar is the same everywhere.
-- **Solar year 2026** runs from Monday 23 March 2026 to Sunday 21 March 2027. Solar 2028 ends with a leap week, 19 to 25 March 2029.
+- 13 x 28 = 364 days. Usually the next year starts 364 days later. About one year in six it starts 371 days later, and the extra seven days form a leap week at the end of the year.
+- The equinox is calculated, not looked up. It uses Jean Meeus's algorithm (*Astronomical Algorithms*, chapter 27), accurate to about a minute. The start of the year uses the equinox's date in UTC, so the calendar is the same everywhere.
+- Solar year 2026 runs from Monday 23 March 2026 to Sunday 21 March 2027. Solar 2028 ends with a leap week, 19 to 25 March 2029.
 
 ## What it does
 
@@ -60,9 +60,9 @@ Run one test file with `npx vitest run tests/unit/core.test.ts` or `npx playwrig
 ## Deployment
 
 The site runs on Cloudflare Workers as static files (`wrangler.jsonc`).
-- **Deploying:** log in once with `npx wrangler login`, then `npm run deploy` builds and deploys.
-- **Security headers:** `public/_headers` sets them, including a strict Content-Security-Policy, so the app uses no inline scripts or styles.
-- **CI:** GitHub Actions runs the type check and all tests on every push and pull request.
+- Deploying: log in once with `npx wrangler login`, then `npm run deploy` builds and deploys.
+- Security headers: `public/_headers` sets them, including a strict Content-Security-Policy, so the app uses no inline scripts or styles.
+- CI: GitHub Actions runs the type check and all tests on every push and pull request.
 
 ## Adding a month name pack
 

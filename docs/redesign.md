@@ -20,13 +20,13 @@ These matter most, because a calendar that is sometimes a day or a week out is w
 
 ### Design and UX
 
-- **Generic look.** A blue-to-purple gradient bar, identical rounded cards and emoji icons. Nothing in it says "sun" or "13 identical months".
-- **Chrome before content.** The header, nav, "Year End Days" panel and four event cards push the calendar into the bottom half on desktop. At 390px it starts most of a screen down.
-- **The main question is hard to answer.** "What's today's solar date?" has no direct answer. The solar page opens on month 1, not today's month.
-- **The calendar's best feature is hidden.** Every month is identical (the 1st is always a Monday, the 28th always a Sunday), but nothing shows or explains that, and there's no year-at-a-glance view.
-- **Confusing names.** Solar months reuse Gregorian names but are offset by about three weeks (solar October is 5 Oct to 1 Nov 2026).
-- **Debug-style text.** "March / (1/13)", "Month(s) 7-8/13", and "SOLAR:" repeated in all 31 Gregorian cells. Month names truncate on mobile ("Septembe"), and there's an empty grey band where a sixth week row would be.
-- **Dark mode flashes white on load and ignores the OS setting.**
+- Generic look. A blue-to-purple gradient bar, identical rounded cards and emoji icons. Nothing in it says "sun" or "13 identical months".
+- Chrome before content. The header, nav, "Year End Days" panel and four event cards push the calendar into the bottom half on desktop. At 390px it starts most of a screen down.
+- The main question is hard to answer. "What's today's solar date?" has no direct answer. The solar page opens on month 1, not today's month.
+- The calendar's best feature is hidden. Every month is identical (the 1st is always a Monday, the 28th always a Sunday), but nothing shows or explains that, and there's no year-at-a-glance view.
+- Confusing names. Solar months reuse Gregorian names but are offset by about three weeks (solar October is 5 Oct to 1 Nov 2026).
+- Debug-style text. "March / (1/13)", "Month(s) 7-8/13", and "SOLAR:" repeated in all 31 Gregorian cells. Month names truncate on mobile ("Septembe"), and there's an empty grey band where a sixth week row would be.
+- Dark mode flashes white on load and ignores the OS setting.
 
 ### Accessibility (WCAG 2.2 AA)
 
@@ -40,7 +40,7 @@ These matter most, because a calendar that is sometimes a day or a week out is w
 - CSS is duplicated between `calendar-styles.css` and inline `<style>` blocks, with no spacing or type scale.
 - Date logic mixes UTC and local `Date` methods.
 - Tests only check that pages load. No conversion logic is tested, and the e2e config points at a host that has to be set up by hand.
-- **Performance** isn't a real problem at this size. Two thirds of the 163 KB payload is the equinox JSON, though, and every month is rendered up front and then hidden. The gains to chase are accuracy and payload, not render speed.
+- Performance isn't a real problem at this size. Two thirds of the 163 KB payload is the equinox JSON, though, and every month is rendered up front and then hidden. The gains to chase are accuracy and payload, not render speed.
 
 ### Worth keeping
 
@@ -69,19 +69,19 @@ These matter most, because a calendar that is sometimes a day or a week out is w
 
 ### Tokens (starting point, to be confirmed in the prototype)
 
-- **Colour:**
+- Colour:
   - Paper `#F6F7F9`, a cool off-white.
   - Ink `#1D2742`, a deep indigo printing-ink tone, used for text and today's cell.
   - Muted `#566079`, for Gregorian dates (must reach at least 4.5:1 on paper).
   - Rule `#CDD2DC`, for grid lines.
-  - **Month hues:** 13 colours stepped evenly around an OKLCH wheel (360/13, about 27.7 degrees apart), all at the same lightness and chroma: 13 months around the sun. They're used for the month strip, the year view and a thin band on the active month. Text is never set in these hues, and colour is never the only cue.
+  - Month hues: 13 colours stepped evenly around an OKLCH wheel (360/13, about 27.7 degrees apart), all at the same lightness and chroma: 13 months around the sun. They're used for the month strip, the year view and a thin band on the active month. Text is never set in these hues, and colour is never the only cue.
   - Dark mode swaps paper and ink to a deep indigo night (`#161C2E`) and keeps the same hues, re-tuned for contrast.
-- **Type:**
+- Type:
   - *Big Shoulders Display* for the numerals 1 to 28 and the month name. Being tall and condensed, it keeps the numerals large in a seven-column grid on a 390px phone, and it has a civic, wall-calendar feel.
   - *Andika* for everything else. The prototype replaced Atkinson Hyperlegible Next, which lacks `ō` and `ǣ`. Andika is SIL's legibility-first typeface and covers every letter in every pack. Big Shoulders lacks only `ǣ`, so display names use `Æ`, and the full spelling appears in Andika in the meaning panel.
   - Bodoni Moda numerals are the fallback option to try in the prototype.
   - The scale follows *The Elements of Typographic Style*, sentence case throughout.
-- **Layout:** left-aligned, one column up to about 1040px wide, with the day panel beside the grid on desktop and as a bottom sheet on mobile. The calendar is the first thing below the one-line answer to "what's today?".
+- Layout: left-aligned, one column up to about 1040px wide, with the day panel beside the grid on desktop and as a bottom sheet on mobile. The calendar is the first thing below the one-line answer to "what's today?".
 
 ### Wireframes
 
@@ -138,9 +138,9 @@ Gregorian date of the year at once. It prints well on one A4 landscape page.
 
 All of these ship as switchable **name packs** (section 5). There are eleven:
 
-- **Gregorian names:** the names the calendar has always used, and the default.
-- **Seven from history:** Anglo-Saxon, Old Norse, Roman, Gaulish, Persian, Egyptian (ancient) and Coptic.
-- **Three invented:** Nature, Latin numbers and Sky.
+- Gregorian names: the names the calendar has always used, and the default.
+- Seven from history: Anglo-Saxon, Old Norse, Roman, Gaulish, Persian, Egyptian (ancient) and Coptic.
+- Three invented: Nature, Latin numbers and Sky.
 
 **Gregorian names** are March to February, then Sol. Their meanings:
 - March: Mars, god of war
@@ -178,7 +178,7 @@ Spans are for solar 2026. The historical sets were checked against the sources l
 | Leap week | | Leap week | Sumarauki | Leap week | Leap week |
 
 **Anglo-Saxon** (Bede, *The Reckoning of Time*, AD 725)
-- **Meanings:**
+- Meanings:
   1. Eostre's month (Easter is named after it)
   2. Three-milkings, because cows were milked three times a day
   3. Before Litha
@@ -194,38 +194,38 @@ Spans are for solar 2026. The historical sets were checked against the sources l
   13. Hretha's month
 
   *Litha* is usually read as "gentle", for calm summer seas.
-- **Fit:** every name lands in its historical season.
-- **The 13th month:** Bede says that in 13-month years "three months together bore the name Litha", and calls such a year *Thrilithi*. He doesn't give the middle one its own name, so it's plain *Līþa* here.
-- **Spellings:** the before/after forms (*Ǣrra*, *Æftera*) are later conventions. Bede wrote *Litha* and *Giuli* for both.
-- **Modern forms:** Eostermonth, Thrimilch, Fore-Litha, Litha, After-Litha, Weedmonth, Holymonth, Winterfilth, Blotmonth, Fore-Yule, After-Yule, Solmonth, Rethemonth.
-- **Tolkien:** the Shire calendar in *The Lord of the Rings* is built on these names (Thrimidge, Forelithe, Afterlithe, Wedmath, Halimath, Winterfilth, Blotmath, Foreyule, Afteryule, Solmath, Rethe).
+- Fit: every name lands in its historical season.
+- The 13th month: Bede says that in 13-month years "three months together bore the name Litha", and calls such a year *Thrilithi*. He doesn't give the middle one its own name, so it's plain *Līþa* here.
+- Spellings: the before/after forms (*Ǣrra*, *Æftera*) are later conventions. Bede wrote *Litha* and *Giuli* for both.
+- Modern forms: Eostermonth, Thrimilch, Fore-Litha, Litha, After-Litha, Weedmonth, Holymonth, Winterfilth, Blotmonth, Fore-Yule, After-Yule, Solmonth, Rethemonth.
+- Tolkien: the Shire calendar in *The Lord of the Rings* is built on these names (Thrimidge, Forelithe, Afterlithe, Wedmath, Halimath, Winterfilth, Blotmath, Foreyule, Afteryule, Solmath, Rethe).
 
 **Old Norse / Icelandic** (misseristal)
-- **Closest match to this calendar's rules.** The Icelandic year was 364 days. A leap week called *sumarauki* ("summer addition") was added every few years to make 371 days, the same rule this calendar uses. Months also started on fixed weekdays.
-- **Differences:**
+- Closest match to this calendar's rules. The Icelandic year was 364 days. A leap week called *sumarauki* ("summer addition") was added every few years to make 371 days, the same rule this calendar uses. Months also started on fixed weekdays.
+- Differences:
   - Iceland had 12 months of 30 days plus 4 extra nights.
   - Its leap week went in midsummer, not at the end of the year.
   - Here, months 1 to 4 and 10 to 13 line up within about a week. Months 5 to 9 run about two weeks early.
-- **The 13th month:** *Frermánuður* ("frost month") is from Snorri's *Prose Edda*, where it's another name for the Ýlir period.
-- **Meanings:** lone month; Harpa (origin unknown, possibly a woman's name); Skerpla (unknown); sun month; hay-work month; "two month" (unclear); autumn month; slaughter month; frost month; Yule month; suet-sucking month; Þorri (unknown, a midwinter figure); Góa (Þorri's daughter in the sagas).
+- The 13th month: *Frermánuður* ("frost month") is from Snorri's *Prose Edda*, where it's another name for the Ýlir period.
+- Meanings: lone month; Harpa (origin unknown, possibly a woman's name); Skerpla (unknown); sun month; hay-work month; "two month" (unclear); autumn month; slaughter month; frost month; Yule month; suet-sucking month; Þorri (unknown, a midwinter figure); Góa (Þorri's daughter in the sagas).
 
 **Roman** (before Julius Caesar)
-- **Start in March:** the Roman year began in March, which is why September means "seventh".
-- **Quintilis and Sextilis** were the original fifth and sixth months. They were later renamed July and August.
-- **The 13th month:** *Mercedonius* (also called *Intercalaris*) was Rome's leap month. It was inserted after 23 February in some years, which is about where month 13 starts here.
-- **Downside:** Martius to Februarius are the Latin forms of the Gregorian names, three weeks out of step, which is the confusion the current names have.
+- Start in March: the Roman year began in March, which is why September means "seventh".
+- Quintilis and Sextilis were the original fifth and sixth months. They were later renamed July and August.
+- The 13th month: *Mercedonius* (also called *Intercalaris*) was Rome's leap month. It was inserted after 23 February in some years, which is about where month 13 starts here.
+- Downside: Martius to Februarius are the Latin forms of the Gregorian names, three weeks out of step, which is the confusion the current names have.
 
 **Gaulish** (the Coligny calendar)
-- **What it is:** a bronze tablet from about the 2nd century AD, found in France in 1897. It is the only long record of a pre-Roman Celtic calendar.
-- **Meanings:** mostly scholarly guesses. *Giamonios* "winter" is the best accepted, and *Equos* "horse" and *Elembiuios* "stag" are plausible.
-- **Placement is a choice.** Nobody knows where *Samonios* fell in the year, so putting Giamonios in November here is a choice, not a fact.
-- **The 13th month:** *Quimonios* is one of the calendar's two leap months.
+- What it is: a bronze tablet from about the 2nd century AD, found in France in 1897. It is the only long record of a pre-Roman Celtic calendar.
+- Meanings: mostly scholarly guesses. *Giamonios* "winter" is the best accepted, and *Equos* "horse" and *Elembiuios* "stag" are plausible.
+- Placement is a choice. Nobody knows where *Samonios* fell in the year, so putting Giamonios in November here is a choice, not a fact.
+- The 13th month: *Quimonios* is one of the calendar's two leap months.
 
 ### Persian and Egyptian
 
 Neither had a regular 13-month calendar.
-- **Persian:** the modern Persian, Zoroastrian and Achaemenid calendars all had 12 months. A 13th month was only added now and then to keep in step.
-- **Egyptian:** the civil year was 12 months of 30 days plus 5 extra days, for 365. Only its Christian descendants, the Coptic and Ethiopian calendars, count those 5 days as a "little" 13th month.
+- Persian: the modern Persian, Zoroastrian and Achaemenid calendars all had 12 months. A 13th month was only added now and then to keep in step.
+- Egyptian: the civil year was 12 months of 30 days plus 5 extra days, for 365. Only its Christian descendants, the Coptic and Ethiopian calendars, count those 5 days as a "little" 13th month.
 
 | # | 2026 span | Persian | Egyptian (ancient) | Coptic |
 |---|---|---|---|---|
@@ -245,18 +245,18 @@ Neither had a regular 13-month calendar.
 | Leap week | | Gatha days | Leap week | Leap week |
 
 **Persian** (modern Solar Hijri names)
-- **Same anchor as this calendar:** the Persian year starts at the March equinox (Nowruz). The old README described these names.
-- **Origins:** each name comes from an Avestan spirit or idea. In order: guardian spirits, best truth, wholeness, Sirius the rain-star, immortality, desirable dominion, covenant (Mithra), the waters, fire, the Creator, good mind, holy devotion.
-- **The 13th month:** *Bāgayādiš*, "worship of the god" (perhaps Mithra; the meaning is uncertain), is the Old Persian month that fell near the autumn equinox. Putting it at slot 7 keeps every month within about two weeks of its season.
-- **Leap week:** named after the Zoroastrian *Gatha days*, the five extra days at the end of the year, also called *panjeh*, "the five".
+- Same anchor as this calendar: the Persian year starts at the March equinox (Nowruz). The old README described these names.
+- Origins: each name comes from an Avestan spirit or idea. In order: guardian spirits, best truth, wholeness, Sirius the rain-star, immortality, desirable dominion, covenant (Mithra), the waters, fire, the Creator, good mind, holy devotion.
+- The 13th month: *Bāgayādiš*, "worship of the god" (perhaps Mithra; the meaning is uncertain), is the Old Persian month that fell near the autumn equinox. Putting it at slot 7 keeps every month within about two weeks of its season.
+- Leap week: named after the Zoroastrian *Gatha days*, the five extra days at the end of the year, also called *panjeh*, "the five".
 
 **Egyptian, ancient** (three seasons of four months)
-- **Seasons:** *Akhet* (inundation), *Peret* (emergence, growth) and *Shemu* (harvest). The ideal year began in midsummer with the rising of Sirius, which heralded the Nile flood. That puts Shemu around March to July.
-- **The 13th month:** slot 5 is *Heriu Renpet*, "those upon the year". These were the five extra days at year end, celebrated as the birthdays of Osiris, Horus, Set, Isis and Nephthys. Here they stretch to a full 28-day month.
+- Seasons: *Akhet* (inundation), *Peret* (emergence, growth) and *Shemu* (harvest). The ideal year began in midsummer with the rising of Sirius, which heralded the Nile flood. That puts Shemu around March to July.
+- The 13th month: slot 5 is *Heriu Renpet*, "those upon the year". These were the five extra days at year end, celebrated as the birthdays of Osiris, Horus, Set, Isis and Nephthys. Here they stretch to a full 28-day month.
 
 **Coptic** (the later Egyptian month names, still used by the Coptic Church)
-- **Origins:** most names come from gods and festivals: Thout from Thoth, Hathor, Pashons from Khonsu, Parmouti from Renenutet. Several meanings are uncertain.
-- **The 13th month:** *Nasie* (Pi Kogi Enavot, "the little month") is the real 5 or 6-day 13th month, which falls in early September, matching slot 7.
+- Origins: most names come from gods and festivals: Thout from Thoth, Hathor, Pashons from Khonsu, Parmouti from Renenutet. Several meanings are uncertain.
+- The 13th month: *Nasie* (Pi Kogi Enavot, "the little month") is the real 5 or 6-day 13th month, which falls in early September, matching slot 7.
 
 **Caveat:** some of these meanings came from the researcher's background knowledge, not from fetched sources. They get checked before release, like every pack.
 
@@ -296,9 +296,9 @@ Neither had a regular 13-month calendar.
 | 12 | 25 Jan to 21 Feb | Snow | Duodecimus | Capricornus |
 | 13 | 22 Feb to 21 Mar | Thaw | Tertius Decimus | Aquarius |
 
-- **A. Nature:** easy to remember, and "Light" and "Dark" hold the solstices. It assumes northern-hemisphere seasons.
-- **B. Latin numbers:** the position is in the name, and there's a nice story. (Corrected on 17 Oct 2026 to masculine forms, which agree with *mensis*, month, as Roman month names did; *tredecimus* isn't classical, so 13 is Tertius Decimus.) The Roman year began in March, which is why September means "seventh". This calendar also starts in March, so Septimus to Decimus land almost exactly on September to December.
-- **C. Sky:** the sun really does cross 13 constellations along the ecliptic, and these names track roughly where it is, within a few weeks. The downside is the association with astrology.
+- A. Nature: easy to remember, and "Light" and "Dark" hold the solstices. It assumes northern-hemisphere seasons.
+- B. Latin numbers: the position is in the name, and there's a nice story. (Corrected on 17 Oct 2026 to masculine forms, which agree with *mensis*, month, as Roman month names did; *tredecimus* isn't classical, so 13 is Tertius Decimus.) The Roman year began in March, which is why September means "seventh". This calendar also starts in March, so Septimus to Decimus land almost exactly on September to December.
+- C. Sky: the sun really does cross 13 constellations along the ecliptic, and these names track roughly where it is, within a few weeks. The downside is the association with astrology.
 
 In the invented sets, the leap week is called "Leap week".
 
@@ -323,12 +323,12 @@ tests/unit/    Vitest
 tests/e2e/     Playwright, with webServer = vite preview
 ```
 
-- **All dates are integer day numbers.** A `Date` object is only used to read "now" and to format times. That removes the timezone and clock-change bugs at the root.
-- **Equinoxes and solstices are computed.** Meeus takes microseconds and is accurate to about a minute, so there's no JSON, no fetch and no fallback. The supported range is 1600 to 2400, where delta-T is well modelled. 1000 to 3000 is possible but less exact.
-- **Sun and moon extras** (rise and set times, moon phases) come from `astronomy-engine`, lazy-loaded only when the day panel needs them. Check its size and licence before adopting it. The core stays small.
-- **URLs** use query parameters, so any static host works. `?date=YYYY-MM-DD` is the canonical day link. The old page URLs aren't kept. If an old domain still gets traffic, a Cloudflare redirect rule can send it to the new site.
-- **Theme:** a tiny inline script in `<head>` sets the theme before the page paints, and the OS setting is the default.
-- **Accessibility:** follows the WAI-ARIA date-grid pattern. Arrow keys move by day, Page Up and Page Down by month, and focus moves with a roving tabindex. Today gets `aria-current="date"`, and each cell's accessible name gives both dates. axe runs in the e2e tests.
+- All dates are integer day numbers. A `Date` object is only used to read "now" and to format times. That removes the timezone and clock-change bugs at the root.
+- Equinoxes and solstices are computed. Meeus takes microseconds and is accurate to about a minute, so there's no JSON, no fetch and no fallback. The supported range is 1600 to 2400, where delta-T is well modelled. 1000 to 3000 is possible but less exact.
+- Sun and moon extras (rise and set times, moon phases) come from `astronomy-engine`, lazy-loaded only when the day panel needs them. Check its size and licence before adopting it. The core stays small.
+- URLs use query parameters, so any static host works. `?date=YYYY-MM-DD` is the canonical day link. The old page URLs aren't kept. If an old domain still gets traffic, a Cloudflare redirect rule can send it to the new site.
+- Theme: a tiny inline script in `<head>` sets the theme before the page paints, and the OS setting is the default.
+- Accessibility: follows the WAI-ARIA date-grid pattern. Arrow keys move by day, Page Up and Page Down by month, and focus moves with a roving tabindex. Today gets `aria-current="date"`, and each cell's accessible name gives both dates. axe runs in the e2e tests.
 
 ### Name packs: a plugin model
 
@@ -393,17 +393,17 @@ Each month has:
 
 ### Phases (one PR each, on a `redesign` branch)
 
-0. **Prototype** (built 17 Oct 2026 on the `redesign` branch). A minimal core (days, astro, solar), plus static month view, year view and day panel in light and dark, at desktop and mobile sizes, with real dates. It includes the name-pack switcher and the meaning panel, with two packs. Screenshots for sign-off. You confirm the typefaces and the default pack here.
-1. **Core library** (done 17 Oct 2026). Built with the unit tests above. astronomy-engine stands in for the published table, and agrees to within 2 minutes.
-2. **App shell.** Vite and TypeScript, tokens, theme, router, month view opening on today, day panel and keyboard navigation. e2e with `webServer` and the time-zone matrix (set up early, during the cleanup).
+0. Prototype (built 17 Oct 2026 on the `redesign` branch). A minimal core (days, astro, solar), plus static month view, year view and day panel in light and dark, at desktop and mobile sizes, with real dates. It includes the name-pack switcher and the meaning panel, with two packs. Screenshots for sign-off. You confirm the typefaces and the default pack here.
+1. Core library (done 17 Oct 2026). Built with the unit tests above. astronomy-engine stands in for the published table, and agrees to within 2 minutes.
+2. App shell. Vite and TypeScript, tokens, theme, router, month view opening on today, day panel and keyboard navigation. e2e with `webServer` and the time-zone matrix (set up early, during the cleanup).
    - Status, 17 Oct 2026: done apart from the first deploy.
    - Added: self-hosted fonts, the phone header and Back/Forward support.
    - Checks: axe accessibility tests (WCAG 2.2 AA, light and dark) and a strict Content-Security-Policy in `public/_headers`, which the e2e suite runs under.
    - Infrastructure: CI in GitHub Actions and `wrangler.jsonc` for Workers with static assets.
    - Waiting: the first deploy needs `npx wrangler login`. After that, connect the GitHub repo with Workers Builds (Cloudflare dashboard) for automatic deploys and per-PR preview links, with no tokens to manage.
-3. **Year view, converter and print styles.** Status: done on 17 Oct 2026. There are now 11 packs, each fact-checked by a separate reviewer; a Go to a date converter; month and year printing; and the pack template and guide. Print output is checked with Playwright's PDF export, which also replaces the hand-made PDFs. Every name pack gets its full meanings, each checked against its sources. The pack template and `docs/name-packs.md` land in this phase too.
-4. **Extras.** Status: done on 17 Oct 2026. Sunrise and sunset; the ICS download and a `/feed.ics` Worker, tested locally against the built bundle; and the offline PWA. The feed goes live with the first deploy. Sun and moon data (location is opt-in and stored only in the browser), ICS download per year plus a subscribable feed, and the offline PWA.
-5. **Launch.** Deploy to Cloudflare. The cleanup planned for this phase was done early: the original app was removed, and the README and `CLAUDE.md` were rewritten, on 17 Oct 2026.
+3. Year view, converter and print styles. Status: done on 17 Oct 2026. There are now 11 packs, each fact-checked by a separate reviewer; a Go to a date converter; month and year printing; and the pack template and guide. Print output is checked with Playwright's PDF export, which also replaces the hand-made PDFs. Every name pack gets its full meanings, each checked against its sources. The pack template and `docs/name-packs.md` land in this phase too.
+4. Extras. Status: done on 17 Oct 2026. Sunrise and sunset; the ICS download and a `/feed.ics` Worker, tested locally against the built bundle; and the offline PWA. The feed goes live with the first deploy. Sun and moon data (location is opt-in and stored only in the browser), ICS download per year plus a subscribable feed, and the offline PWA.
+5. Launch. Deploy to Cloudflare. The cleanup planned for this phase was done early: the original app was removed, and the README and `CLAUDE.md` were rewritten, on 17 Oct 2026.
 
 ## 6. Hosting
 
@@ -453,14 +453,14 @@ Requested: UK bank holidays plus Easter, and festival dates shown plainly when a
 - Feed and download: holidays are included when chosen (`/feed.ics?names=…&holidays=uk-england-wales`).
 
 **4. Keeping them up to date.** Rules produce every year automatically, so only one-offs (jubilees, coronations, funerals, moved days) ever need adding. The government announces those months ahead.
-- **Snapshot test:** `tests/fixtures/gov-uk-bank-holidays.json` is a copy of https://www.gov.uk/bank-holidays.json (Open Government Licence; currently 2019 to 2028 for all three regions). A unit test checks the rules produce exactly those dates. The tests never touch the network.
-- **`npm run holidays:check`:** fetches the live file and lists any dates the rules miss or add.
-- **Weekly GitHub Action:** once the repo is pushed, it fetches the live file. If it has changed, it opens a pull request that updates the snapshot. The snapshot test then fails on that pull request until someone adds the one-off to the region's JSON. Merging deploys it. The app updates itself through the service worker, and feed subscribers get it within a day.
-- **Earlier one-offs:** about ten since 1978, such as the 1981 royal wedding and the millennium. They're checked against GOV.UK from 2019 and against the published proclamations before that.
-- **The historical packs' festivals:** they follow fixed traditions and need no updates.
-- **Optional accuracy fixes in the same pass:**
-  - **Coptic:** the dates follow the Julian calendar and shift a day in 2100. A `coptic` rule would keep them right in every supported year, and put Nayrouz on 12 September in the years it moves.
-  - **Persian:** Nowruz could use Iran's Tehran-noon rule.
+- Snapshot test: `tests/fixtures/gov-uk-bank-holidays.json` is a copy of https://www.gov.uk/bank-holidays.json (Open Government Licence; currently 2019 to 2028 for all three regions). A unit test checks the rules produce exactly those dates. The tests never touch the network.
+- `npm run holidays:check`: fetches the live file and lists any dates the rules miss or add.
+- Weekly GitHub Action: once the repo is pushed, it fetches the live file. If it has changed, it opens a pull request that updates the snapshot. The snapshot test then fails on that pull request until someone adds the one-off to the region's JSON. Merging deploys it. The app updates itself through the service worker, and feed subscribers get it within a day.
+- Earlier one-offs: about ten since 1978, such as the 1981 royal wedding and the millennium. They're checked against GOV.UK from 2019 and against the published proclamations before that.
+- The historical packs' festivals: they follow fixed traditions and need no updates.
+- Optional accuracy fixes in the same pass:
+  - Coptic: the dates follow the Julian calendar and shift a day in 2100. A `coptic` rule would keep them right in every supported year, and put Nayrouz on 12 September in the years it moves.
+  - Persian: Nowruz could use Iran's Tehran-noon rule.
 
 **Order of work:** rule engine and tests; holiday data with the snapshot test; fact-check of one-offs; menu setting and lists; feed; upkeep script and workflow; docs.
 
