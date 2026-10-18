@@ -47,7 +47,7 @@ npx playwright test --project=chromium -g "leap"    # one e2e test, one project
   - `MonthView` builds its 28 cells once and only updates labels, marks and the month colour when the month changes.
   - `YearView` is a 28-row by 13-column table (14 columns in a leap-week year). It shrinks long month names to fit rather than breaking them, and re-measures after web fonts load.
   - On screens narrower than 980px the day panel is a sheet fixed to the bottom; its Details button (`aria-expanded`) opens the rest, and Escape or tabbing away closes it.
-  - `<main>` starts with `is-loading` (hidden) and `start()` removes it after the first render, so the page doesn't shift as it fills in.
+  - `<main>` starts with `is-loading` (hidden) and `start()` removes it after the first render, so the page doesn't shift as it fills in. The first render doesn't wait for the other packs' festivals; they load alongside the chosen names and a second render adds them.
   - `main.ts` holds state (selected day number, view, pack) and keeps the URL in step (`?date=YYYY-MM-DD&names=…&view=year`).
 - **Styles** live in `src/styles/app.css`.
   - Tokens sit on `:root`, and the dark theme is redefined under `prefers-color-scheme` (guarded by `:not([data-theme='light'])`) and under `[data-theme='dark']`.
@@ -55,7 +55,10 @@ npx playwright test --project=chromium -g "leap"    # one e2e test, one project
   - The typefaces are self-hosted through Fontsource: Big Shoulders (variable, with an optical-size axis) for numerals and month names, and Andika for everything else. Big Shoulders lacks `ǣ`, so pack `name` fields use `Æ` and put the full spelling in `original`.
 - **No inline scripts or `style` attributes.** `public/_headers` sends a strict Content-Security-Policy (`script-src 'self'; style-src 'self'`), and an e2e test runs the app under it. Set styles through classes or the CSSOM (`element.style`), never `style="…"` in HTML strings. The theme is applied before first paint by `public/theme.js`, a plain file Vite copies as-is.
 - **Hosting:** Cloudflare Workers with static assets (`wrangler.jsonc` serves `dist/`). Everything in `public/` (`_headers`, `theme.js`, `favicon.svg`) is copied to `dist/` unchanged. `.github/workflows/ci.yml` runs the type check, unit tests and e2e tests on every push and pull request.
-  - Live at https://solar-calendar.solar-calendar.workers.dev. Workers Builds (connected in the Cloudflare dashboard) deploys `main` on every merge, and builds a preview of other branches with `wrangler preview`, which needs the empty `previews` block in `wrangler.jsonc`.
+  - Live at https://solar.dealmobile.co.uk, a custom domain set up in the Cloudflare dashboard rather than in `wrangler.jsonc`. https://solar-calendar.solar-calendar.workers.dev still works and must stay on, because calendar subscriptions use its feed URL. Workers Builds (connected in the Cloudflare dashboard) deploys `main` on every merge, and builds a preview of other branches with `wrangler preview`, which needs the empty `previews` block in `wrangler.jsonc`.
+  - `observability` in `wrangler.jsonc` keeps the feed Worker's logs in the dashboard.
+  - `index.html` has Open Graph tags for link previews. Their image, `public/social.png`, was rendered once from `scripts/social-image.html` (the command is in that file).
+  - Dependabot (`.github/dependabot.yml`) opens weekly pull requests for npm packages and GitHub Actions. The workflows pin actions to commit SHAs with a version comment, and Dependabot updates both.
   - GitHub Pages is switched off for the repo; the old app used it.
 - **History:** changing view, year or month pushes a history entry; days within a month replace it. The `popstate` handler re-reads the URL.
 - **Calendar feed:** `src/feed/ics.ts` builds RFC 5545 text (CRLF, 75-octet folding, escaping), and the unit tests parse it with ical.js.
