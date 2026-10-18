@@ -1,6 +1,6 @@
 // Cloudflare Workers with static assets: the built site in dist/ is served as
-// files, and only /feed.ics runs the Worker (src/worker.ts, built into
-// dist-worker/ by `npm run build`).
+// files, and only /feed.ics and /today.svg run the Worker (src/worker.ts,
+// built into dist-worker/ by `npm run build`).
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "solar-calendar",
@@ -8,7 +8,7 @@
   "main": "dist-worker/worker.js",
   "assets": {
     "directory": "./dist",
-    "run_worker_first": ["/feed.ics"]
+    "run_worker_first": ["/feed.ics", "/today.svg"]
   },
   // Keeps the feed Worker's logs and errors, under Workers & Pages, solar-calendar,
   // Logs in the Cloudflare dashboard. The custom domain is set up there too, not here

@@ -62,9 +62,9 @@ npx playwright test --project=chromium -g "leap"    # one e2e test, one project
   - GitHub Pages is switched off for the repo; the old app used it.
 - **History:** changing view, year or month pushes a history entry; days within a month replace it. The `popstate` handler re-reads the URL.
 - **Calendar feed:** `src/feed/ics.ts` builds RFC 5545 text (CRLF, 75-octet folding, escaping), and the unit tests parse it with ical.js.
-  - `src/worker.ts` serves `/feed.ics` and bundles every pack with an eager `import.meta.glob`. It is built by `vite.worker.config.mts`, because wrangler's bundler can't do the glob.
-  - `wrangler.jsonc` routes only `/feed.ics` to it (`run_worker_first`).
-  - The dev server (source) and the preview server (built bundle) both answer `/feed.ics` through a plugin in `vite.config.mts`, so the e2e tests cover the real Worker.
+  - `src/worker.ts` serves `/feed.ics` and `/today.svg` (a badge with today's solar date, `src/feed/badge.ts`, in UTC or `?tz=`) and bundles every pack with an eager `import.meta.glob`. It is built by `vite.worker.config.mts`, because wrangler's bundler can't do the glob.
+  - `wrangler.jsonc` routes only those two paths to it (`run_worker_first`).
+  - The dev server (source) and the preview server (built bundle) both answer them through a plugin in `vite.config.mts`, so the e2e tests cover the real Worker.
 - **Sun:** `src/sky/sun.ts` uses astronomy-engine's `SearchRiseSet` for the place's own day, in the place's time zone from `@photostructure/tz-lookup` (lazy-loaded), and handles polar day and night. The place lives in `localStorage.location`, either from geolocation rounded to 2 decimals or typed in. On a first visit, `#location-notice` explains why and offers "Use my location" (the only thing that triggers the browser's permission prompt) or "No thanks"; declining, a blocked prompt or forgetting the place sets `localStorage.locationPrompt` to `declined`, so it isn't shown again. `_headers` allows `geolocation=(self)`.
 - **Lazy loads:** every lazy load (packs, the moon, the sun) has a `.catch` that shows a message, so a failed import never surfaces as an unhandled rejection.
 - **Offline:** `vite-plugin-pwa` precaches the app, all packs, astronomy-engine and the Latin-script fonts.

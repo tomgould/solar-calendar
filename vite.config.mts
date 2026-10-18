@@ -6,10 +6,11 @@ import { defineConfig } from 'vitest/config';
 
 type Fetch = (request: Request) => Response | Promise<Response>;
 
-const serveFeed = (load: () => Promise<Fetch>): Connect.NextHandleFunction => async (req, res, next) => {
-  if (!req.url?.startsWith('/feed.ics')) return next();
+const serveWorker = (load: () => Promise<Fetch>): Connect.NextHandleFunction => async (req, res, next) => {
+  const path = req.url;
+  if (!path || !/^\/(feed\.ics|today\.svg)(\?|$)/.test(path)) return next();
   try {
-    const response = await (await load())(new Request(new URL(req.url, 'http://localhost')));
+    const response = await (await load())(new Request(new URL(path, 'http://localhost')));
     res.statusCode = response.status;
     response.headers.forEach((value, key) => res.setHeader(key, value));
     res.end(await response.text());
@@ -19,15 +20,15 @@ const serveFeed = (load: () => Promise<Fetch>): Connect.NextHandleFunction => as
   }
 };
 
-// Answers /feed.ics locally with the same code Cloudflare runs: the source in
-// development, the built Worker bundle in preview (which the e2e tests use)
-const feed = (): Plugin => ({
-  name: 'solar-calendar-feed',
+// Answers /feed.ics and /today.svg locally with the same code Cloudflare runs:
+// the source in development, the built Worker bundle in preview (which the e2e tests use)
+const worker = (): Plugin => ({
+  name: 'solar-calendar-worker',
   configureServer(server) {
-    server.middlewares.use(serveFeed(async () => (await server.ssrLoadModule('/src/worker.ts')).default.fetch));
+    server.middlewares.use(serveWorker(async () => (await server.ssrLoadModule('/src/worker.ts')).default.fetch));
   },
   configurePreviewServer(server) {
-    server.middlewares.use(serveFeed(async () => (await import(pathToFileURL(resolve('dist-worker/worker.js')).href)).default.fetch));
+    server.middlewares.use(serveWorker(async () => (await import(pathToFileURL(resolve('dist-worker/worker.js')).href)).default.fetch));
   },
 });
 
@@ -35,7 +36,7 @@ export default defineConfig({
   // Relative asset URLs, so the build works from any path (previews, sub-folders)
   base: './',
   plugins: [
-    feed(),
+    worker(),
     // Works offline after the first visit: precaches the app, every name pack,
     // the moon library and the Latin-script fonts
     VitePWA({
@@ -63,7 +64,7 @@ export default defineConfig({
         // social.png is only for link previews
         globIgnores: ['**/*cyrillic*', '**/*vietnamese*', '**/social.png'],
         navigateFallback: 'index.html',
-        navigateFallbackDenylist: [/\/feed\.ics/],
+        navigateFallbackDenylist: [/\/feed\.ics/, /\/today\.svg/],
         // Take control of the page that installed it, so the first visit already works offline
         clientsClaim: true,
       },
