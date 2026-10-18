@@ -1,11 +1,11 @@
 import type { DayNumber } from '../core/days';
 import { SKY_EVENT_NAMES, type SkyEvent } from '../core/sky';
 import { toSolar, yearLength } from '../core/solar';
-import { type FestivalDay, festivalLabel } from '../names/festivals';
+import { type FestivalDay, festivalLabel, festivalMeaning } from '../names/festivals';
 import type { NamePack } from '../names/schema';
 import type { SunTimes } from '../sky/sun';
 import { LOCALE, daysAway, escapeHtml, eventTime, gregorianLong, solarLong } from './format';
-import { festivalKind, sourceTitle } from './festivals';
+import { festivalKind, kindOrder, sourceTitle } from './festivals';
 import { chevron } from './icons';
 import { hearButton } from './speech';
 
@@ -35,17 +35,18 @@ export function sunText({ rise, set, polar }: SunTimes, timeZone?: string | null
 }
 
 export function renderDayPanel(root: HTMLElement, { selected, today, pack, events, next, festivals }: DayPanelState): void {
-  // One row each for bank holidays, other holidays and festivals; where one comes
-  // from somewhere other than the chosen names, say where
+  // One row each for days off (bank holidays, federal holidays and so on), other
+  // holidays and festivals; where one comes from somewhere other than the chosen names, say where
   const festivalText = (entry: FestivalDay) => {
     const { festival, source } = entry;
     return `
     <p class="festival"><strong lang="${escapeHtml(source.lang)}">${escapeHtml(festivalLabel(entry))}</strong>${source.id === pack.id ? '' : ` <span class="festival-source">(${escapeHtml(sourceTitle(entry))})</span>`}, ${escapeHtml(festival.gloss)}.${festival.say ? ` <span class="say"><span class="say-label">Say</span> ${escapeHtml(festival.say)}</span>. ${hearButton(source, festival)}` : ''}
-    ${escapeHtml(festival.meaning)}</p>`;
+    ${escapeHtml(festivalMeaning(entry))}</p>`;
   };
-  const festivalRow = (['Bank holiday', 'Holiday', 'Festival'] as const).map((kind) => {
+  const kinds = [...new Set(festivals.map(festivalKind))].sort((a, b) => kindOrder(a) - kindOrder(b));
+  const festivalRow = kinds.map((kind) => {
     const entries = festivals.filter((entry) => festivalKind(entry) === kind);
-    return entries.length === 0 ? '' : `<div><dt>${kind}${entries.length > 1 ? 's' : ''}</dt><dd>${entries.map(festivalText).join('')}</dd></div>`;
+    return entries.length === 0 ? '' : `<div><dt>${escapeHtml(kind)}${entries.length > 1 ? 's' : ''}</dt><dd>${entries.map(festivalText).join('')}</dd></div>`;
   }).join('');
   const date = toSolar(selected);
   const nextWhen = selected === today ? daysAway(today, next.day) : `${next.day - selected} days later`;

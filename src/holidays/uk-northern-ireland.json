@@ -1,6 +1,8 @@
 {
   "id": "uk-northern-ireland",
   "title": "Northern Ireland",
+  "country": "UK",
+  "dayOffName": "bank holiday",
   "description": "Bank holidays in Northern Ireland, with Easter Sunday",
   "lang": "en-GB",
   "festivals": [

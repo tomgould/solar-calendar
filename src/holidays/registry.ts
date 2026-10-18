@@ -1,5 +1,9 @@
 import { type HolidaySet, validateHolidaySet } from '../names/schema';
 
+// The menu lists these countries first, in this order, then any others alphabetically
+const COUNTRY_ORDER = ['UK', 'Ireland', 'US'];
+const countryRank = (country: string) => (COUNTRY_ORDER.includes(country) ? COUNTRY_ORDER.indexOf(country) : COUNTRY_ORDER.length);
+
 // Every JSON file here is a holiday set. They're small, so they're bundled
 // with the app rather than loaded on demand.
 export const HOLIDAY_SETS: readonly HolidaySet[] = Object.entries(import.meta.glob<unknown>('./*.json', { eager: true, import: 'default' }))
@@ -8,7 +12,7 @@ export const HOLIDAY_SETS: readonly HolidaySet[] = Object.entries(import.meta.gl
     if (path !== `./${set.id}.json`) throw new Error(`${path}: "id" must match the file name`);
     return set;
   })
-  .sort((a, b) => a.title.localeCompare(b.title));
+  .sort((a, b) => countryRank(a.country) - countryRank(b.country) || a.country.localeCompare(b.country) || a.title.localeCompare(b.title));
 
 export function holidaySet(id: string | null | undefined): HolidaySet | null {
   return HOLIDAY_SETS.find((set) => set.id === id) ?? null;
@@ -20,7 +24,7 @@ export function holidaySets(ids: string | null | undefined): HolidaySet[] {
   return HOLIDAY_SETS.filter((set) => wanted.has(set.id));
 }
 
-/** Every region's bank holidays are on until the viewer chooses otherwise. */
+/** Every set's holidays are on until the viewer chooses otherwise. */
 export function defaultHolidaySetIds(): string {
   return HOLIDAY_SETS.map((set) => set.id).join(',');
 }

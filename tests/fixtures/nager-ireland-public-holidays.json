@@ -1,0 +1,390 @@
+[
+  {
+    "date": "2020-01-01",
+    "name": "New Year's Day"
+  },
+  {
+    "date": "2020-03-17",
+    "name": "Saint Patrick's Day"
+  },
+  {
+    "date": "2020-04-13",
+    "name": "Easter Monday"
+  },
+  {
+    "date": "2020-05-04",
+    "name": "May Day"
+  },
+  {
+    "date": "2020-06-01",
+    "name": "June Holiday"
+  },
+  {
+    "date": "2020-08-03",
+    "name": "August Holiday"
+  },
+  {
+    "date": "2020-10-26",
+    "name": "October Holiday"
+  },
+  {
+    "date": "2020-12-25",
+    "name": "Christmas Day"
+  },
+  {
+    "date": "2020-12-26",
+    "name": "St. Stephen's Day"
+  },
+  {
+    "date": "2021-01-01",
+    "name": "New Year's Day"
+  },
+  {
+    "date": "2021-03-17",
+    "name": "Saint Patrick's Day"
+  },
+  {
+    "date": "2021-04-05",
+    "name": "Easter Monday"
+  },
+  {
+    "date": "2021-05-03",
+    "name": "May Day"
+  },
+  {
+    "date": "2021-06-07",
+    "name": "June Holiday"
+  },
+  {
+    "date": "2021-08-02",
+    "name": "August Holiday"
+  },
+  {
+    "date": "2021-10-25",
+    "name": "October Holiday"
+  },
+  {
+    "date": "2021-12-25",
+    "name": "Christmas Day"
+  },
+  {
+    "date": "2021-12-26",
+    "name": "St. Stephen's Day"
+  },
+  {
+    "date": "2022-01-01",
+    "name": "New Year's Day"
+  },
+  {
+    "date": "2022-03-17",
+    "name": "Saint Patrick's Day"
+  },
+  {
+    "date": "2022-04-18",
+    "name": "Easter Monday"
+  },
+  {
+    "date": "2022-05-02",
+    "name": "May Day"
+  },
+  {
+    "date": "2022-06-06",
+    "name": "June Holiday"
+  },
+  {
+    "date": "2022-08-01",
+    "name": "August Holiday"
+  },
+  {
+    "date": "2022-10-31",
+    "name": "October Holiday"
+  },
+  {
+    "date": "2022-12-25",
+    "name": "Christmas Day"
+  },
+  {
+    "date": "2022-12-26",
+    "name": "St. Stephen's Day"
+  },
+  {
+    "date": "2023-01-01",
+    "name": "New Year's Day"
+  },
+  {
+    "date": "2023-02-06",
+    "name": "Saint Brigid's Day"
+  },
+  {
+    "date": "2023-03-17",
+    "name": "Saint Patrick's Day"
+  },
+  {
+    "date": "2023-04-10",
+    "name": "Easter Monday"
+  },
+  {
+    "date": "2023-05-01",
+    "name": "May Day"
+  },
+  {
+    "date": "2023-06-05",
+    "name": "June Holiday"
+  },
+  {
+    "date": "2023-08-07",
+    "name": "August Holiday"
+  },
+  {
+    "date": "2023-10-30",
+    "name": "October Holiday"
+  },
+  {
+    "date": "2023-12-25",
+    "name": "Christmas Day"
+  },
+  {
+    "date": "2023-12-26",
+    "name": "St. Stephen's Day"
+  },
+  {
+    "date": "2024-01-01",
+    "name": "New Year's Day"
+  },
+  {
+    "date": "2024-02-05",
+    "name": "Saint Brigid's Day"
+  },
+  {
+    "date": "2024-03-17",
+    "name": "Saint Patrick's Day"
+  },
+  {
+    "date": "2024-04-01",
+    "name": "Easter Monday"
+  },
+  {
+    "date": "2024-05-06",
+    "name": "May Day"
+  },
+  {
+    "date": "2024-06-03",
+    "name": "June Holiday"
+  },
+  {
+    "date": "2024-08-05",
+    "name": "August Holiday"
+  },
+  {
+    "date": "2024-10-28",
+    "name": "October Holiday"
+  },
+  {
+    "date": "2024-12-25",
+    "name": "Christmas Day"
+  },
+  {
+    "date": "2024-12-26",
+    "name": "St. Stephen's Day"
+  },
+  {
+    "date": "2025-01-01",
+    "name": "New Year's Day"
+  },
+  {
+    "date": "2025-02-03",
+    "name": "Saint Brigid's Day"
+  },
+  {
+    "date": "2025-03-17",
+    "name": "Saint Patrick's Day"
+  },
+  {
+    "date": "2025-04-21",
+    "name": "Easter Monday"
+  },
+  {
+    "date": "2025-05-05",
+    "name": "May Day"
+  },
+  {
+    "date": "2025-06-02",
+    "name": "June Holiday"
+  },
+  {
+    "date": "2025-08-04",
+    "name": "August Holiday"
+  },
+  {
+    "date": "2025-10-27",
+    "name": "October Holiday"
+  },
+  {
+    "date": "2025-12-25",
+    "name": "Christmas Day"
+  },
+  {
+    "date": "2025-12-26",
+    "name": "St. Stephen's Day"
+  },
+  {
+    "date": "2026-01-01",
+    "name": "New Year's Day"
+  },
+  {
+    "date": "2026-02-02",
+    "name": "Saint Brigid's Day"
+  },
+  {
+    "date": "2026-03-17",
+    "name": "Saint Patrick's Day"
+  },
+  {
+    "date": "2026-04-06",
+    "name": "Easter Monday"
+  },
+  {
+    "date": "2026-05-04",
+    "name": "May Day"
+  },
+  {
+    "date": "2026-06-01",
+    "name": "June Holiday"
+  },
+  {
+    "date": "2026-08-03",
+    "name": "August Holiday"
+  },
+  {
+    "date": "2026-10-26",
+    "name": "October Holiday"
+  },
+  {
+    "date": "2026-12-25",
+    "name": "Christmas Day"
+  },
+  {
+    "date": "2026-12-26",
+    "name": "St. Stephen's Day"
+  },
+  {
+    "date": "2027-01-01",
+    "name": "New Year's Day"
+  },
+  {
+    "date": "2027-02-01",
+    "name": "Saint Brigid's Day"
+  },
+  {
+    "date": "2027-03-17",
+    "name": "Saint Patrick's Day"
+  },
+  {
+    "date": "2027-03-29",
+    "name": "Easter Monday"
+  },
+  {
+    "date": "2027-05-03",
+    "name": "May Day"
+  },
+  {
+    "date": "2027-06-07",
+    "name": "June Holiday"
+  },
+  {
+    "date": "2027-08-02",
+    "name": "August Holiday"
+  },
+  {
+    "date": "2027-10-25",
+    "name": "October Holiday"
+  },
+  {
+    "date": "2027-12-25",
+    "name": "Christmas Day"
+  },
+  {
+    "date": "2027-12-26",
+    "name": "St. Stephen's Day"
+  },
+  {
+    "date": "2028-01-01",
+    "name": "New Year's Day"
+  },
+  {
+    "date": "2028-02-07",
+    "name": "Saint Brigid's Day"
+  },
+  {
+    "date": "2028-03-17",
+    "name": "Saint Patrick's Day"
+  },
+  {
+    "date": "2028-04-17",
+    "name": "Easter Monday"
+  },
+  {
+    "date": "2028-05-01",
+    "name": "May Day"
+  },
+  {
+    "date": "2028-06-05",
+    "name": "June Holiday"
+  },
+  {
+    "date": "2028-08-07",
+    "name": "August Holiday"
+  },
+  {
+    "date": "2028-10-30",
+    "name": "October Holiday"
+  },
+  {
+    "date": "2028-12-25",
+    "name": "Christmas Day"
+  },
+  {
+    "date": "2028-12-26",
+    "name": "St. Stephen's Day"
+  },
+  {
+    "date": "2029-01-01",
+    "name": "New Year's Day"
+  },
+  {
+    "date": "2029-02-05",
+    "name": "Saint Brigid's Day"
+  },
+  {
+    "date": "2029-03-17",
+    "name": "Saint Patrick's Day"
+  },
+  {
+    "date": "2029-04-02",
+    "name": "Easter Monday"
+  },
+  {
+    "date": "2029-05-07",
+    "name": "May Day"
+  },
+  {
+    "date": "2029-06-04",
+    "name": "June Holiday"
+  },
+  {
+    "date": "2029-08-06",
+    "name": "August Holiday"
+  },
+  {
+    "date": "2029-10-29",
+    "name": "October Holiday"
+  },
+  {
+    "date": "2029-12-25",
+    "name": "Christmas Day"
+  },
+  {
+    "date": "2029-12-26",
+    "name": "St. Stephen's Day"
+  }
+]
