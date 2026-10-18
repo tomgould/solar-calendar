@@ -68,7 +68,7 @@
       <!-- Asks once; the browser's own permission prompt only comes from the button -->
       <section class="location-notice" id="location-notice" aria-labelledby="location-notice-title" hidden>
         <h2 id="location-notice-title" class="notice-title">Sunrise and sunset where you are</h2>
-        <p>To show sunrise, sunset and hours of daylight, the calendar needs to know roughly where you are. Your location stays in this browser and is never sent anywhere. You can change or forget it at any time under Sunrise and sunset.</p>
+        <p>To show sunrise, sunset and hours of daylight, the calendar needs to know roughly where you are. Your location stays in this browser and is never sent anywhere. You can change or forget it at any time under Sunrise and sunset. <a href="./privacy">Privacy policy</a></p>
         <div class="apps-row">
           <button type="button" class="button button-strong" id="notice-use-location">Use my location</button>
           <button type="button" class="button" id="notice-dismiss">No thanks</button>
@@ -180,6 +180,18 @@
         <p>Equinoxes and solstices are calculated to within about a minute. The start of the year uses the date of the equinox in UTC, so the calendar is the same everywhere.</p>
       </footer>
     </main>
+
+    <footer class="site-footer">
+      <nav aria-label="About this site">
+        <ul>
+          <li><a href="./privacy">Privacy policy</a></li>
+          <li><a href="./terms">Terms of use</a></li>
+          <li><a href="./disclaimer">Disclaimer</a></li>
+          <li><a href="https://github.com/tomgould/solar-calendar">Source code on GitHub</a></li>
+        </ul>
+      </nav>
+      <p>Run by Deal Mobile. Free software under the GNU GPL version 3. No cookies.</p>
+    </footer>
   </div>
 
   <dialog id="about-dialog" class="about" aria-labelledby="about-title"></dialog>
