@@ -40,6 +40,7 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
 - Add to calendar, from the month or year view: one button subscribes Google Calendar, another opens Apple Calendar or Outlook, and the feed stays up to date. Or download a single year as an .ics file.
 - A badge with today's solar date for your own page or README, like the one above: `https://solar.dealmobile.co.uk/today.svg`. Add `?names=anglo-saxon` for other month names, and `&tz=Europe/London` for the date in your time zone rather than UTC.
 - Works offline after the first visit, and can be installed as an app.
+- No cookies or accounts: choices and your location stay in your browser. See the [privacy policy](https://solar.dealmobile.co.uk/privacy), [terms of use](https://solar.dealmobile.co.uk/terms) and [disclaimer](https://solar.dealmobile.co.uk/disclaimer).
 - Dark mode, keyboard navigation, and a phone layout that keeps the selected day in a sheet along the bottom.
 
 ## Development
