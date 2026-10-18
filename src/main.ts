@@ -208,13 +208,16 @@ async function readUrl(): Promise<void> {
   }
   // A list of regions; unset means all of them, and none stores ""
   state.holidays = holidaySets(storage.get('holidays') ?? defaultHolidaySetIds());
-  // Every pack's festivals show until the viewer unticks some; none stores ""
-  await loadExtraPacks((storage.get('festivals') ?? PACK_IDS.join(',')).split(','));
 }
+
+let extraPacksWanted = '';
 
 /** Loads the other packs whose festivals are shown, skipping any that fail (offline, say). */
 async function loadExtraPacks(ids: string[]): Promise<void> {
+  const wanted = (extraPacksWanted = ids.join(','));
   const loaded = await Promise.allSettled(ids.filter(isPackId).map(loadPack));
+  // A later choice in the Festivals menu replaced this one while it loaded
+  if (wanted !== extraPacksWanted) return;
   state.extraPacks = loaded.flatMap((result) => (result.status === 'fulfilled' ? [result.value] : []));
 }
 
@@ -569,6 +572,9 @@ function wire(): void {
 }
 
 async function start(): Promise<void> {
+  // Every pack's festivals show until the viewer unticks some; none stores "".
+  // They load alongside the chosen names, but the first view doesn't wait for them
+  const extras = loadExtraPacks((storage.get('festivals') ?? PACK_IDS.join(',')).split(','));
   await readUrl();
   wire();
   render();
@@ -585,6 +591,8 @@ async function start(): Promise<void> {
     render();
     restoringFromHistory = false;
   });
+  await extras;
+  render();
 }
 
 start().catch((error: unknown) => {

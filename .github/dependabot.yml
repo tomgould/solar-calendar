@@ -1,0 +1,28 @@
+# Weekly pull requests for npm packages and GitHub Actions, which CI and a
+# Workers Builds preview then check. Minor and patch updates come grouped in
+# one pull request; each major update comes on its own. A release must be a
+# week old before it's offered, so a bad one is usually withdrawn by then.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      minor-and-patch:
+        patterns: ['*']
+        update-types: [minor, patch]
+
+  # Actions are pinned to commits; Dependabot updates the commit and its
+  # version comment together
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ['*']
