@@ -1,5 +1,6 @@
 import { utcDayOfInstant } from './core/days';
 import { MAX_YEAR, MIN_YEAR, solarYearOf, yearStart } from './core/solar';
+import { badgeSvg, todayIn } from './feed/badge';
 import { buildIcs } from './feed/ics';
 import { holidaySets } from './holidays/registry';
 import type { FestivalSource } from './names/festivals';
@@ -7,11 +8,14 @@ import { DEFAULT_PACK_ID } from './names/registry';
 import { type NamePack, validatePack } from './names/schema';
 
 /**
- * The Cloudflare Worker behind /feed.ics: a subscribable calendar covering
- * last solar year to next, in the requested name pack, with any other packs'
- * festivals (?festivals=persian,roman) and bank holidays (?holidays=uk-scotland,uk-northern-ireland)
- * asked for. Everything else on
- * the site is static files; wrangler.jsonc routes only /feed.ics here.
+ * The Cloudflare Worker behind two addresses; everything else on the site is
+ * static files, and wrangler.jsonc routes only these here:
+ * - /feed.ics: a subscribable calendar covering last solar year to next, in
+ *   the requested name pack, with any other packs' festivals
+ *   (?festivals=persian,roman) and bank holidays
+ *   (?holidays=uk-scotland,uk-northern-ireland) asked for
+ * - /today.svg: a badge with today's solar date (?names=…), in UTC or in a
+ *   time zone (?tz=Europe/London)
  */
 
 // Bundled into the Worker, unlike the app, which loads packs on demand
@@ -42,10 +46,25 @@ export function feedResponse(url: URL, now = Date.now()): Response {
   });
 }
 
+export function badgeResponse(url: URL, now = Date.now()): Response {
+  const pack = packs.get(url.searchParams.get('names') ?? '') ?? packs.get(DEFAULT_PACK_ID)!;
+  const { day, secondsLeft } = todayIn(url.searchParams.get('tz'), now);
+  return new Response(badgeSvg(pack, day), {
+    headers: {
+      'Content-Type': 'image/svg+xml; charset=utf-8',
+      // Until the day ends, at most an hour
+      'Cache-Control': `public, max-age=${Math.max(60, Math.min(3600, secondsLeft))}`,
+      'X-Content-Type-Options': 'nosniff',
+      'Content-Security-Policy': "default-src 'none'",
+    },
+  });
+}
+
 export default {
   fetch(request: Request): Response {
     const url = new URL(request.url);
-    if (url.pathname !== '/feed.ics') return new Response('Not found', { status: 404 });
-    return feedResponse(url);
+    if (url.pathname === '/feed.ics') return feedResponse(url);
+    if (url.pathname === '/today.svg') return badgeResponse(url);
+    return new Response('Not found', { status: 404 });
   },
 };

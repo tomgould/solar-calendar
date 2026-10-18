@@ -4,6 +4,8 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
 
 **Try it: [solar.dealmobile.co.uk](https://solar.dealmobile.co.uk)**
 
+[![Today in the solar calendar](https://solar.dealmobile.co.uk/today.svg?names=gregorian&tz=Europe/London)](https://solar.dealmobile.co.uk)
+
 ![The month view in December, with Anglo-Saxon month names, England and Wales bank holidays, and the month's festivals listed under the grid](docs/screenshots/month.png)
 
 | Year view, dark mode | Choosing festivals and holidays |
@@ -22,7 +24,7 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
 
 ## What it does
 
-- Opens on today, with the date in both calendars.
+- Opens on today, with the date in both calendars and how long until the next equinox or solstice.
 - Month view: the numbers 1 to 28 never move, and only the Gregorian dates change from month to month. Equinoxes, solstices, and new and full moons are marked.
 - Day details: day of the year, moon phase, and the next equinox or solstice in your local time.
 - Year view: every day of the year in one table, one row per day of the month.
@@ -36,6 +38,7 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
 - Go to a date: type a date in either calendar to find it in the other.
 - Sunrise, sunset and hours of daylight for your location, in its own time zone. A first-visit notice explains why it asks, with a "No thanks"; the location stays in your browser.
 - Add to calendar, from the month or year view: one button subscribes Google Calendar, another opens Apple Calendar or Outlook, and the feed stays up to date. Or download a single year as an .ics file.
+- A badge with today's solar date for your own page or README, like the one above: `https://solar.dealmobile.co.uk/today.svg`. Add `?names=anglo-saxon` for other month names, and `&tz=Europe/London` for the date in your time zone rather than UTC.
 - Works offline after the first visit, and can be installed as an app.
 - Dark mode, keyboard navigation, and a phone layout that keeps the selected day in a sheet along the bottom.
 
