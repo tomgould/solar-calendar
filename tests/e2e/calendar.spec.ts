@@ -450,7 +450,12 @@ test.describe('under the production Content-Security-Policy', () => {
     await page.addInitScript(() => {
       const blocked: string[] = [];
       (window as unknown as { blocked: string[] }).blocked = blocked;
-      document.addEventListener('securitypolicyviolation', (event) => blocked.push(`${event.violatedDirective} ${event.blockedURI}`));
+      document.addEventListener('securitypolicyviolation', (event) => {
+        // Newer WebKit reports styles inside its own form controls, such as a
+        // <select>; those elements have no style attribute from the app
+        if (event.violatedDirective.startsWith('style-src-attr') && !(event.target as Element).hasAttribute?.('style')) return;
+        blocked.push(`${event.violatedDirective} ${event.blockedURI}`);
+      });
     });
 
     await page.goto('./?date=2026-10-17&names=anglo-saxon');
