@@ -64,7 +64,7 @@ A pack can list the festivals of its culture in `festivals`. Each has a `name`, 
 | Rule | Example | Meaning |
 |---|---|---|
 | `{ "event": "june-solstice" }` | Līþa | The day of an equinox or solstice: `march-equinox`, `june-solstice`, `september-equinox` or `december-solstice` |
-| `{ "gregorian": "01-19", "weekday": "friday" }` | Þorrablót | A Gregorian date, or with `weekday`, the first such weekday on or after it |
+| `{ "gregorian": "01-19", "weekday": "friday" }` | Þorrablót | A Gregorian date, or with `weekday`, the first such weekday on or after it. Add `staysOn` to keep the date itself when it falls on that weekday: St Brigid's Day is `{ "gregorian": "02-01", "weekday": "monday", "staysOn": "friday" }` |
 | `{ "solar": { "month": 3, "day": 17 } }` | Trinox Samonii | A day of a solar month |
 | `{ "easter": true, "offset": -2 }` | Good Friday | Western Easter Sunday, here 2 days before it |
 | `{ "date": "2023-05-08" }` | The coronation | One day only |
@@ -79,12 +79,30 @@ A pack can list the festivals of its culture in `festivals`. Each has a `name`, 
 - Use `certainty` for the date and meaning together. Where the historical date is a reconstruction, say so in `meaning`.
 - The dialog describes each rule in words ("The first Friday on or after 19 January"), so check that the description reads correctly.
 
-## Bank holidays
+## Public holidays
 
-Public holidays live apart from the name packs, in `src/holidays/`, one file per region, so they can be shown with any month names. A holiday set has an `id` (the file name), `title`, `description`, `lang`, `sources` and `festivals` in the format above, plus two fields:
-- **`bankHoliday: true`** marks a day off. It gets a flag in the grid rather than a star.
-- **`substituteFrom`** is the year from which a day off at the weekend also gives the next free weekday, shown as "(substitute day)".
+Public holidays live apart from the name packs, in `src/holidays/`, one file per region or country, so they can be shown with any month names. There are five: England and Wales, Scotland and Northern Ireland (UK bank holidays, from 1971), Ireland (from 1997) and United States (federal holidays, from 1971).
 
-Any number of sets can be shown at once. A holiday with the same name on the same day in several of them, such as Christmas Day, shows once, as "UK" or the regions it's kept in.
+A holiday set has an `id` (the file name), `title`, `description`, `lang`, `sources` and `festivals` in the format above, plus:
+- **`country`**, such as `"UK"`. A holiday kept in every set of a country is shown under the country's name, so Christmas Day is "UK, Ireland and US".
+- **`dayOffName`**, what a day off is called there: `"bank holiday"`, `"public holiday"` or `"federal holiday"`. Where countries differ, the calendar says "public holiday".
+- **`weekendRule`** (optional): where a day off goes when the holiday falls at a weekend. `"next-free-weekday"`, the default, is the UK's rule: the next weekday that isn't already a day off. `"nearest-weekday"` is the US rule: Friday for a Saturday, Monday for a Sunday.
+- **`substituteLabel`** (optional): what that day is called, `"substitute day"` unless set. The US set uses `"observed"`.
 
-The UK sets are checked against GOV.UK's own list, saved in `tests/fixtures/gov-uk-bank-holidays.json`. `npm run holidays:check` fetches the latest list and runs the test. A weekly GitHub workflow (`.github/workflows/holidays.yml`) does the same and opens a pull request when GOV.UK changes. If the test fails there, add the new holiday on a branch of your own (a `date` rule for a one-off, or `moves` for a holiday moved in one year) and merge it, then run the workflow again. Don't push to the workflow's branch, which it rewrites on every run. The workflow needs the repository setting "Allow GitHub Actions to create and approve pull requests".
+Each holiday can also have:
+- **`bankHoliday: true`**, which marks a day off. It gets a flag in the grid rather than a star.
+- **`substituteFrom`**, the year from which a day off at the weekend also gives another day, by the set's `weekendRule`. Ireland's holidays have none: by law they don't move, and employers give a day off within a month, an extra day of leave or an extra day's pay instead.
+
+Any number of sets can be shown at once. A holiday with the same name on the same day in several of them shows once, naming every place it's kept.
+
+What the sets leave out:
+- Ireland before 1997, when weekend holidays moved under rules that were unclear for Saturdays.
+- US Inauguration Day, which is only for federal staff around Washington, DC.
+- US closures by executive order, such as Christmas Eve in some years or a national day of mourning. Staff get the day off with pay, but they aren't federal holidays.
+
+Each set is checked against an official list, saved in `tests/fixtures/`:
+- **UK:** GOV.UK's bank holidays (`gov-uk-bank-holidays.json`).
+- **US:** OPM's federal holidays (`opm-federal-holidays.json`, from its iCalendar file, which covers about ten years).
+- **Ireland:** publishes no list a program can read, so the check uses Nager.Date's (`nager-ireland-public-holidays.json`), which lacks the one-off holiday of 18 March 2022. The test knows about that gap.
+
+`npm run holidays:check` fetches the latest lists and runs the test. A weekly GitHub workflow (`.github/workflows/holidays.yml`) does the same and opens a pull request when a list changes. If the test fails there, add the new holiday on a branch of your own (a `date` rule for a one-off, or `moves` for a holiday moved in one year) and merge it, then run the workflow again. Don't push to the workflow's branch, which it rewrites on every run. The workflow needs the repository setting "Allow GitHub Actions to create and approve pull requests".

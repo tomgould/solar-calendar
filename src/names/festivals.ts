@@ -10,6 +10,14 @@ export interface FestivalSource {
   festivals?: Festival[];
   /** "holidays" for a set of public holidays, such as one UK region's */
   kind?: string;
+  /** For holiday sets: the country, such as "UK", which names a holiday kept in all its sets */
+  country?: string;
+  /** What a day off is called there, such as "bank holiday" */
+  dayOffName?: string;
+  /** Where a weekend holiday's day off goes: the next free weekday (the default), or the nearest weekday (Friday for Saturday, Monday for Sunday) */
+  weekendRule?: 'next-free-weekday' | 'nearest-weekday';
+  /** What that day is called, "substitute day" if left out: "Christmas Day (observed)" */
+  substituteLabel?: string;
 }
 
 export interface FestivalDay {
@@ -20,8 +28,8 @@ export interface FestivalDay {
   substitute?: boolean;
   /** A day off: a bank holiday on a weekday, or a substitute day */
   dayOff?: boolean;
-  /** For a holiday kept in several of the sets shown: each set's title, such as "Scotland" */
-  regions?: string[];
+  /** For a holiday from holiday sets: every set shown that keeps it that day */
+  regions?: FestivalSource[];
 }
 
 const isWeekend = (day: DayNumber) => weekday(day) >= 5;
@@ -42,14 +50,16 @@ export function festivalOccurrences(source: FestivalSource, first: DayNumber, la
     }));
 
   // A day off at the weekend gets the next weekday that isn't already one,
-  // in date order: Christmas on a Saturday moves to Monday, Boxing Day to Tuesday
+  // in date order: Christmas on a Saturday moves to Monday, Boxing Day to
+  // Tuesday. Or, in the US, the nearest weekday: Saturday's goes to Friday
   const taken = new Set(occurrences.filter((entry) => entry.dayOff).map((entry) => entry.day));
   const substitutes: FestivalDay[] = [];
   for (const entry of [...occurrences].sort((a, b) => a.day - b.day)) {
     const { substituteFrom } = entry.festival;
     if (!entry.festival.bankHoliday || substituteFrom === undefined || !isWeekend(entry.day) || civilFromDay(entry.day).year < substituteFrom) continue;
     let day = entry.day + 1;
-    while (isWeekend(day) || taken.has(day)) day++;
+    if (source.weekendRule === 'nearest-weekday') day = weekday(entry.day) === 5 ? entry.day - 1 : entry.day + 1;
+    else while (isWeekend(day) || taken.has(day)) day++;
     taken.add(day);
     substitutes.push({ ...entry, day, substitute: true, dayOff: true });
   }
@@ -77,16 +87,24 @@ export function festivalsFrom(sources: FestivalSource[], first: DayNumber, last:
       const key = `${entry.day} ${festivalLabel(entry)}`;
       const same = merged.get(key);
       if (!same) {
-        const kept = { ...entry, regions: [entry.source.title] };
+        const kept = { ...entry, regions: [entry.source] };
         merged.set(key, kept);
         return [kept];
       }
-      same.regions!.push(entry.source.title);
+      same.regions!.push(entry.source);
       same.dayOff ||= entry.dayOff;
       return [];
     })
     .sort((a, b) => a.day - b.day);
 }
 
-/** A festival's name as shown on a given day, marking substitute days. */
-export const festivalLabel = ({ festival, substitute }: FestivalDay) => (substitute ? `${festival.name} (substitute day)` : festival.name);
+/** A festival's name as shown on a given day, marking substitute days: "Christmas Day (substitute day)" */
+export const festivalLabel = ({ festival, source, substitute }: FestivalDay) =>
+  (substitute ? `${festival.name} (${source.substituteLabel ?? 'substitute day'})` : festival.name);
+
+/**
+ * A festival's meaning, or nothing for a holiday shared by several countries:
+ * each set's meaning explains its own country's rules, which the others don't follow.
+ */
+export const festivalMeaning = ({ festival, source, regions }: FestivalDay) =>
+  (new Set((regions ?? [source]).map((set) => set.country)).size > 1 ? '' : festival.meaning);

@@ -92,6 +92,14 @@ export interface HolidaySet {
   id: string;
   /** Shown in the menu, such as "England and Wales" */
   title: string;
+  /** Such as "UK": a holiday kept in every set of a country is shown as that country's */
+  country: string;
+  /** What a day off is called there: "bank holiday", "public holiday" */
+  dayOffName: string;
+  /** Where a weekend holiday's day off goes; see FestivalSource */
+  weekendRule?: 'next-free-weekday' | 'nearest-weekday';
+  /** What that day off is called, "substitute day" if left out */
+  substituteLabel?: string;
   description: string;
   lang: string;
   festivals: Festival[];
@@ -160,11 +168,15 @@ export function validatePack(data: unknown, source: string): NamePack {
 export function validateHolidaySet(data: unknown, source: string): HolidaySet {
   if (!isObject(data)) throw new Error(`${source}: a holiday set must be a JSON object`);
   const problems: string[] = [];
-  for (const key of ['id', 'title', 'description', 'lang']) {
+  for (const key of ['id', 'title', 'country', 'dayOffName', 'description', 'lang']) {
     if (!isText(data[key])) problems.push(`"${key}" must be a non-empty string`);
   }
   if (isText(data.id) && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(data.id)) problems.push('"id" must be lowercase words joined by hyphens');
   if (isText(data.lang) && !LANGUAGE_TAG.test(data.lang)) problems.push('"lang" must be a language tag such as "en-GB"');
+  if (data.weekendRule !== undefined && data.weekendRule !== 'next-free-weekday' && data.weekendRule !== 'nearest-weekday') {
+    problems.push('"weekendRule" must be "next-free-weekday" or "nearest-weekday"');
+  }
+  if (data.substituteLabel !== undefined && !isText(data.substituteLabel)) problems.push('"substituteLabel" must be text if present');
   if (!Array.isArray(data.festivals) || data.festivals.length === 0) problems.push('"festivals" must list at least one holiday');
   else festivalProblems(data.festivals, problems);
   sourceProblems(data.sources, problems);

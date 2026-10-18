@@ -1,7 +1,7 @@
 import { type DayNumber, civilFromDay } from '../core/days';
 import { SKY_EVENT_NAMES, seasonEvents } from '../core/sky';
 import { LEAP_WEEK, toSolar, yearLength } from '../core/solar';
-import { type FestivalSource, festivalLabel, festivalsFrom } from '../names/festivals';
+import { type FestivalSource, festivalLabel, festivalMeaning, festivalsFrom } from '../names/festivals';
 import type { NamePack } from '../names/schema';
 import { monthGloss, monthName, solarLong } from '../ui/format';
 
@@ -108,7 +108,7 @@ export function buildIcs({ pack, extra = [], from, to, now }: IcsOptions): strin
       `DTSTART;VALUE=DATE:${dateValue(day)}`,
       `DTEND;VALUE=DATE:${dateValue(day + (substitute ? 1 : festival.days ?? 1))}`,
       `SUMMARY:${escapeText(festivalLabel(entry))}`,
-      `DESCRIPTION:${escapeText(`${festival.gloss}. ${festival.meaning}`)}`,
+      `DESCRIPTION:${escapeText(`${festival.gloss}. ${festivalMeaning(entry)}`.trim())}`,
       'TRANSP:TRANSPARENT',
       'END:VEVENT',
     );

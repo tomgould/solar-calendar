@@ -34,7 +34,7 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
   - modern inventions: Nature for each hemisphere, Latin numbers and Sky
 - Pronunciation: a respelling and IPA for every name that isn't English, and a button that reads it aloud.
 - Festivals: the historical packs (apart from Gregorian) mark their own festivals, such as Nowruz or Þorrablót, and Sky marks the meteor showers. Every pack's festivals show at once by default, listed under each month and year, and each pack can be turned off.
-- UK bank holidays and Easter for England and Wales, Scotland and Northern Ireland, all on by default and each can be turned off, kept in step with GOV.UK by a weekly check.
+- Public holidays: UK bank holidays and Easter for England and Wales, Scotland and Northern Ireland, Ireland's public holidays and US federal holidays. All are on by default and each can be turned off. A weekly check keeps them in step with GOV.UK, OPM and Nager.Date.
 - Go to a date: type a date in either calendar to find it in the other.
 - Sunrise, sunset and hours of daylight for your location, in its own time zone. A first-visit notice explains why it asks, with a "No thanks"; the location stays in your browser.
 - Add to calendar, from the month or year view: one button subscribes Google Calendar, another opens Apple Calendar or Outlook, and the feed stays up to date. Or download a single year as an .ics file.
@@ -51,7 +51,7 @@ npm run dev              # http://localhost:5173
 npm test                 # unit tests, then end-to-end tests
 npm run typecheck
 npm run build            # static site in dist/, plus the feed Worker in dist-worker/
-npm run holidays:check   # fetch GOV.UK's bank holidays and check the rules still match
+npm run holidays:check   # fetch the official holiday lists and check the rules still match
 ```
 
 Run one test file with `npx vitest run tests/unit/core.test.ts` or `npx playwright test --project=chromium`.

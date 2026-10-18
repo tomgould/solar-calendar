@@ -34,6 +34,7 @@ export function describeWhen({ when, days = 1 }: Festival, pack: NamePack): stri
   else if ('gregorian' in when) {
     const date = monthDay(when.gregorian, GREGORIAN_MONTH_NAMES);
     text = when.weekday ? `The first ${capital(when.weekday)} on or after ${date}` : date;
+    if (when.staysOn) text += `, or ${date} itself when that’s a ${capital(when.staysOn)}`;
   } else if ('solar' in when) text = `${when.solar.day} ${pack.months[when.solar.month - 1].name}`;
   else if ('easter' in when) text = 'Easter Sunday';
   else if ('date' in when) {

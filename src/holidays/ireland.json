@@ -1,0 +1,118 @@
+{
+  "id": "ireland",
+  "title": "Ireland",
+  "country": "Ireland",
+  "dayOffName": "public holiday",
+  "description": "Public holidays in Ireland, from 1997, when today’s rules began",
+  "lang": "en-IE",
+  "festivals": [
+    {
+      "name": "New Year’s Day",
+      "gloss": "first day of the year",
+      "meaning": "A public holiday in Ireland since 1975. Ireland’s public holidays don’t move when they fall at a weekend: instead, employers give a paid day off within a month, an extra day of leave, or an extra day’s pay.",
+      "when": { "gregorian": "01-01" },
+      "from": 1997,
+      "bankHoliday": true
+    },
+    {
+      "name": "St Brigid’s Day",
+      "gloss": "start of spring",
+      "meaning": "Ireland’s newest public holiday, from 2023, for St Brigid of Kildare, one of Ireland’s patron saints, and Imbolc, the old start of spring. It’s the first Monday in February, or 1 February itself when that’s a Friday.",
+      "when": { "gregorian": "02-01", "weekday": "monday", "staysOn": "friday" },
+      "from": 2023,
+      "bankHoliday": true
+    },
+    {
+      "name": "St Patrick’s Day",
+      "gloss": "national holiday",
+      "meaning": "Ireland’s national day, for its patron saint, who died around 461. A public holiday since 1903.",
+      "when": { "gregorian": "03-17" },
+      "from": 1997,
+      "bankHoliday": true
+    },
+    {
+      "name": "Easter Monday",
+      "gloss": "the day after Easter",
+      "meaning": "One of the first bank holidays, set by the Bank Holidays Act 1871. Good Friday isn’t a public holiday in Ireland.",
+      "when": { "easter": true, "offset": 1 },
+      "from": 1997,
+      "bankHoliday": true
+    },
+    {
+      "name": "May Day",
+      "gloss": "first Monday in May",
+      "meaning": "A public holiday since 1994.",
+      "when": { "gregorian": "05-01", "weekday": "monday" },
+      "from": 1997,
+      "bankHoliday": true
+    },
+    {
+      "name": "June bank holiday",
+      "gloss": "first Monday in June",
+      "meaning": "A public holiday since 1974, when it took the place of Whit Monday.",
+      "when": { "gregorian": "06-01", "weekday": "monday" },
+      "from": 1997,
+      "bankHoliday": true
+    },
+    {
+      "name": "August bank holiday",
+      "gloss": "first Monday in August",
+      "meaning": "One of the first bank holidays, set by the Bank Holidays Act 1871.",
+      "when": { "gregorian": "08-01", "weekday": "monday" },
+      "from": 1997,
+      "bankHoliday": true
+    },
+    {
+      "name": "October bank holiday",
+      "gloss": "last Monday in October",
+      "meaning": "A public holiday since 1977.",
+      "when": { "gregorian": "10-25", "weekday": "monday" },
+      "from": 1997,
+      "bankHoliday": true
+    },
+    {
+      "name": "Christmas Day",
+      "gloss": "feast of the nativity",
+      "meaning": "The Christian feast of the birth of Jesus.",
+      "when": { "gregorian": "12-25" },
+      "from": 1997,
+      "bankHoliday": true
+    },
+    {
+      "name": "St Stephen’s Day",
+      "gloss": "day after Christmas",
+      "meaning": "For St Stephen, the first Christian martyr. Also Wren Day, when wren boys go from door to door in straw costumes and masks.",
+      "when": { "gregorian": "12-26" },
+      "from": 1997,
+      "bankHoliday": true
+    },
+    {
+      "name": "Millennium public holiday",
+      "gloss": "the year 2000",
+      "meaning": "A one-off public holiday on the last day of 1999.",
+      "when": { "date": "1999-12-31" },
+      "bankHoliday": true
+    },
+    {
+      "name": "National Day of Mourning",
+      "gloss": "after 11 September",
+      "meaning": "A one-off public holiday, three days after the attacks in the United States on 11 September 2001.",
+      "when": { "date": "2001-09-14" },
+      "bankHoliday": true
+    },
+    {
+      "name": "Covid-19 public holiday",
+      "gloss": "for the pandemic’s efforts",
+      "meaning": "A one-off public holiday to recognise everyone’s efforts during the Covid-19 pandemic and to remember those who died. With St Patrick’s Day it made a four-day weekend.",
+      "when": { "date": "2022-03-18" },
+      "bankHoliday": true
+    }
+  ],
+  "sources": [
+    { "title": "Organisation of Working Time Act 1997, section 21 and Schedule 2", "url": "https://www.irishstatutebook.ie/eli/1997/act/20/schedule/2/enacted/en/html" },
+    { "title": "S.I. No. 50/2022: St Brigid’s Day, and the public holiday on 18 March 2022", "url": "https://www.irishstatutebook.ie/eli/2022/si/50/made/en/html" },
+    { "title": "S.I. No. 10/1999: the millennium public holiday", "url": "https://www.irishstatutebook.ie/1999/en/si/0010.html" },
+    { "title": "S.I. No. 419/2001: the National Day of Mourning", "url": "https://www.irishstatutebook.ie/2001/en/si/0419.html" },
+    { "title": "Citizens Information: public holidays", "url": "https://www.citizensinformation.ie/en/employment/employment-rights-and-conditions/leave-and-holidays/public-holidays/" }
+  ]
+}
