@@ -1,13 +1,4 @@
-import '@fontsource-variable/big-shoulders/opsz.css';
-import '@fontsource/andika/400.css';
-import '@fontsource/andika/400-italic.css';
-import '@fontsource/andika/700.css';
-// Scripts Andika lacks, for packs' original forms; each downloads only when its letters appear
-import '@fontsource/vazirmatn/arabic-400.css';
-import '@fontsource/noto-sans-coptic/coptic-400.css';
-// Greek letters Andika lacks, such as the θ used in IPA pronunciations
-import '@fontsource/noto-sans/greek-400.css';
-import './styles/app.css';
+import './styles';
 import { type DayNumber, parseIsoDate, today as todayNumber, toIsoDate } from './core/days';
 import { SKY_EVENT_NAMES, type SkyEvent, nextSeasonEvent, seasonEvents } from './core/sky';
 import { LEAP_WEEK, MAX_YEAR, MIN_YEAR, MONTHS, daysInMonth, fromSolar, hasLeapWeek, monthSpan, toSolar, yearStart } from './core/solar';

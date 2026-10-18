@@ -35,6 +35,14 @@ const worker = (): Plugin => ({
 export default defineConfig({
   // Relative asset URLs, so the build works from any path (previews, sub-folders)
   base: './',
+  // The calendar, and the privacy, terms and disclaimer pages
+  build: {
+    // Every browser the app supports has modulepreload, so skip the polyfill's chunk
+    modulePreload: { polyfill: false },
+    rollupOptions: {
+      input: { main: 'index.html', privacy: 'privacy.html', terms: 'terms.html', disclaimer: 'disclaimer.html' },
+    },
+  },
   plugins: [
     worker(),
     // Works offline after the first visit: precaches the app, every name pack,

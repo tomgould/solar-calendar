@@ -465,6 +465,9 @@ test.describe('under the production Content-Security-Policy', () => {
     await page.goto('./?view=year&date=2026-10-17');
     await expect(page.locator('#almanac td[data-day]')).toHaveCount(364);
     expect(await page.evaluate(() => (window as unknown as { blocked: string[] }).blocked)).toEqual([]);
+    await page.goto('./privacy');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Privacy policy');
+    expect(await page.evaluate(() => (window as unknown as { blocked: string[] }).blocked)).toEqual([]);
     // Font requests can still be in flight; let them finish unintercepted
     await page.unrouteAll({ behavior: 'ignoreErrors' });
   });
@@ -487,6 +490,25 @@ test('works offline after the first visit', async ({ page, context }, testInfo) 
   await context.setOffline(false);
 });
 
+const LEGAL_PAGES = ['./privacy', './terms', './disclaimer'];
+
+test('links to the privacy policy, terms, disclaimer and source code from every page', async ({ page }) => {
+  await page.goto('./');
+  const footer = page.locator('.site-footer');
+  await expect(footer.getByRole('link', { name: 'Source code on GitHub' })).toHaveAttribute('href', 'https://github.com/tomgould/solar-calendar');
+  // Each page has the same footer, and a way back to the calendar
+  for (const [link, heading] of [['Privacy policy', 'Privacy policy'], ['Terms of use', 'Terms of use'], ['Disclaimer', 'Disclaimer']]) {
+    await footer.getByRole('link', { name: link }).click();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(heading);
+    await expect(page).toHaveTitle(`${heading}, Solar calendar`);
+    await expect(footer.getByRole('link')).toHaveCount(4);
+    await page.getByRole('link', { name: 'Back to the calendar' }).click();
+    await expect(page.locator('#today-line')).toContainText('Today is');
+  }
+  // The first-visit location notice links to the privacy policy too
+  await expect(page.locator('#location-notice').getByRole('link', { name: 'Privacy policy' })).toHaveAttribute('href', './privacy');
+});
+
 test('passes automated accessibility checks', async ({ page }, testInfo) => {
   test.skip(!['chromium', 'phone'].includes(testInfo.project.name), 'Runs in one desktop and one phone project');
   const check = async (where: string) => {
@@ -504,11 +526,15 @@ test('passes automated accessibility checks', async ({ page }, testInfo) => {
     await check(`meaning dialog, ${colorScheme}`);
     await page.goto('./?view=year&date=2026-10-17&names=anglo-saxon');
     await check(`year view, ${colorScheme}`);
+    for (const path of LEGAL_PAGES) {
+      await page.goto(path);
+      await check(`${path}, ${colorScheme}`);
+    }
   }
 });
 
 test('never scrolls the page sideways', async ({ page }) => {
-  for (const path of ['./', './?view=year']) {
+  for (const path of ['./', './?view=year', ...LEGAL_PAGES]) {
     await page.goto(path);
     const sideways = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(sideways, path).toBeLessThanOrEqual(0);
