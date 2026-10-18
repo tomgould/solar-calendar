@@ -17,6 +17,7 @@ const selectedCell = '#grid-body [aria-selected="true"] .cell';
 test('opens on today, in both calendars', async ({ page }) => {
   await page.goto('./');
   await expect(page.locator('#today-line')).toContainText('Today is');
+  await expect(page.locator('#today-line')).toContainText(/(The (March|June|September|December) (equinox|solstice) is (tomorrow|in \d+ days)|It’s the .+ today)\.$/);
   await expect(page.locator('#grid-body [aria-current="date"]')).toHaveCount(1);
   await expect(page.locator(selectedCell)).toHaveAttribute('aria-current', 'date');
 });
@@ -326,6 +327,13 @@ test('adds the calendar to Google and other calendar apps, or downloads a year',
   await page.getByRole('button', { name: 'Year', exact: true }).click();
   await page.locator('#year-view').getByRole('button', { name: 'Add to calendar' }).click();
   await expect(dialog).toBeVisible();
+});
+
+test('serves a badge with today’s solar date', async ({ page }) => {
+  // From the built Worker bundle, as on Cloudflare
+  const badge = await page.request.get('./today.svg?names=gregorian&tz=Europe/London');
+  expect(badge.headers()['content-type']).toBe('image/svg+xml; charset=utf-8');
+  expect(await badge.text()).toMatch(/aria-label="Solar calendar: [^"]+ \d{4}"/);
 });
 
 test('asks for the location on a first visit, explaining why, with a way to say no', async ({ page, context }, testInfo) => {
