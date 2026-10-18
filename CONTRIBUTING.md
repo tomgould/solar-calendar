@@ -1,21 +1,20 @@
-# 🤝 Contributing to Solar Calendar
+# Contributing to Solar Calendar
 
-Thanks for your interest in contributing to the Solar Calendar project! 🌞  
-We welcome ideas, improvements, and collaboration from developers, designers, time nerds, and calendar reformers alike.
-
----
-
-## 🛠️ Ways You Can Contribute
-
-- 🏷️ Add a month name pack (one JSON file in `src/names/packs/`, see the README)
-- ✨ Improve design, layout, or mobile responsiveness
-- 🔍 Add festivals and holidays
-- 🧪 Add tests or validation tools
-- 📝 Improve documentation or translations
+Thanks for your interest in the Solar Calendar project. Ideas, improvements and help are welcome from developers, designers, time nerds and calendar reformers alike.
 
 ---
 
-## 📐 Project Standards
+## Ways to contribute
+
+- Add a month name pack (one JSON file in `src/names/packs/`, see the README)
+- Improve design, layout, or mobile responsiveness
+- Add festivals and holidays
+- Add tests or validation tools
+- Improve documentation or translations
+
+---
+
+## Project standards
 
 Please follow these conventions when contributing:
 
@@ -25,11 +24,11 @@ Please follow these conventions when contributing:
 - Use descriptive commit messages
 - Prefer semantic HTML
 - Keep styling responsive and accessible
-- Run `npm run typecheck` and `npm test` before opening a pull request 😅
+- Run `npm run typecheck` and `npm test` before opening a pull request
 
 ---
 
-## 🧪 Running the Project Locally
+## Running the project locally
 
 1. Clone the repo:
    ```bash
@@ -47,17 +46,17 @@ Please follow these conventions when contributing:
 
 ---
 
-## 🧾 License
+## Licence
 
 By contributing, you agree that your code will be licensed under the [GNU GPL v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
 
 ---
 
-## 🙋 Questions?
+## Questions?
 
-Open an [issue](https://github.com/tomgould/solar-calendar/issues) and we’ll get back to you!
+Open an [issue](https://github.com/tomgould/solar-calendar/issues) and we'll get back to you.
 
 ---
 
-Thanks again!  
-– Tom ☀️
+Thanks again,
+Tom
