@@ -10,6 +10,9 @@
     "directory": "./dist",
     "run_worker_first": ["/feed.ics"]
   },
+  // Keeps the feed Worker's logs and errors, under Workers & Pages, solar-calendar,
+  // Logs in the Cloudflare dashboard. The custom domain is set up there too, not here
+  "observability": { "enabled": true },
   // Workers Builds runs `wrangler preview` for branches other than main, which
   // needs this block; everything above applies to previews as it is
   "previews": {}

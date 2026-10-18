@@ -60,7 +60,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
-        globIgnores: ['**/*cyrillic*', '**/*vietnamese*'],
+        // social.png is only for link previews
+        globIgnores: ['**/*cyrillic*', '**/*vietnamese*', '**/social.png'],
         navigateFallback: 'index.html',
         navigateFallbackDenylist: [/\/feed\.ics/],
         // Take control of the page that installed it, so the first visit already works offline
