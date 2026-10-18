@@ -10,7 +10,7 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
 
 | Year view, dark mode | Choosing festivals and holidays |
 |---|---|
-| ![Every day of solar 2026 in one table, with Old Norse month names](docs/screenshots/year.png) | ![The Festivals menu, with Northern Ireland and Scotland bank holidays and Old Norse and Persian festivals chosen](docs/screenshots/festivals.png) |
+| ![Every day of solar 2026 in one table, with Old Norse month names](docs/screenshots/year.png) | ![The Festivals menu, with Northern Ireland, Scotland and Ireland holidays and Old Norse and Persian festivals chosen](docs/screenshots/festivals.png) |
 
 | On a phone | What a name means |
 |---|---|

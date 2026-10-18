@@ -473,3 +473,15 @@ Status:
 - [x] Lighthouse re-run after Phase 7: unchanged, 98 performance on mobile and 100 on desktop, 100 for accessibility, best practices and SEO. Main bundle 24 KB gzipped. README screenshots retaken, with one of the Festivals menu.
 - [x] Regions can be shown together (requested 17 Oct 2026): checkboxes, with a holiday kept in several regions on the same day shown once, as "UK" or the regions' names.
 - [x] Review fixes: focus kept when the festival lists redraw, a ticked pack kept when it's also the chosen names, `moves` values must be text, and the holidays workflow split so the job that runs the project's code can't write.
+
+### Phase 8: improvements after launch (18 Oct 2026)
+
+The site is live at https://solar.dealmobile.co.uk. Everything suggested was done except personal dates, which weren't wanted.
+
+- [x] First view no longer waits for other packs' festivals: on a throttled connection it appears after about 350 ms instead of 1.2 s. Lighthouse mobile stays at 96, held back by the render-blocking theme script and stylesheet, which are kept on purpose so the theme doesn't flash.
+- [x] Link previews: Open Graph tags and a 1200x630 image (`scripts/social-image.html`).
+- [x] Dependabot for npm and Actions, with a week's cooldown. Actions are pinned to commit SHAs. Security alerts and fixes are on.
+- [x] Worker logs (`observability` in `wrangler.jsonc`).
+- [x] `/today.svg` badge with today's solar date, and the next equinox or solstice in the line at the top. The day panel already had the countdown.
+- [x] Ireland's public holidays (from 1997) and US federal holidays (from 1971), checked against Nager.Date and OPM, with the US rule that moves Saturday's holiday to Friday.
+- [x] Cloudflare Web Analytics allowed in the CSP. It still has to be turned on for the domain in the dashboard.
