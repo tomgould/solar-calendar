@@ -14,6 +14,10 @@ updates:
       minor-and-patch:
         patterns: ['*']
         update-types: [minor, patch]
+    ignore:
+      # Node's types follow the Node version CI runs (22), not the newest
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
 
   # Actions are pinned to commits; Dependabot updates the commit and its
   # version comment together
