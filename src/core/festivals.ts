@@ -9,6 +9,8 @@ import { fromSolar, isValidSolarDate, solarYearOf } from './solar';
  * - { event: 'december-solstice' }: the local date of an equinox or solstice
  * - { gregorian: '11-01' }: a Gregorian month and day every year
  * - { gregorian: '01-19', weekday: 'friday' }: the first Friday on or after it
+ * - { gregorian: '02-01', weekday: 'monday', staysOn: 'friday' }: the same,
+ *   unless the date is itself a Friday, when it stays (St Brigid's Day)
  * - { solar: { month: 3, day: 1 } }: a date in this solar calendar
  * - { easter: true }: Western Easter Sunday
  * - { date: '2023-05-08' }: one day only, such as a coronation
@@ -20,7 +22,7 @@ import { fromSolar, isValidSolarDate, solarYearOf } from './solar';
  */
 export type FestivalRule = { offset?: number; before?: WeekdayName } & (
   | { event: Season }
-  | { gregorian: string; weekday?: WeekdayName }
+  | { gregorian: string; weekday?: WeekdayName; staysOn?: WeekdayName }
   | { solar: { month: number; day: number } }
   | { easter: true }
   | { date: string }
@@ -55,6 +57,7 @@ export function ruleProblem(rule: unknown): string | null {
   if ('gregorian' in r) {
     if (!isMonthDay(r.gregorian)) return '"gregorian" must be a month and day such as "11-01"';
     if (r.weekday !== undefined && !WEEKDAY_NAMES.includes(r.weekday as WeekdayName)) return `"weekday" must be one of ${WEEKDAY_NAMES.join(', ')}`;
+    if (r.staysOn !== undefined && (r.weekday === undefined || !WEEKDAY_NAMES.includes(r.staysOn as WeekdayName))) return '"staysOn" needs a "weekday", and must be a weekday name';
     return null;
   }
   if ('solar' in r) {
@@ -86,7 +89,8 @@ function baseDays(rule: FestivalRule, from: DayNumber, to: DayNumber): DayNumber
     // 29 February is skipped outside leap years
     return gregorianYears.filter((year) => day <= daysInGregorianMonth(year, month)).map((year) => {
       const start = dayFromCivil(year, month, day);
-      return rule.weekday ? start + ((WEEKDAY_NAMES.indexOf(rule.weekday) - weekday(start) + 7) % 7) : start;
+      if (!rule.weekday || (rule.staysOn && weekday(start) === WEEKDAY_NAMES.indexOf(rule.staysOn))) return start;
+      return start + ((WEEKDAY_NAMES.indexOf(rule.weekday) - weekday(start) + 7) % 7);
     });
   }
   if ('solar' in rule) return years(solarYearOf(from), solarYearOf(to)).map((year) => fromSolar(year, rule.solar.month, rule.solar.day));

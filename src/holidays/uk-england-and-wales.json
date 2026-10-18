@@ -1,6 +1,8 @@
 {
   "id": "uk-england-and-wales",
   "title": "England and Wales",
+  "country": "UK",
+  "dayOffName": "bank holiday",
   "description": "Bank holidays in England and Wales, with Easter Sunday",
   "lang": "en-GB",
   "festivals": [

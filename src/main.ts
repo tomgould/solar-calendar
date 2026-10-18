@@ -38,13 +38,13 @@ const state = {
   selected: 0 as DayNumber,
   view: 'month' as View,
   pack: null as unknown as NamePack,
-  /** Bank holidays shown: any of the UK regions */
+  /** Public holidays shown: any of the holiday sets */
   holidays: [] as HolidaySet[],
   /** Other packs whose festivals are shown too */
   extraPacks: [] as NamePack[],
 };
 
-/** Everything whose festivals are shown: the chosen names, any other packs ticked, and the bank holidays. */
+/** Everything whose festivals are shown: the chosen names, any other packs ticked, and the public holidays. */
 function festivalSources(): FestivalSource[] {
   return [state.pack, ...state.extraPacks.filter((pack) => pack.id !== state.pack.id), ...state.holidays];
 }
@@ -213,7 +213,7 @@ async function readUrl(): Promise<void> {
     state.pack = await loadPack(DEFAULT_PACK_ID);
     $('#names-status').textContent = 'Couldn’t load your chosen names, so the Gregorian names are shown. Check your connection.';
   }
-  // A list of regions; unset means all of them, and none stores ""
+  // A list of holiday sets; unset means all of them, and none stores ""
   state.holidays = holidaySets(storage.get('holidays') ?? defaultHolidaySetIds());
 }
 

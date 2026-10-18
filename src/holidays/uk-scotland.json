@@ -1,6 +1,8 @@
 {
   "id": "uk-scotland",
   "title": "Scotland",
+  "country": "UK",
+  "dayOffName": "bank holiday",
   "description": "Bank holidays in Scotland, with Easter Sunday",
   "lang": "en-GB",
   "festivals": [

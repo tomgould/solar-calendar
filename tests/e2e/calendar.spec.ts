@@ -131,15 +131,19 @@ test('marks festivals and explains them', async ({ page }) => {
   await expect(page.locator('.pack-group').first().locator('.pack-title').first()).toHaveText('Gregorian names');
 });
 
-test('shows bank holidays and other packs’ festivals, chosen in the Festivals menu', async ({ page }) => {
+test('shows public holidays and other packs’ festivals, chosen in the Festivals menu', async ({ page }) => {
   await page.goto('./?date=2026-12-25&names=gregorian');
+  // Everything is on to begin with: Christmas is a day off in every country
+  await expect(page.locator('#day-panel')).toContainText('Christmas Day (UK, Ireland and US)');
+  await expect(page.locator('#day-panel dt').first()).toHaveText('Public holiday');
   await page.locator('#festivals-button').click();
   const menu = page.locator('#festivals-menu');
-  // Everything is on to begin with
-  await expect(menu.getByRole('checkbox')).toHaveCount(11);
+  await expect(menu.getByRole('checkbox')).toHaveCount(13);
   for (const box of await menu.getByRole('checkbox').all()) await expect(box).toBeChecked();
   // Keep Northern Ireland, Scotland and the Persian festivals
   await menu.getByLabel('England and Wales').uncheck();
+  await menu.getByRole('checkbox', { name: /^Ireland/ }).uncheck();
+  await menu.getByRole('checkbox', { name: /^United States/ }).uncheck();
   for (const box of await menu.locator('input[name="festival-pack"]').all()) {
     if (await box.getAttribute('value') !== 'persian') await box.uncheck();
   }
@@ -251,9 +255,9 @@ test('ends a 371-day year with a leap week', async ({ page }) => {
 test('shows every day of the year in the year view', async ({ page }) => {
   await page.goto('./?view=year&date=2026-10-17&names=anglo-saxon');
   await expect(page.locator('#almanac td[data-day]')).toHaveCount(364);
-  const overflowing = await page.locator('#almanac thead th').evaluateAll((headers) =>
-    headers.filter((th) => th.scrollWidth > th.clientWidth + 1).length);
-  expect(overflowing).toBe(0);
+  // Names are fitted again once the display font arrives, so allow for that
+  await expect.poll(() => page.locator('#almanac thead th').evaluateAll((headers) =>
+    headers.filter((th) => th.scrollWidth > th.clientWidth + 1).length)).toBe(0);
 
   await page.goto('./?view=year&date=2028-06-01&names=gregorian');
   await expect(page.locator('#almanac td[data-day]')).toHaveCount(371);
@@ -300,8 +304,8 @@ test('adds the calendar to Google and other calendar apps, or downloads a year',
   await expect(dialog).toBeVisible();
 
   const feedUrl = await dialog.locator('#feed-url').inputValue();
-  // Every region's bank holidays and every other pack's festivals are on by default
-  expect(feedUrl).toMatch(/\/feed\.ics\?names=anglo-saxon&festivals=[a-z,-]+&holidays=uk-england-and-wales,uk-northern-ireland,uk-scotland$/);
+  // Every set of public holidays and every other pack's festivals are on by default
+  expect(feedUrl).toMatch(/\/feed\.ics\?names=anglo-saxon&festivals=[a-z,-]+&holidays=uk-england-and-wales,uk-northern-ireland,uk-scotland,ireland,us-federal$/);
   expect(new URL(feedUrl).searchParams.get('festivals')!.split(',')).toEqual(['coptic', 'egyptian', 'gaulish', 'old-norse', 'persian', 'roman', 'sky']);
   // Google's add-calendar page gets the feed as a webcal link; Apple and Outlook open it directly
   const webcal = feedUrl.replace(/^https?:/, 'webcal:');

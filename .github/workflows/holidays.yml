@@ -1,8 +1,10 @@
 name: Bank holidays
 
-# Every Monday, fetch GOV.UK's list of bank holidays. If it has changed (a new
-# one-off holiday, a moved one, or another year published), open a pull
-# request with the new list, saying whether src/holidays/ still matches it.
+# Every Monday, fetch the official lists of public holidays: GOV.UK's bank
+# holidays, OPM's US federal holidays, and Ireland's from Nager.Date. If one
+# has changed (a new one-off holiday, a moved one, or another year published),
+# open a pull request with the new lists, saying whether src/holidays/ still
+# matches them.
 #
 # The repository setting "Allow GitHub Actions to create and approve pull
 # requests" (Settings, Actions, General) must be on for the second job.
@@ -35,8 +37,11 @@ jobs:
         continue-on-error: true
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: gov-uk-bank-holidays
-          path: tests/fixtures/gov-uk-bank-holidays.json
+          name: holiday-lists
+          path: |
+            tests/fixtures/gov-uk-bank-holidays.json
+            tests/fixtures/opm-federal-holidays.json
+            tests/fixtures/nager-ireland-public-holidays.json
           retention-days: 7
 
   # Runs nothing from the project, and opens the pull request if the list changed
@@ -51,17 +56,17 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          name: gov-uk-bank-holidays
+          name: holiday-lists
           path: tests/fixtures
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           branch: update-bank-holidays
           delete-branch: true
-          commit-message: Update GOV.UK bank holidays
-          title: ${{ needs.check.outputs.matches == 'true' && 'GOV.UK bank holidays updated' || 'GOV.UK has a bank holiday the calendar is missing' }}
+          commit-message: Update the official holiday lists
+          title: ${{ needs.check.outputs.matches == 'true' && 'Official holiday lists updated' || 'An official list has a holiday the calendar is missing' }}
           body: |
-            GOV.UK's list of bank holidays (https://www.gov.uk/bank-holidays.json) has changed.
+            An official list of public holidays has changed: GOV.UK's (https://www.gov.uk/bank-holidays.json), OPM's (https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/holidays.ics) or Ireland's from Nager.Date (https://date.nager.at). The diff shows which.
 
-            ${{ needs.check.outputs.matches == 'true' && 'The rules in `src/holidays/` still give exactly its dates, so this can be merged as it is.' || 'The rules in `src/holidays/` no longer match it. Add the new or moved holiday to the region''s file in `src/holidays/` (a `date` rule for a one-off, or `moves` for a moved holiday) on a branch of your own, check it with `npm run holidays:check`, and merge that. Then run this workflow again from the Actions tab, and this pull request will pass.' }}
+            ${{ needs.check.outputs.matches == 'true' && 'The rules in `src/holidays/` still give exactly their dates, so this can be merged as it is.' || 'The rules in `src/holidays/` no longer match. Add the new or moved holiday to the right file in `src/holidays/` (a `date` rule for a one-off, or `moves` for a moved holiday) on a branch of your own, check it with `npm run holidays:check`, and merge that. Then run this workflow again from the Actions tab, and this pull request will pass.' }}
 
             Don't push to this branch: the workflow rewrites it each time it runs. Pull requests opened by a workflow don't start CI themselves; close and reopen this one to run it.
