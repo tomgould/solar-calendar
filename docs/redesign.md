@@ -476,7 +476,7 @@ Status:
 
 ### Phase 8: improvements after launch (18 Oct 2026)
 
-The site is live at https://solar.dealmobile.co.uk. Everything suggested was done except personal dates, which the user turned down.
+The site is live at https://solar.dealmobile.co.uk. Everything suggested was done except personal dates, which weren't wanted.
 
 - [x] First view no longer waits for other packs' festivals: on a throttled connection it appears after about 350 ms instead of 1.2 s. Lighthouse mobile stays at 96, held back by the render-blocking theme script and stylesheet, which are kept on purpose so the theme doesn't flash.
 - [x] Link previews: Open Graph tags and a 1200x630 image (`scripts/social-image.html`).
