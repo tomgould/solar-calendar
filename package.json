@@ -1,6 +1,7 @@
 {
   "name": "solar-calendar",
   "version": "1.0.0",
+  "license": "GPL-3.0-only",
   "description": "A calendar of 13 identical 28-day months, with the year starting at the spring equinox",
   "scripts": {
     "test": "npm run test:unit && npm run test:e2e",
