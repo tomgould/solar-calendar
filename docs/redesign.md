@@ -275,6 +275,7 @@ Neither had a regular 13-month calendar.
 - https://roger-pearse.com/weblog/2012/01/20/bede-on-yule
 - https://en.wikipedia.org/wiki/Shire_Reckoning
 - https://www2.math.uu.se/~svantejs/papers/calendars/iceland.pdf (Janson, the Icelandic calendar)
+- https://halo.internet.is/calendar.pdf (a mirror of the same Janson paper, for when the Uppsala server is unreachable)
 - https://en.wikipedia.org/wiki/Roman_calendar
 - https://en.wikipedia.org/wiki/Coligny_calendar
 
