@@ -15,6 +15,7 @@
     "test:e2e:report": "playwright show-report",
     "deploy": "CF_BEACON_TOKEN=717799c0f58d40e388c19030b5f25a1e npm run build && wrangler deploy",
     "holidays:update": "node scripts/update-holidays.mjs",
+    "fonts:fallbacks": "node scripts/font-fallbacks.mts",
     "holidays:check": "npm run holidays:update && vitest run tests/unit/holidays.test.ts"
   },
   "devDependencies": {
