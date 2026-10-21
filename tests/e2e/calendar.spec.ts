@@ -303,6 +303,8 @@ test('adds the calendar to Google and other calendar apps, or downloads a year',
   const dialog = page.locator('#calendar-dialog');
   await expect(dialog).toBeVisible();
 
+  // The other packs load once the first view is up; the links fill in when they have
+  await expect(dialog.locator('#feed-url')).toHaveValue(/&festivals=/);
   const feedUrl = await dialog.locator('#feed-url').inputValue();
   // Every set of public holidays and every other pack's festivals are on by default
   expect(feedUrl).toMatch(/\/feed\.ics\?names=anglo-saxon&festivals=[a-z,-]+&holidays=uk-england-and-wales,uk-northern-ireland,uk-scotland,ireland,us-federal$/);
@@ -331,6 +333,28 @@ test('adds the calendar to Google and other calendar apps, or downloads a year',
   await page.getByRole('button', { name: 'Year', exact: true }).click();
   await page.locator('#year-view').getByRole('button', { name: 'Add to calendar' }).click();
   await expect(dialog).toBeVisible();
+});
+
+test.describe('when the other packs arrive late', () => {
+  // The service worker would fetch the packs itself, out of the route's reach
+  test.use({ serviceWorkers: 'block' });
+
+  test('fills in Add to calendar once they have', async ({ page }) => {
+    let release!: () => void;
+    const held = new Promise<void>((resolve) => { release = resolve; });
+    await page.route(/\/persian-[^/]*\.js$/, async (route) => {
+      await held;
+      await route.continue();
+    });
+    await page.goto('./?date=2026-10-17&names=anglo-saxon', { waitUntil: 'commit' });
+    await page.locator('#month-view').getByRole('button', { name: 'Add to calendar' }).click();
+    const feed = page.locator('#feed-url');
+    await expect(feed).toHaveValue(/names=anglo-saxon/);
+    await expect(feed).not.toHaveValue(/persian/);
+    release();
+    await expect(feed).toHaveValue(/&festivals=[a-z,-]*persian/);
+    await expect(page.getByRole('link', { name: 'Apple Calendar or Outlook' })).toHaveAttribute('href', /persian/);
+  });
 });
 
 test('serves a badge with today’s solar date', async ({ page }) => {
