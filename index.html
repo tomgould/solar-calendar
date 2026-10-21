@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Solar calendar</title>
-  <meta name="description" content="A calendar of 13 identical 28-day months, with the year starting at the spring equinox.">
+  <title>Solar Calendar: 13 months of 28 days</title>
+  <meta name="description" content="13 months of 28 days, each starting on a Monday. The year begins at the March equinox, with a leap week when needed. Add it to your calendar app with a feed.">
   <link rel="canonical" href="https://solar.dealmobile.co.uk/">
   <!-- The preview shown when a link is shared; social.png is drawn by scripts/social-image.html -->
   <meta property="og:type" content="website">
@@ -17,6 +17,42 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Solar calendar: a month of 28 days in four rows, Monday to Sunday, under a strip of 13 month colours">
   <meta name="twitter:card" content="summary_large_image">
+  <!-- For search engines. A data block, never run, so the Content-Security-Policy needn't allow it.
+       The Person is the author's, with the same @id as on www.dealmobile.co.uk -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://solar.dealmobile.co.uk/#app",
+        "name": "Solar Calendar",
+        "url": "https://solar.dealmobile.co.uk/",
+        "description": "13 months of 28 days, each starting on a Monday. The year begins at the March equinox, with a leap week when needed. Add it to your calendar app with a feed.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "inLanguage": "en-GB",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+        "publisher": { "@id": "https://www.dealmobile.co.uk/#person" }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://solar.dealmobile.co.uk/#website",
+        "name": "Solar Calendar",
+        "url": "https://solar.dealmobile.co.uk/",
+        "inLanguage": "en-GB",
+        "publisher": { "@id": "https://www.dealmobile.co.uk/#person" }
+      },
+      {
+        "@type": "Person",
+        "@id": "https://www.dealmobile.co.uk/#person",
+        "name": "Tom Gould",
+        "url": "https://www.dealmobile.co.uk/"
+      }
+    ]
+  }
+  </script>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
@@ -141,7 +177,8 @@
       <section id="year-view" class="year" aria-labelledby="year-title" hidden>
         <div class="year-head">
           <div>
-            <h1 id="year-title" class="year-name"></h1>
+            <!-- An h1 while the year is on screen: render() swaps the two views' heading levels -->
+            <h2 id="year-title" class="year-name"></h2>
             <p id="year-span" class="year-meta"></p>
           </div>
           <div class="steps">

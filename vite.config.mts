@@ -4,9 +4,13 @@ import type { Connect, Plugin } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vitest/config';
 import { cloudflareBeacon } from './scripts/beacon.mjs';
+import { sitemap } from './scripts/sitemap.mjs';
 import { themeScript } from './scripts/theme.mjs';
 
 type Fetch = (request: Request) => Response | Promise<Response>;
+
+// The calendar, and the privacy, terms and disclaimer pages
+const pages = { main: 'index.html', privacy: 'privacy.html', terms: 'terms.html', disclaimer: 'disclaimer.html' };
 
 const serveWorker = (load: () => Promise<Fetch>): Connect.NextHandleFunction => async (req, res, next) => {
   const path = req.url;
@@ -37,12 +41,11 @@ const worker = (): Plugin => ({
 export default defineConfig({
   // Relative asset URLs, so the build works from any path (previews, sub-folders)
   base: './',
-  // The calendar, and the privacy, terms and disclaimer pages
   build: {
     // Every browser the app supports has modulepreload, so skip the polyfill's chunk
     modulePreload: { polyfill: false },
     rollupOptions: {
-      input: { main: 'index.html', privacy: 'privacy.html', terms: 'terms.html', disclaimer: 'disclaimer.html' },
+      input: pages,
     },
   },
   plugins: [
@@ -51,6 +54,8 @@ export default defineConfig({
     themeScript(),
     // Cloudflare Web Analytics, on a deploy build only (see scripts/beacon.mts)
     cloudflareBeacon(),
+    // sitemap.xml, listing every page at its canonical address (see scripts/sitemap.mts)
+    sitemap(Object.values(pages)),
     // Works offline after the first visit: precaches the app, every name pack,
     // the moon library and the Latin-script fonts
     VitePWA({
@@ -78,7 +83,8 @@ export default defineConfig({
         // social.png is only for link previews
         globIgnores: ['**/*cyrillic*', '**/*vietnamese*', '**/social.png'],
         navigateFallback: 'index.html',
-        navigateFallbackDenylist: [/\/feed\.ics/, /\/today\.svg/],
+        // Files that aren't pages: open them in the browser and they still come from the server
+        navigateFallbackDenylist: [/\/feed\.ics/, /\/today\.svg/, /\/robots\.txt/, /\/sitemap\.xml/],
         // Take control of the page that installed it, so the first visit already works offline
         clientsClaim: true,
       },
