@@ -42,6 +42,25 @@ function festivalSources(): FestivalSource[] {
 
 const $ = <T extends Element = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 
+// The page's own title, from index.html. It stays while today's month is on
+// screen, the view the calendar opens on, so the home page has a description
+// for search engines and bookmarks; other days and the year get a dated title
+const HOME_TITLE = document.title;
+
+/**
+ * Makes a view's heading an h1 or an h2, so the page's only h1 is the heading
+ * of the view on screen. The element is swapped for one of the other level,
+ * keeping its attributes and children.
+ */
+function setHeadingLevel(id: string, level: 1 | 2): void {
+  const heading = $(`#${id}`);
+  if (heading.tagName === `H${level}`) return;
+  const swapped = document.createElement(`h${level}`);
+  for (const { name, value } of [...heading.attributes]) swapped.setAttribute(name, value);
+  swapped.append(...heading.childNodes);
+  heading.replaceWith(swapped);
+}
+
 const storage = {
   get(key: string): string | null {
     try { return localStorage.getItem(key); } catch { return null; }
@@ -125,6 +144,8 @@ function render(focus = false): void {
   }
   $('#month-view').hidden = view !== 'month';
   $('#year-view').hidden = view !== 'year';
+  setHeadingLevel(view === 'month' ? 'year-title' : 'month-title', 2);
+  setHeadingLevel(view === 'month' ? 'month-title' : 'year-title', 1);
 
   if (view === 'month') {
     const events = monthEvents(date.year, date.month);
@@ -171,7 +192,7 @@ function render(focus = false): void {
   }
   restoreFocus();
 
-  document.title = `${solarLong(pack, date)}, solar calendar`;
+  document.title = view === 'month' && selected === today ? HOME_TITLE : `${solarLong(pack, date)}, solar calendar`;
   syncUrl(view === 'year' ? `year ${date.year}` : `month ${date.year}-${date.month}`);
 }
 
