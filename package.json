@@ -13,7 +13,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "CF_BEACON_TOKEN=717799c0f58d40e388c19030b5f25a1e npm run build && wrangler deploy",
     "holidays:update": "node scripts/update-holidays.mjs",
     "holidays:check": "npm run holidays:update && vitest run tests/unit/holidays.test.ts"
   },

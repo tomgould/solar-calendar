@@ -3,6 +3,7 @@ import { pathToFileURL } from 'node:url';
 import type { Connect, Plugin } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vitest/config';
+import { cloudflareBeacon } from './scripts/beacon.mjs';
 
 type Fetch = (request: Request) => Response | Promise<Response>;
 
@@ -45,6 +46,8 @@ export default defineConfig({
   },
   plugins: [
     worker(),
+    // Cloudflare Web Analytics, on a deploy build only (see scripts/beacon.mts)
+    cloudflareBeacon(),
     // Works offline after the first visit: precaches the app, every name pack,
     // the moon library and the Latin-script fonts
     VitePWA({

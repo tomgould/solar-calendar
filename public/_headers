@@ -1,5 +1,6 @@
 # Cloudflare Web Analytics, which sets no cookies, loads its beacon from
-# static.cloudflareinsights.com when it's turned on for the domain in the dashboard
+# static.cloudflareinsights.com and reports to cloudflareinsights.com; the deploy
+# build adds the script (scripts/beacon.mts)
 /*
   Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'
   X-Content-Type-Options: nosniff
