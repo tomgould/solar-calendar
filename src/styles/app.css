@@ -16,9 +16,12 @@
   --hue: oklch(var(--hue-l) 0 0);
 
   --font-display: 'Big Shoulders Variable', 'Arial Narrow', sans-serif;
-  /* Vazirmatn (Persian) and Noto Sans Coptic only cover their own scripts, so
+  /* The Andika fallbacks are Arial and Roboto reshaped to Andika's size
+     (fallbacks.css), so the swap when Andika arrives moves nothing. They cover
+     only Andika's letters, so the rest still go to the fonts after them.
+     Vazirmatn (Persian) and Noto Sans Coptic only cover their own scripts, so
      the browser uses them just for those letters */
-  --font-text: 'Andika', 'Noto Sans', 'Vazirmatn', 'Noto Sans Coptic', system-ui, sans-serif;
+  --font-text: 'Andika', 'Andika Fallback Arial', 'Andika Fallback Roboto', 'Noto Sans', 'Vazirmatn', 'Noto Sans Coptic', system-ui, sans-serif;
 
   --step--1: 0.8125rem;
   --step-0: 1rem;
@@ -113,7 +116,8 @@ a { color: inherit; text-underline-offset: 3px; }
 }
 .skip-link:focus { top: var(--space-2); }
 
-.is-loading { visibility: hidden; }
+/* The footer would show where the calendar will be, then jump down */
+.is-loading, .is-loading ~ .site-footer { visibility: hidden; }
 .page { max-width: 1120px; margin: 0 auto; padding: 0 var(--space-4) var(--space-8); }
 @media (min-width: 720px) { .page { padding-inline: var(--space-6); } }
 
