@@ -1,8 +1,10 @@
 # Cloudflare Web Analytics, which sets no cookies, loads its beacon from
 # static.cloudflareinsights.com and reports to cloudflareinsights.com; the deploy
 # build adds the script (scripts/beacon.mts)
+# The build writes the hash of the inline theme script over the placeholder in
+# script-src, so the policy allows that script and no other (scripts/theme.mts)
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' {{THEME_SCRIPT_HASH}} https://static.cloudflareinsights.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
