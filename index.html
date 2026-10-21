@@ -21,8 +21,8 @@
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#161c2e" media="(prefers-color-scheme: dark)">
-  <!-- Blocking on purpose: applies a saved theme before the first paint -->
-  <script src="./theme.js"></script>
+  <!-- Applies a saved theme before the first paint: the build puts the script inline here (scripts/theme.mts) -->
+  <script data-theme-script></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to the calendar</a>
