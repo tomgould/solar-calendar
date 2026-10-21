@@ -61,7 +61,7 @@ Run one test file with `npx vitest run tests/unit/core.test.ts` or `npx playwrig
 
 The site runs on Cloudflare Workers as static files (`wrangler.jsonc`).
 - Deploying: log in once with `npx wrangler login`, then `npm run deploy` builds and deploys.
-- Security headers: `public/_headers` sets them, including a strict Content-Security-Policy, so the app uses no inline scripts or styles.
+- Security headers: `public/_headers` sets them, including a strict Content-Security-Policy, so the app uses no inline styles, and no inline scripts apart from the one that applies the theme before the first paint. The build adds that script's hash to the policy.
 - CI: GitHub Actions runs the type check and all tests on every push and pull request.
 
 ## Adding a month name pack

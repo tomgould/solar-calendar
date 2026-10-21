@@ -440,9 +440,12 @@ test.describe('under the production Content-Security-Policy', () => {
   // A service worker would answer requests before page.route could add the policy
   test.use({ serviceWorkers: 'block' });
 
-  test('works without anything being blocked', async ({ page }) => {
-    // The same policy Cloudflare serves, from public/_headers
-    const csp = /Content-Security-Policy: (.+)/.exec(readFileSync('public/_headers', 'utf8'))![1];
+  /** Serves every response with the policy Cloudflare serves, and records anything it blocks. */
+  async function underPolicy(page: Page): Promise<() => Promise<string[]>> {
+    // The built _headers, which has the inline theme script's hash in place of
+    // the placeholder in public/_headers
+    const csp = /Content-Security-Policy: (.+)/.exec(readFileSync('dist/_headers', 'utf8'))![1];
+    expect(csp).toMatch(/script-src 'self' 'sha256-[A-Za-z0-9+/]{43}=' /);
     await page.route('**/*', async (route) => {
       const response = await route.fetch();
       await route.fulfill({ response, headers: { ...response.headers(), 'content-security-policy': csp } });
@@ -457,20 +460,62 @@ test.describe('under the production Content-Security-Policy', () => {
         blocked.push(`${event.violatedDirective} ${event.blockedURI}`);
       });
     });
+    return () => page.evaluate(() => (window as unknown as { blocked: string[] }).blocked);
+  }
 
+  test('works without anything being blocked', async ({ page }) => {
+    const blocked = await underPolicy(page);
     await page.goto('./?date=2026-10-17&names=anglo-saxon');
     await expect(page.locator('#month-name')).toHaveText('Winterfylleþ');
     await expect(page.locator('#day-panel [data-moon]')).not.toHaveText(/^\s*$/);
     await page.locator('#about-name').click();
     await page.goto('./?view=year&date=2026-10-17');
     await expect(page.locator('#almanac td[data-day]')).toHaveCount(364);
-    expect(await page.evaluate(() => (window as unknown as { blocked: string[] }).blocked)).toEqual([]);
-    await page.goto('./privacy');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Privacy policy');
-    expect(await page.evaluate(() => (window as unknown as { blocked: string[] }).blocked)).toEqual([]);
+    expect(await blocked()).toEqual([]);
+    for (const [path, heading] of [['./privacy', 'Privacy policy'], ['./terms', 'Terms of use'], ['./disclaimer', 'Disclaimer']]) {
+      await page.goto(path);
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(heading);
+      expect(await blocked(), path).toEqual([]);
+    }
     // Font requests can still be in flight; let them finish unintercepted
     await page.unrouteAll({ behavior: 'ignoreErrors' });
   });
+
+  // The saved choice has to win over the system setting before anything paints,
+  // so the inline script must run, under the policy, before <body> is parsed
+  for (const [saved, system] of [['dark', 'light'], ['light', 'dark']] as const) {
+    test(`applies a saved ${saved} theme before the first paint, on every page`, async ({ page }) => {
+      const blocked = await underPolicy(page);
+      await page.emulateMedia({ colorScheme: system });
+      await page.addInitScript((theme) => {
+        localStorage.setItem('theme', theme);
+        const seen = window as unknown as { themeAtBody?: string | null };
+        new MutationObserver((_, observer) => {
+          if (!document.body) return;
+          seen.themeAtBody = document.documentElement.dataset.theme ?? null;
+          observer.disconnect();
+        }).observe(document, { childList: true, subtree: true });
+      }, saved);
+      for (const path of ['./', './privacy', './terms', './disclaimer']) {
+        await page.goto(path);
+        expect(await page.evaluate(() => (window as unknown as { themeAtBody?: string | null }).themeAtBody), path).toBe(saved);
+        await expect(page.locator('html'), path).toHaveAttribute('data-theme', saved);
+      }
+      expect(await blocked()).toEqual([]);
+      await page.unrouteAll({ behavior: 'ignoreErrors' });
+    });
+  }
+});
+
+test('preloads the main text font, and the stylesheet uses that same download', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'Checks the built page, one project');
+  await page.goto('./');
+  const href = await page.locator('link[rel="preload"][as="font"]').getAttribute('href');
+  expect(href).toMatch(/^\.\/assets\/andika-latin-400-normal-[\w-]+\.woff2$/);
+  // A preload the stylesheet couldn't reuse (a crossorigin mismatch, say) would download twice
+  await expect.poll(() => page.evaluate(() => document.fonts.check('16px Andika'))).toBe(true);
+  const fetches = await page.evaluate((url) => performance.getEntriesByType('resource').filter((entry) => entry.name === new URL(url, location.href).href).length, href!);
+  expect(fetches).toBe(1);
 });
 
 test('works offline after the first visit', async ({ page, context }, testInfo) => {
