@@ -9,4 +9,6 @@ import '@fontsource/vazirmatn/arabic-400.css';
 import '@fontsource/noto-sans-coptic/coptic-400.css';
 // Greek letters Andika lacks, such as the θ used in IPA pronunciations
 import '@fontsource/noto-sans/greek-400.css';
+// Arial and Roboto shaped like Andika, for the moment before Andika arrives
+import './styles/fallbacks.css';
 import './styles/app.css';
