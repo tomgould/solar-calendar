@@ -531,6 +531,44 @@ test.describe('under the production Content-Security-Policy', () => {
   }
 });
 
+test.describe('when the fonts arrive late', () => {
+  // The service worker would fetch the fonts itself, out of the route's reach
+  test.use({ serviceWorkers: 'block' });
+
+  test('barely moves the page as Andika replaces its fallback', async ({ page }, testInfo) => {
+    test.skip(!['chromium', 'phone'].includes(testInfo.project.name), 'Only Chromium reports layout shifts');
+    // A common phone width, and the desktop width that moved most before the
+    // fallbacks (0.69). At 412 px one line of the location notice fits Andika
+    // with 4 px to spare, and Chrome on Linux draws text at whole pixel sizes,
+    // so there the fallback still wraps it onto another line (about 0.13)
+    await page.setViewportSize(testInfo.project.name === 'phone' ? { width: 390, height: 844 } : { width: 1024, height: 800 });
+    await page.route(/\.woff2$/, async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await route.continue();
+    });
+    await page.addInitScript(() => {
+      const seen = window as unknown as { layoutShift: number };
+      seen.layoutShift = 0;
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries() as (PerformanceEntry & { value: number; hadRecentInput: boolean })[]) {
+          if (!entry.hadRecentInput) seen.layoutShift += entry.value;
+        }
+      }).observe({ type: 'layout-shift', buffered: true });
+    });
+    const loaded = (family: string) => page.evaluate((name) => [...document.fonts].some((face) => face.family === name && face.status === 'loaded'), family);
+
+    // Fonts asked for before the load event hold it up, so don't wait for it
+    await page.goto('./?date=2026-10-17', { waitUntil: 'commit' });
+    await expect(page.locator('#today-line')).toContainText('Today is');
+    // The reshaped Arial (Liberation Sans on Linux) stands in while Andika loads
+    await expect.poll(() => loaded('Andika Fallback Arial')).toBe(true);
+    expect(await loaded('Andika')).toBe(false);
+    await expect.poll(() => loaded('Andika'), { timeout: 10_000 }).toBe(true);
+    await page.waitForTimeout(500);
+    expect(await page.evaluate(() => (window as unknown as { layoutShift: number }).layoutShift)).toBeLessThan(0.1);
+  });
+});
+
 test('works offline after the first visit', async ({ page, context }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium', 'Service worker test, one project');
   await page.goto('./?date=2026-10-17&names=anglo-saxon');
