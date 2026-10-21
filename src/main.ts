@@ -7,7 +7,7 @@ import { type FestivalSource, festivalsFrom } from './names/festivals';
 import { DEFAULT_PACK_ID, PACK_IDS, isPackId, loadAllPacks, loadPack } from './names/registry';
 import type { HolidaySet, NamePack } from './names/schema';
 import { buildIcs } from './feed/ics';
-import { moonPhaseName, moonQuarters } from './sky/moon';
+import { loadMoonAfter, moonPhaseName, moonQuarters } from './sky/moon';
 import { type Place, isPlace, placeTimeZone, sunTimes } from './sky/sun';
 import { renderDayPanel, sunText } from './ui/day-panel';
 import { GoToDate } from './ui/goto';
@@ -219,6 +219,14 @@ async function loadExtraPacks(ids: string[]): Promise<void> {
   state.extraPacks = loaded.flatMap((result) => (result.status === 'fulfilled' ? [result.value] : []));
 }
 
+// The moon library and the other packs wait until the first view has painted
+// with its fonts, so they don't compete with it for the connection
+let firstViewShown!: () => void;
+const firstView = new Promise<void>((resolve) => { firstViewShown = resolve; });
+loadMoonAfter(firstView);
+// Every pack's festivals show until the viewer unticks some; none stores ""
+const extrasLoaded = firstView.then(() => loadExtraPacks((storage.get('festivals') ?? PACK_IDS.join(',')).split(',')));
+
 /** The festivals and holidays shown, as feed parameters: "&festivals=persian&holidays=uk-scotland" */
 function festivalParams(): string {
   const extras = state.extraPacks.filter((pack) => pack.id !== state.pack.id && pack.festivals?.length).map((pack) => pack.id).join(',');
@@ -238,7 +246,9 @@ function renderCalendarApps(year: number, pack: NamePack): void {
   $<HTMLAnchorElement>('#add-google').href = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcal)}`;
 }
 
-function downloadYear(): void {
+async function downloadYear(): Promise<void> {
+  // A year downloaded straight after the page opens still gets every festival
+  await extrasLoaded;
   const { year } = toSolar(state.selected);
   const text = buildIcs({ pack: state.pack, extra: festivalSources().slice(1), from: yearStart(year), to: yearStart(year + 1) - 1, now: Date.now() });
   const link = document.createElement('a');
@@ -569,10 +579,15 @@ function wire(): void {
   });
 }
 
+/** Resolves once the browser has painted, or at once in a hidden tab, which doesn't paint. */
+function afterPaint(): Promise<void> {
+  return new Promise((resolve) => {
+    if (document.visibilityState === 'hidden') resolve();
+    else requestAnimationFrame(() => setTimeout(resolve));
+  });
+}
+
 async function start(): Promise<void> {
-  // Every pack's festivals show until the viewer unticks some; none stores "".
-  // They load alongside the chosen names, but the first view doesn't wait for them
-  const extras = loadExtraPacks((storage.get('festivals') ?? PACK_IDS.join(',')).split(','));
   await readUrl();
   wire();
   render();
@@ -589,8 +604,13 @@ async function start(): Promise<void> {
     render();
     restoringFromHistory = false;
   });
-  await extras;
+  await document.fonts.ready;
+  await afterPaint();
+  firstViewShown();
+  await extrasLoaded;
   render();
+  // Add to calendar may have been opened before the other packs arrived
+  if ($<HTMLDialogElement>('#calendar-dialog').open) renderCalendarApps(toSolar(state.selected).year, state.pack);
 }
 
 start().catch((error: unknown) => {

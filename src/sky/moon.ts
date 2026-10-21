@@ -1,8 +1,13 @@
 import { type DayNumber, civilFromDay, localDayOfInstant } from '../core/days';
 import type { MoonQuarter, SkyEvent } from '../core/sky';
 
-// astronomy-engine is only needed for the moon, so it loads on demand
-const engine = () => import('astronomy-engine');
+// astronomy-engine is only needed for the moon, so it loads on demand, and
+// not before `waitFor` settles
+let gate: Promise<unknown> = Promise.resolve();
+export function loadMoonAfter(waitFor: Promise<unknown>): void {
+  gate = waitFor;
+}
+const engine = () => gate.then(() => import('astronomy-engine'));
 
 const QUARTERS: readonly MoonQuarter[] = ['new-moon', 'first-quarter', 'full-moon', 'last-quarter'];
 

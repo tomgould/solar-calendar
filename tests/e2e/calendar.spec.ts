@@ -303,6 +303,8 @@ test('adds the calendar to Google and other calendar apps, or downloads a year',
   const dialog = page.locator('#calendar-dialog');
   await expect(dialog).toBeVisible();
 
+  // The other packs load once the first view is up; the links fill in when they have
+  await expect(dialog.locator('#feed-url')).toHaveValue(/&festivals=/);
   const feedUrl = await dialog.locator('#feed-url').inputValue();
   // Every set of public holidays and every other pack's festivals are on by default
   expect(feedUrl).toMatch(/\/feed\.ics\?names=anglo-saxon&festivals=[a-z,-]+&holidays=uk-england-and-wales,uk-northern-ireland,uk-scotland,ireland,us-federal$/);
@@ -331,6 +333,28 @@ test('adds the calendar to Google and other calendar apps, or downloads a year',
   await page.getByRole('button', { name: 'Year', exact: true }).click();
   await page.locator('#year-view').getByRole('button', { name: 'Add to calendar' }).click();
   await expect(dialog).toBeVisible();
+});
+
+test.describe('when the other packs arrive late', () => {
+  // The service worker would fetch the packs itself, out of the route's reach
+  test.use({ serviceWorkers: 'block' });
+
+  test('fills in Add to calendar once they have', async ({ page }) => {
+    let release!: () => void;
+    const held = new Promise<void>((resolve) => { release = resolve; });
+    await page.route(/\/persian-[^/]*\.js$/, async (route) => {
+      await held;
+      await route.continue();
+    });
+    await page.goto('./?date=2026-10-17&names=anglo-saxon', { waitUntil: 'commit' });
+    await page.locator('#month-view').getByRole('button', { name: 'Add to calendar' }).click();
+    const feed = page.locator('#feed-url');
+    await expect(feed).toHaveValue(/names=anglo-saxon/);
+    await expect(feed).not.toHaveValue(/persian/);
+    release();
+    await expect(feed).toHaveValue(/&festivals=[a-z,-]*persian/);
+    await expect(page.getByRole('link', { name: 'Apple Calendar or Outlook' })).toHaveAttribute('href', /persian/);
+  });
 });
 
 test('serves a badge with today’s solar date', async ({ page }) => {
@@ -440,9 +464,12 @@ test.describe('under the production Content-Security-Policy', () => {
   // A service worker would answer requests before page.route could add the policy
   test.use({ serviceWorkers: 'block' });
 
-  test('works without anything being blocked', async ({ page }) => {
-    // The same policy Cloudflare serves, from public/_headers
-    const csp = /Content-Security-Policy: (.+)/.exec(readFileSync('public/_headers', 'utf8'))![1];
+  /** Serves every response with the policy Cloudflare serves, and records anything it blocks. */
+  async function underPolicy(page: Page): Promise<() => Promise<string[]>> {
+    // The built _headers, which has the inline theme script's hash in place of
+    // the placeholder in public/_headers
+    const csp = /Content-Security-Policy: (.+)/.exec(readFileSync('dist/_headers', 'utf8'))![1];
+    expect(csp).toMatch(/script-src 'self' 'sha256-[A-Za-z0-9+/]{43}=' /);
     await page.route('**/*', async (route) => {
       const response = await route.fetch();
       await route.fulfill({ response, headers: { ...response.headers(), 'content-security-policy': csp } });
@@ -457,20 +484,51 @@ test.describe('under the production Content-Security-Policy', () => {
         blocked.push(`${event.violatedDirective} ${event.blockedURI}`);
       });
     });
+    return () => page.evaluate(() => (window as unknown as { blocked: string[] }).blocked);
+  }
 
+  test('works without anything being blocked', async ({ page }) => {
+    const blocked = await underPolicy(page);
     await page.goto('./?date=2026-10-17&names=anglo-saxon');
     await expect(page.locator('#month-name')).toHaveText('Winterfylleþ');
     await expect(page.locator('#day-panel [data-moon]')).not.toHaveText(/^\s*$/);
     await page.locator('#about-name').click();
     await page.goto('./?view=year&date=2026-10-17');
     await expect(page.locator('#almanac td[data-day]')).toHaveCount(364);
-    expect(await page.evaluate(() => (window as unknown as { blocked: string[] }).blocked)).toEqual([]);
-    await page.goto('./privacy');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Privacy policy');
-    expect(await page.evaluate(() => (window as unknown as { blocked: string[] }).blocked)).toEqual([]);
+    expect(await blocked()).toEqual([]);
+    for (const [path, heading] of [['./privacy', 'Privacy policy'], ['./terms', 'Terms of use'], ['./disclaimer', 'Disclaimer']]) {
+      await page.goto(path);
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(heading);
+      expect(await blocked(), path).toEqual([]);
+    }
     // Font requests can still be in flight; let them finish unintercepted
     await page.unrouteAll({ behavior: 'ignoreErrors' });
   });
+
+  // The saved choice has to win over the system setting before anything paints,
+  // so the inline script must run, under the policy, before <body> is parsed
+  for (const [saved, system] of [['dark', 'light'], ['light', 'dark']] as const) {
+    test(`applies a saved ${saved} theme before the first paint, on every page`, async ({ page }) => {
+      const blocked = await underPolicy(page);
+      await page.emulateMedia({ colorScheme: system });
+      await page.addInitScript((theme) => {
+        localStorage.setItem('theme', theme);
+        const seen = window as unknown as { themeAtBody?: string | null };
+        new MutationObserver((_, observer) => {
+          if (!document.body) return;
+          seen.themeAtBody = document.documentElement.dataset.theme ?? null;
+          observer.disconnect();
+        }).observe(document, { childList: true, subtree: true });
+      }, saved);
+      for (const path of ['./', './privacy', './terms', './disclaimer']) {
+        await page.goto(path);
+        expect(await page.evaluate(() => (window as unknown as { themeAtBody?: string | null }).themeAtBody), path).toBe(saved);
+        await expect(page.locator('html'), path).toHaveAttribute('data-theme', saved);
+      }
+      expect(await blocked()).toEqual([]);
+      await page.unrouteAll({ behavior: 'ignoreErrors' });
+    });
+  }
 });
 
 test('works offline after the first visit', async ({ page, context }, testInfo) => {
