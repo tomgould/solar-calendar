@@ -9,8 +9,9 @@ const headers = readFileSync('public/_headers', 'utf8');
 const policy = withThemeScriptHash(headers);
 const directive = (name: string) => new RegExp(`(?:^|; )${name} ([^;\\n]+)`, 'm').exec(policy)![1].split(' ');
 const sha256 = (text: string) => `'sha256-${createHash('sha256').update(text, 'utf8').digest('base64')}'`;
-// The text of each inline script: those without a src
-const inlineScripts = (html: string) => [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)].map((match) => match[1]);
+// The text of each inline script: those without a src. JSON-LD is left out: it
+// is a data block, which browsers never run, so the policy needn't allow it
+const inlineScripts = (html: string) => [...html.matchAll(/<script(?![^>]*\b(?:src=|type="application\/ld\+json"))[^>]*>([\s\S]*?)<\/script>/g)].map((match) => match[1]);
 
 describe('the inline theme script', () => {
   it('goes in every page, and theme.js is gone', () => {
