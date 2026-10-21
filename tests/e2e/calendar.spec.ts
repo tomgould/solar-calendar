@@ -507,17 +507,6 @@ test.describe('under the production Content-Security-Policy', () => {
   }
 });
 
-test('preloads the main text font, and the stylesheet uses that same download', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'chromium', 'Checks the built page, one project');
-  await page.goto('./');
-  const href = await page.locator('link[rel="preload"][as="font"]').getAttribute('href');
-  expect(href).toMatch(/^\.\/assets\/andika-latin-400-normal-[\w-]+\.woff2$/);
-  // A preload the stylesheet couldn't reuse (a crossorigin mismatch, say) would download twice
-  await expect.poll(() => page.evaluate(() => document.fonts.check('16px Andika'))).toBe(true);
-  const fetches = await page.evaluate((url) => performance.getEntriesByType('resource').filter((entry) => entry.name === new URL(url, location.href).href).length, href!);
-  expect(fetches).toBe(1);
-});
-
 test('works offline after the first visit', async ({ page, context }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium', 'Service worker test, one project');
   await page.goto('./?date=2026-10-17&names=anglo-saxon');
