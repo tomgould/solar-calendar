@@ -606,6 +606,60 @@ test('links to the privacy policy, terms, disclaimer, source code and other proj
   await expect(page.locator('#location-notice').getByRole('link', { name: 'Privacy policy' })).toHaveAttribute('href', './privacy');
 });
 
+test('lists every page in sitemap.xml at its canonical address, and robots.txt names it', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'Checks served files, one project');
+  const robots = await page.request.get('./robots.txt');
+  expect(robots.headers()['content-type']).toMatch(/^text\/plain/);
+  expect(await robots.text()).toMatch(/^Sitemap: https:\/\/solar\.dealmobile\.co\.uk\/sitemap\.xml$/m);
+
+  const sitemap = await page.request.get('./sitemap.xml');
+  expect(sitemap.status()).toBe(200);
+  expect(sitemap.headers()['content-type']).toMatch(/xml/);
+  const xml = await sitemap.text();
+  const canonicals: (string | null)[] = [];
+  for (const path of ['./', ...LEGAL_PAGES]) {
+    await page.goto(path);
+    canonicals.push(await page.locator('link[rel="canonical"]').getAttribute('href'));
+  }
+  // It parses as XML, in the sitemap namespace
+  const entries = await page.evaluate((text) => {
+    const doc = new DOMParser().parseFromString(text, 'application/xml');
+    if (doc.querySelector('parsererror')) return null;
+    const ns = 'http://www.sitemaps.org/schemas/sitemap/0.9';
+    return [...doc.getElementsByTagNameNS(ns, 'url')].map((url) =>
+      [url.getElementsByTagNameNS(ns, 'loc')[0]?.textContent, url.getElementsByTagNameNS(ns, 'lastmod')[0]?.textContent]);
+  }, xml);
+  expect(entries?.map(([loc]) => loc)).toEqual(canonicals);
+  for (const [, lastmod] of entries!) expect(lastmod).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+});
+
+test('describes itself to search engines, with one h1 at a time', async ({ page }) => {
+  await page.goto('./');
+  await expect(page.locator('#today-line')).toContainText('Today is');
+  const data = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent())!);
+  expect(data['@graph'].map((thing: { '@type': string }) => thing['@type'])).toEqual(['WebApplication', 'WebSite', 'Person']);
+  // The page's own title stays while today's month is on screen
+  await expect(page).toHaveTitle('Solar Calendar: 13 months of 28 days');
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expect(page.locator('h1')).toHaveId('month-title');
+
+  // The year's heading takes over as the h1, looking just the same
+  const monthSize = await page.locator('#month-title').evaluate((heading) => getComputedStyle(heading).fontSize);
+  await page.locator('[data-view="year"]').click();
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expect(page.locator('h1')).toHaveId('year-title');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Solar year \d{4}$/);
+  expect(await page.locator('#year-title').evaluate((heading) => getComputedStyle(heading).fontSize)).toBe(monthSize);
+  await expect(page).toHaveTitle(/, solar calendar$/);
+
+  await page.locator('[data-view="month"]').click();
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveId('month-title');
+  await expect(page.locator('#month-name')).not.toBeEmpty();
+  await page.locator('#next-month').click();
+  await expect(page).toHaveTitle(/, solar calendar$/);
+});
+
 test('passes automated accessibility checks', async ({ page }, testInfo) => {
   test.skip(!['chromium', 'phone'].includes(testInfo.project.name), 'Runs in one desktop and one phone project');
   const check = async (where: string) => {
