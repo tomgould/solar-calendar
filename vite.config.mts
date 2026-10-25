@@ -60,9 +60,10 @@ export default defineConfig({
     // the moon library and the Latin-script fonts
     VitePWA({
       registerType: 'autoUpdate',
-      // An external, deferred registerSW.js: the Content-Security-Policy needs no
-      // inline script, and it doesn't hold up the first paint
-      injectRegister: 'script-defer',
+      // Each page loads public/registerSW.js, external and deferred: the
+      // Content-Security-Policy needs no inline script, it doesn't hold up the
+      // first paint, and unlike the plugin's own it catches a registration cut short
+      injectRegister: false,
       manifest: {
         name: 'Solar Calendar',
         short_name: 'Solar Calendar',
