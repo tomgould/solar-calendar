@@ -60,6 +60,8 @@
   <meta name="theme-color" content="#11100e" media="(prefers-color-scheme: dark)">
   <!-- Applies a saved theme before the first paint: the build puts the script inline here (scripts/theme.mts) -->
   <script data-theme-script></script>
+  <!-- Without JavaScript, hides what can't work (public/noscript.css) -->
+  <noscript><link rel="stylesheet" href="/noscript.css"></noscript>
 </head>
 <body>
   <a class="visually-hidden focusable skip-link" href="#main">Skip to the calendar</a>
@@ -92,6 +94,7 @@
         </fieldset>
       </div>
     </header>
+    <noscript><p class="kit-column noscript">This calendar needs JavaScript to work out the dates. The privacy policy, terms and disclaimer below work without it.</p></noscript>
 
     <div id="names-menu" class="names-menu" popover role="dialog" aria-labelledby="names-menu-title">
       <h2 id="names-menu-title" class="menu-title">Month names</h2>
@@ -291,7 +294,6 @@
       </div>
     </form>
   </dialog>
-  <noscript><p class="kit-column">This calendar needs JavaScript to work out the dates.</p></noscript>
   <script type="module" src="/src/main.ts"></script>
   <script src="/kit/js/theme-switch.js" defer></script>
   <script src="/registerSW.js" defer></script>

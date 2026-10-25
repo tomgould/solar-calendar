@@ -451,6 +451,10 @@ test('prints the month or the year on one page', async ({ page }, testInfo) => {
   await expect(page.locator('#day-panel')).toBeHidden();
   await expect(page.locator('#month-meaning')).toContainText('Winterfylleþ: Bede says');
   expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(255, 255, 255)');
+  // Ink on white, with the accent kept for what means something
+  await expect(page.locator('#month-year')).toHaveCSS('color', 'rgb(0, 0, 0)');
+  await expect(page.locator('#month-name')).toHaveCSS('color', 'rgb(0, 0, 0)');
+  await expect(page.locator('[data-theme-switch]')).toBeHidden();
   expect(await pages()).toBe(1);
 
   // The busiest month for festivals, with every pack and holiday on
@@ -465,6 +469,21 @@ test('prints the month or the year on one page', async ({ page }, testInfo) => {
   await page.emulateMedia({ media: 'print' });
   await expect(page.locator('#almanac')).toBeVisible();
   expect(await pages()).toBe(1);
+
+  // The legal pages print upright, as reading, without the masthead or footer
+  for (const path of LEGAL_PAGES) {
+    await page.emulateMedia({ media: 'screen' });
+    await page.goto(path);
+    await page.emulateMedia({ media: 'print', colorScheme: 'dark' });
+    await expect(page.locator('.masthead'), path).toBeHidden();
+    await expect(page.locator('.site-footer'), path).toBeHidden();
+    await expect(page.getByRole('heading', { level: 1 }), path).toHaveCSS('color', 'rgb(0, 0, 0)');
+    expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), path).toBe('rgb(255, 255, 255)');
+    const pdf = await page.pdf({ preferCSSPageSize: true, printBackground: true });
+    // A4 upright: 595 by 842 points
+    const [, width, height] = /\/MediaBox \[0 0 ([\d.]+) ([\d.]+)\]/.exec(pdf.toString('latin1'))!.map(Number);
+    expect([Math.round(width), Math.round(height)], path).toEqual([595, 842]);
+  }
 });
 
 test('goes back to the previous month with the Back button', async ({ page }) => {
@@ -699,11 +718,89 @@ test('passes automated accessibility checks', async ({ page }, testInfo) => {
     await check(`meaning dialog, ${colorScheme}`);
     await page.goto('./?view=year&date=2026-10-17&names=anglo-saxon');
     await check(`year view, ${colorScheme}`);
-    for (const path of LEGAL_PAGES) {
+    for (const path of [...LEGAL_PAGES, './404.html']) {
       await page.goto(path);
       await check(`${path}, ${colorScheme}`);
     }
   }
+  // The narrowest phone, and 400% zoom
+  await page.setViewportSize({ width: 320, height: 640 });
+  await page.goto('./?date=2026-10-17&names=anglo-saxon');
+  await check('month view at 320 px');
+});
+
+test('fits every width from 320 px to 1920, a phone on its side, and 200% and 400% zoom', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'Sizes are set here, one project');
+  // 640 and 320 px are a 1280 px screen at 200% and 400% zoom (WCAG 1.4.10, reflow)
+  const sizes = [[320, 640], [375, 812], [390, 844], [640, 400], [768, 1024], [844, 390], [1024, 768], [1440, 900], [1920, 1080]];
+  for (const [width, height] of sizes) {
+    await page.setViewportSize({ width, height });
+    for (const path of ['./?date=2026-12-21&names=anglo-saxon', './?view=year', ...LEGAL_PAGES, './404.html']) {
+      await page.goto(path);
+      await expect(page.locator('h1')).toBeVisible();
+      const where = `${path} at ${width} by ${height}`;
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth), where).toBeLessThanOrEqual(0);
+      // The masthead's links and controls stay on screen
+      for (const box of await page.locator('.masthead a, .masthead button, .masthead label').evaluateAll((elements) =>
+        elements.filter((element) => element.getClientRects().length > 0).map((element) => element.getBoundingClientRect().right))) {
+        expect(box, where).toBeLessThanOrEqual(width);
+      }
+    }
+  }
+});
+
+test('keeps today, the selected day and pressed buttons visible in Windows high contrast', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'forced-colors emulation is Chromium only');
+  await page.emulateMedia({ forcedColors: 'active' });
+  await page.goto('./');
+  const background = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  // Today is selected when the calendar opens: outlined, and its numeral on the system highlight
+  await expect(page.locator(selectedCell)).toHaveCSS('outline-style', 'solid');
+  expect(await page.locator('#grid-body [aria-current="date"] .num').evaluate((element) => getComputedStyle(element).backgroundColor)).not.toBe(background);
+  const [pressed, unpressed] = await Promise.all(['true', 'false'].map((value) =>
+    page.locator(`.segmented button[aria-pressed="${value}"]`).evaluate((element) => getComputedStyle(element).backgroundColor)));
+  expect(pressed).not.toBe(unpressed);
+  // Pills keep an edge, as their outline is a shadow the system removes
+  await expect(page.locator('#print-month')).toHaveCSS('border-top-style', 'solid');
+});
+
+test('follows reduced motion and more contrast', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'Media emulation, one project');
+  await page.emulateMedia({ reducedMotion: 'reduce', contrast: 'more' });
+  await page.goto('./?date=2026-10-17&names=gregorian');
+  await expect(page.locator('.strip .bar').first()).toHaveCSS('transition-duration', '0s');
+  // Muted text takes the stronger ink
+  const inkSoft = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--ink-soft').trim());
+  expect(inkSoft).toBe('#2d2820');
+  await expect(page.locator('.greg').nth(3)).toHaveCSS('color', 'rgb(45, 40, 32)');
+});
+
+test.describe('without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  test('says why, hides what can’t work, and keeps the footer’s links', async ({ page }) => {
+    await page.goto('./');
+    await expect(page.locator('.noscript')).toBeVisible();
+    await expect(page.locator('.noscript')).toBeInViewport();
+    await expect(page.locator('#main')).toBeHidden();
+    await expect(page.locator('.controls')).toBeHidden();
+    await expect(page.locator('[data-theme-switch]')).toBeHidden();
+    await expect(page.locator('.site-footer').getByRole('link', { name: 'Privacy policy' })).toBeVisible();
+    await page.goto('./privacy');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Privacy policy');
+    await expect(page.locator('[data-theme-switch]')).toBeHidden();
+  });
+});
+
+test('has a page for missing addresses, in the calendar’s style', async ({ page }) => {
+  // Cloudflare serves it for any missing path (not_found_handling); vite preview doesn't
+  expect(readFileSync('wrangler.jsonc', 'utf8')).toMatch(/"not_found_handling": "404-page"/);
+  await page.goto('./404.html');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page not found');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
+  // Absolute, since it can be served at any depth
+  await expect(page.getByRole('link', { name: 'Open the calendar' })).toHaveAttribute('href', '/');
+  await expect(page.locator('link[rel="stylesheet"]').first()).toHaveAttribute('href', /^\/assets\//);
 });
 
 test('never scrolls the page sideways', async ({ page }) => {
