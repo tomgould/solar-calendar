@@ -11,8 +11,9 @@ import { solarLong } from '../ui/format';
 
 // The 13 month hues of app.css (oklch 0.72 0.13 h) and the leap week's grey, in sRGB
 const HUES = ['#6dba70', '#9faf47', '#c5a032', '#de9046', '#ea846d', '#e88097', '#d983c0', '#bf8ce0', '#9a99f3', '#6ca7f5', '#2cb3e4', '#00bcc5', '#29bf9c', '#a4a4a4'];
-const INK = '#1d2742';
-const PAPER = '#f6f7f9';
+// The design kit's ink and paper
+const INK = '#14110d';
+const PAPER = '#fbf7f0';
 const LABEL = 'Solar calendar';
 
 const escapeXml = (text: string) => text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);

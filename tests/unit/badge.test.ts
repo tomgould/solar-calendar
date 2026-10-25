@@ -16,8 +16,9 @@ describe('/today.svg badge', () => {
     const svg = await response.text();
     expect(svg).toContain('aria-label="Solar calendar: 13 Winterfylleþ 2026"');
     expect(svg).toContain('>13 Winterfylleþ 2026</text>');
-    // Month 8's hue
+    // Month 8's hue, under the design kit's ink
     expect(svg).toContain('fill="#bf8ce0"');
+    expect(svg).toContain('fill="#14110d"');
     expect(svg.match(/<text/g)).toHaveLength(2);
     expect(svg.match(/<\/text>/g)).toHaveLength(2);
   });

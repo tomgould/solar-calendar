@@ -1,20 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Thirteen months around the sun -->
-  <rect width="32" height="32" rx="7" fill="#1d2742"/>
-  <circle cx="16" cy="16" r="5" fill="#f6f7f9"/>
-  <g stroke="#f6f7f9" stroke-width="1.6" stroke-linecap="round">
-    <line x1="16" y1="5" x2="16" y2="8.5" transform="rotate(0 16 16)"/>
-    <line x1="16" y1="5" x2="16" y2="8.5" transform="rotate(27.69 16 16)"/>
-    <line x1="16" y1="5" x2="16" y2="8.5" transform="rotate(55.38 16 16)"/>
-    <line x1="16" y1="5" x2="16" y2="8.5" transform="rotate(83.08 16 16)"/>
-    <line x1="16" y1="5" x2="16" y2="8.5" transform="rotate(110.77 16 16)"/>
-    <line x1="16" y1="5" x2="16" y2="8.5" transform="rotate(138.46 16 16)"/>
-    <line x1="16" y1="5" x2="16" y2="8.5" transform="rotate(166.15 16 16)"/>
-    <line x1="16" y1="5" x2="16" y2="8.5" transform="rotate(193.85 16 16)"/>
-    <line x1="16" y1="5" x2="16" y2="8.5" transform="rotate(221.54 16 16)"/>
-    <line x1="16" y1="5" x2="16" y2="8.5" transform="rotate(249.23 16 16)"/>
-    <line x1="16" y1="5" x2="16" y2="8.5" transform="rotate(276.92 16 16)"/>
-    <line x1="16" y1="5" x2="16" y2="8.5" transform="rotate(304.62 16 16)"/>
-    <line x1="16" y1="5" x2="16" y2="8.5" transform="rotate(332.31 16 16)"/>
+  <!-- Thirteen months around the sun, in the design kit's ink, paper and vermilion -->
+  <rect width="32" height="32" rx="7" fill="#11100e"/>
+  <circle cx="16" cy="16" r="5.2" fill="#e2431d"/>
+  <g stroke="#fbf7f0" stroke-width="1.6" stroke-linecap="round">
+    <line x1="16" y1="4.6" x2="16" y2="8.2" transform="rotate(0 16 16)"/>
+    <line x1="16" y1="4.6" x2="16" y2="8.2" transform="rotate(27.69 16 16)"/>
+    <line x1="16" y1="4.6" x2="16" y2="8.2" transform="rotate(55.38 16 16)"/>
+    <line x1="16" y1="4.6" x2="16" y2="8.2" transform="rotate(83.08 16 16)"/>
+    <line x1="16" y1="4.6" x2="16" y2="8.2" transform="rotate(110.77 16 16)"/>
+    <line x1="16" y1="4.6" x2="16" y2="8.2" transform="rotate(138.46 16 16)"/>
+    <line x1="16" y1="4.6" x2="16" y2="8.2" transform="rotate(166.15 16 16)"/>
+    <line x1="16" y1="4.6" x2="16" y2="8.2" transform="rotate(193.85 16 16)"/>
+    <line x1="16" y1="4.6" x2="16" y2="8.2" transform="rotate(221.54 16 16)"/>
+    <line x1="16" y1="4.6" x2="16" y2="8.2" transform="rotate(249.23 16 16)"/>
+    <line x1="16" y1="4.6" x2="16" y2="8.2" transform="rotate(276.92 16 16)"/>
+    <line x1="16" y1="4.6" x2="16" y2="8.2" transform="rotate(304.62 16 16)"/>
+    <line x1="16" y1="4.6" x2="16" y2="8.2" transform="rotate(332.31 16 16)"/>
   </g>
 </svg>
