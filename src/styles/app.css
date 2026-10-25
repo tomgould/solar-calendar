@@ -1,72 +1,50 @@
+/* The calendar on the design kit -------------------------------------------
+   The kit (public/kit/css, bundled first by src/styles.ts) gives the tokens,
+   the base and the shared components: warm paper or near-black, ink and one
+   vermilion accent, Schibsted Grotesk around the reading and Libre Caslon for
+   it. This file lays the calendar out with those tokens. Its only colours of
+   its own are the month hues and the print block. */
+
 /* Tokens ------------------------------------------------------------------ */
 
 :root {
-  color-scheme: light;
-  --paper: #f6f7f9;
-  --surface: #ffffff;
-  --wash: #eceef3;
-  --ink: #1d2742;
-  --muted: #566079;
-  --rule: #d3d7e0;
-  --rule-strong: #8b93a7;
-  --on-hue: #161c2e;
-  /* Month hues share lightness and chroma; only the hue angle changes */
+  /* The kit's typefaces, each followed by system fonts reshaped to its size
+     (fallbacks.css), so the swap when it arrives moves nothing. The fallbacks
+     cover only the typeface's letters, so the rest still go to the fonts after
+     them: Noto Sans for Greek, Vazirmatn (Persian) and Noto Sans Coptic, which
+     the browser uses just for those letters */
+  --font-ui: 'Schibsted Grotesk', 'Schibsted Grotesk Fallback Arial', 'Schibsted Grotesk Fallback Roboto', 'Noto Sans', 'Vazirmatn', 'Noto Sans Coptic', system-ui, sans-serif;
+  --font-display: var(--font-ui);
+  --font-text: 'Libre Caslon Text', 'Libre Caslon Text Fallback Times New Roman', 'Libre Caslon Text Fallback Noto Serif', 'Noto Sans', 'Vazirmatn', 'Noto Sans Coptic', Georgia, serif;
+  --font-accent: var(--font-text);
+  /* Pronunciations: Andika has the phonetic letters, Noto Sans the Greek θ */
+  --font-ipa: 'Andika', 'Noto Sans', sans-serif;
+
+  /* Month hues share lightness and chroma; only the hue angle changes. Text on
+     a hue is always dark */
   --hue-l: 0.72;
   --hue-c: 0.13;
   --hue: oklch(var(--hue-l) 0 0);
+  --on-hue: var(--ink);
 
-  --font-display: 'Big Shoulders Variable', 'Arial Narrow', sans-serif;
-  /* The Andika fallbacks are Arial and Roboto reshaped to Andika's size
-     (fallbacks.css), so the swap when Andika arrives moves nothing. They cover
-     only Andika's letters, so the rest still go to the fonts after them.
-     Vazirmatn (Persian) and Noto Sans Coptic only cover their own scripts, so
-     the browser uses them just for those letters */
-  --font-text: 'Andika', 'Andika Fallback Arial', 'Andika Fallback Roboto', 'Noto Sans', 'Vazirmatn', 'Noto Sans Coptic', system-ui, sans-serif;
-
-  --step--1: 0.8125rem;
-  --step-0: 1rem;
-  --step-1: 1.125rem;
-  --step-2: 1.3125rem;
-  --step-3: 1.5rem;
-  --step-4: 2.25rem;
-
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 48px;
-  --space-8: 64px;
-  --radius: 6px;
+  --shadow-pop: 0 18px 48px rgb(0 0 0 / 0.16);
 }
 
+/* Night, chosen or from the system: the same as the kit's two blocks */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    color-scheme: dark;
-    --paper: #161c2e;
-    --surface: #1c2338;
-    --wash: #262e47;
-    --ink: #e9ecf3;
-    --muted: #a7b0c3;
-    --rule: #333c58;
-    --rule-strong: #6b7591;
     --hue-l: 0.76;
     --hue-c: 0.11;
+    --on-hue: var(--page);
+    --shadow-pop: 0 18px 48px rgb(0 0 0 / 0.5);
   }
 }
 
 :root[data-theme='dark'] {
-  color-scheme: dark;
-  --paper: #161c2e;
-  --surface: #1c2338;
-  --wash: #262e47;
-  --ink: #e9ecf3;
-  --muted: #a7b0c3;
-  --rule: #333c58;
-  --rule-strong: #6b7591;
   --hue-l: 0.76;
   --hue-c: 0.11;
+  --on-hue: var(--page);
+  --shadow-pop: 0 18px 48px rgb(0 0 0 / 0.5);
 }
 
 /* Month colours: 13 hues stepped evenly round the wheel (360 / 13 degrees),
@@ -89,149 +67,161 @@
 
 /* Base -------------------------------------------------------------------- */
 
-*, *::before, *::after { box-sizing: border-box; }
-
 /* The scrollbar arrives with the calendar; keeping its space stops the page shifting */
 html { scrollbar-gutter: stable; }
 
+/* The calendar is mostly apparatus, so Schibsted Grotesk is its body face;
+   prose sets itself in Libre Caslon below */
 body {
-  margin: 0;
-  background: var(--paper);
-  color: var(--ink);
-  font: 400 var(--step-0) / 1.5 var(--font-text);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.5;
+  font-variant-numeric: lining-nums proportional-nums;
 }
 
-button { font: inherit; color: inherit; }
-a { color: inherit; text-underline-offset: 3px; }
-:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
-
-.visually-hidden {
-  position: absolute; width: 1px; height: 1px; overflow: hidden;
-  clip-path: inset(50%); white-space: nowrap;
-}
-
-.skip-link {
-  position: absolute; left: var(--space-4); top: -100px;
-  background: var(--ink); color: var(--paper); padding: var(--space-2) var(--space-3); z-index: 10;
-}
-.skip-link:focus { top: var(--space-2); }
+button, input, select { font: inherit; color: inherit; }
+/* The kit draws pictures as blocks; the calendar's icons sit in lines of text */
+svg { display: inline-block; flex: none; }
 
 /* The footer would show where the calendar will be, then jump down */
 .is-loading, .is-loading ~ .site-footer { visibility: hidden; }
-.page { max-width: 1120px; margin: 0 auto; padding: 0 var(--space-4) var(--space-8); }
-@media (min-width: 720px) { .page { padding-inline: var(--space-6); } }
 
 /* Controls ---------------------------------------------------------------- */
 
+/* Pills: quiet ones outlined in ink, the strong one in the accent */
 .button {
-  min-height: 36px; padding: 6px 12px;
-  border: 1px solid var(--rule-strong); border-radius: var(--radius);
-  background: var(--surface); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.45em;
+  min-height: 40px; padding: 0.5rem 1.1rem;
+  border: 0; border-radius: 999px; background: none; box-shadow: inset 0 0 0 1.5px var(--ink);
+  color: var(--ink); font: 600 var(--ui-size) / 1.2 var(--font-ui);
+  text-decoration: none; cursor: pointer;
 }
-.button:hover { border-color: var(--ink); }
-.button[aria-pressed='true'], .button-strong { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-
-.segmented { display: inline-flex; border: 1px solid var(--rule-strong); border-radius: var(--radius); overflow: hidden; }
-.segmented button { min-height: 34px; padding: 6px 14px; border: 0; background: var(--surface); cursor: pointer; }
-.segmented button + button { border-left: 1px solid var(--rule-strong); }
-.segmented button[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+.button:hover { background: var(--rule); color: var(--ink); text-decoration: none; }
+.button-strong { background: var(--button-fill); box-shadow: none; color: var(--button-ink); }
+.button-strong:hover { background: var(--button-fill); color: var(--button-ink); filter: brightness(1.08); }
 
 .text-button {
-  padding: 0; border: 0; background: none; cursor: pointer;
-  text-decoration: underline; text-underline-offset: 3px;
+  padding: 0; border: 0; background: none; color: var(--link); cursor: pointer;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em;
 }
+.text-button:hover { color: var(--link-hover); text-decoration-thickness: 2px; }
 
 .steps { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
 .step {
-  display: grid; place-items: center; width: 44px; height: 44px;
-  border: 1px solid var(--rule-strong); border-radius: 50%; background: var(--surface); cursor: pointer;
+  display: grid; place-items: center; width: 44px; height: 44px; padding: 0;
+  border: 0; border-radius: 50%; background: none; box-shadow: inset 0 0 0 1.5px var(--ink);
+  color: var(--ink); cursor: pointer;
 }
-.step:hover:not(:disabled) { border-color: var(--ink); }
+.step:hover:not(:disabled) { background: var(--rule); }
 .step:disabled { opacity: 0.35; cursor: default; }
+
+.status { color: var(--muted); font: 400 var(--ui-small) / 1.4 var(--font-ui); }
 
 /* Masthead ---------------------------------------------------------------- */
 
-.masthead {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-  gap: var(--space-3); padding-block: var(--space-4); border-bottom: 1px solid var(--rule);
+.brand { display: inline-flex; align-items: baseline; white-space: nowrap; }
+a.kit-app { color: var(--ink-soft); text-decoration: none; }
+a.kit-app:hover { color: var(--ink); text-decoration: underline; }
+
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; }
+button.kit-nav__link { display: inline-flex; align-items: center; gap: 0.4em; border: 0; background: none; cursor: pointer; }
+button.kit-nav__link[aria-expanded='true'] { background: var(--rule); }
+
+/* Month or year: a pill group like the theme switch's */
+.segmented { display: inline-flex; padding: 2px; border: 1px solid var(--rule-strong); border-radius: 999px; }
+.segmented button {
+  padding: 0.4rem 0.9rem; border: 0; border-radius: 999px; background: none;
+  color: var(--ink); font: 500 1rem / 1.2 var(--font-ui); cursor: pointer;
 }
-.wordmark {
-  margin-right: auto;
-  font: 800 var(--step-3) / 1 var(--font-display); letter-spacing: 0.01em; text-decoration: none;
-}
-.controls { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
-.theme-button, .festivals-button, .calendar-button { display: inline-flex; align-items: center; gap: 6px; }
+.segmented button:hover { background: var(--rule); }
+.segmented button[aria-pressed='true'] { background: var(--ink); color: var(--page); }
+
+.kit-theme-switch label { display: inline-flex; align-items: center; min-height: 28px; }
+/* The kit means its switch to sit at the right when the bar wraps, but its own
+   margin: 0 comes later and wins */
+@media screen and (max-width: 62em) { .kit-theme-switch { margin-left: auto; } }
+
 .narrow-only { display: none; }
 
-/* Phones: the wordmark and theme toggle share a row, the controls get their own */
+/* Phones: the names and festivals buttons shorten to fit one row */
 @media (max-width: 600px) {
-  .masthead { display: grid; grid-template-columns: 1fr auto; }
-  .controls { grid-column: 1 / -1; grid-row: 2; }
   .wide-only { display: none; }
   .narrow-only { display: inline; }
+  .kit-nav__link, .segmented button { padding-inline: 0.75rem; }
 }
 
-.today-line { margin: var(--space-5) 0 var(--space-5); max-width: 62ch; font-size: var(--step-1); }
-.location-notice {
-  max-width: 62ch; margin: 0 0 var(--space-6); padding: var(--space-4) var(--space-5);
-  border: 1px solid var(--rule-strong); border-left-width: 6px; border-radius: var(--radius); background: var(--surface);
+/* The first view ---------------------------------------------------------- */
+
+/* A standfirst in Caslon, as on www.dealmobile.co.uk */
+.today-line {
+  max-width: 40rem; margin: var(--space-4) 0 var(--space-4);
+  color: var(--ink-soft); font: 400 clamp(1.125rem, 1rem + 0.5vw, 1.375rem) / 1.45 var(--font-text);
 }
-.location-notice p { margin: var(--space-2) 0 var(--space-3); }
+.today-line strong { color: var(--ink); font-weight: 700; }
+
+.location-notice {
+  max-width: 44rem; margin: 0 0 var(--space-5); padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--rule); border-radius: 12px; background: var(--page-raised);
+}
+.location-notice p { margin: var(--space-2) 0 var(--space-3); font-family: var(--font-text); line-height: 1.6; }
+.location-notice .status { font-family: var(--font-ui); }
 .location-notice .status:empty { display: none; }
-.notice-title { margin: 0; font: 700 var(--step-1) / 1.3 var(--font-text); }
+.notice-title { margin: 0; font: 700 1.125rem / 1.3 var(--font-display); letter-spacing: -0.01em; }
 
 /* Month view -------------------------------------------------------------- */
 
 .strip ol {
   display: flex; align-items: flex-end; gap: 3px;
-  margin: 0 0 var(--space-5); padding: 0; list-style: none;
+  margin: 0 0 var(--space-4); padding: 0; list-style: none;
 }
 .strip li { flex: 1; }
 .strip button {
-  display: flex; flex-direction: column; justify-content: flex-end; gap: 4px;
-  width: 100%; padding: 0; border: 0; background: none; cursor: pointer;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 6px;
+  width: 100%; min-height: 32px; padding: 0; border: 0; background: none; color: var(--muted); cursor: pointer;
 }
-.strip .bar { height: 6px; background: var(--hue); transition: height 0.15s ease-out; }
-.strip .label { color: var(--muted); font-size: var(--step--1); line-height: 1; }
-.strip button:hover .bar { height: 9px; }
-.strip button[aria-current='true'] .bar { height: 14px; }
+.strip .bar { height: 6px; border-radius: 3px; background: var(--hue); transition: height 0.15s var(--ease-out); }
+.strip .label { font: 500 var(--ui-small) / 1 var(--font-ui); font-variant-numeric: tabular-nums; }
+.strip button:hover .bar { height: 10px; }
+.strip button[aria-current='true'] .bar { height: 16px; }
 .strip button[aria-current='true'] .label { color: var(--ink); font-weight: 700; }
-.strip button.is-today .label { text-decoration: underline 2px; text-underline-offset: 3px; }
+/* Today's month: underlined in the sun's colour */
+.strip button.is-today .label { text-decoration: underline 2px var(--sun); text-underline-offset: 4px; }
 
 .month-head, .year-head {
   display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
-  gap: var(--space-4); margin-bottom: var(--space-4);
+  gap: var(--space-3) var(--space-4); margin-bottom: var(--space-4);
 }
+/* Heavy and tight, as the kit's titles are */
 .month-name, .year-name {
-  margin: 0; font: 800 clamp(3rem, 6vw + 1.5rem, 5.75rem) / 0.88 var(--font-display);
-  font-variation-settings: 'opsz' 72; letter-spacing: -0.005em;
+  margin: 0; color: var(--ink);
+  font: 800 clamp(2.75rem, 5vw + 1.5rem, 5.25rem) / 0.98 var(--font-display); letter-spacing: -0.045em;
 }
+/* The year is the voice: Caslon italic in the accent */
+.month-year { font-family: var(--font-accent); font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: var(--sun); }
 .month-meta, .year-meta {
   display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3);
-  margin: var(--space-3) 0 0; color: var(--muted);
+  margin: var(--space-3) 0 0; color: var(--muted); font-size: var(--ui-size);
 }
-.month-year { color: var(--muted); font-weight: 300; }
+.gloss { color: var(--ink); font: italic 400 1.25rem / 1.3 var(--font-text); }
 .say { color: var(--ink); letter-spacing: 0.02em; }
 .say-label { color: var(--muted); letter-spacing: 0; }
 .hear {
   display: inline-grid; place-items: center; width: 28px; height: 28px; margin: -4px 0; padding: 0; vertical-align: middle;
-  border: 1px solid var(--rule); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer;
+  border: 0; border-radius: 50%; background: none; box-shadow: inset 0 0 0 1px var(--rule-strong); color: var(--ink); cursor: pointer;
 }
-.hear:hover { border-color: var(--rule-strong); }
-.gloss { color: var(--ink); font-style: italic; font-size: var(--step-1); }
+.hear:hover { background: var(--rule); }
 
-.month-body { display: grid; gap: var(--space-6); }
-.month-main { display: grid; gap: var(--space-5); min-width: 0; }
-@media (min-width: 980px) { .month-body { grid-template-columns: minmax(0, 1fr) 280px; align-items: start; } }
+.month-body { display: grid; gap: var(--space-5); }
+.month-main { display: grid; gap: var(--space-4); min-width: 0; }
+@media (min-width: 980px) { .month-body { grid-template-columns: minmax(0, 1fr) 300px; align-items: start; } }
 
 .grid {
   width: 100%; border-collapse: collapse; table-layout: fixed;
-  background: var(--surface); border-top: 6px solid var(--hue);
-  transition: border-color 0.26s ease-out;
+  border-top: 6px solid var(--hue); transition: border-color 0.26s var(--ease-out);
 }
 .grid th {
-  padding: var(--space-2) var(--space-2); border-bottom: 1px solid var(--rule);
-  color: var(--muted); font-size: var(--step--1); font-weight: 400; text-align: left;
+  padding: var(--space-1) var(--space-2); border-bottom: 1px solid var(--ink);
+  color: var(--muted); font: 600 var(--ui-small) / 1.4 var(--font-ui); letter-spacing: 0.02em; text-align: left;
 }
 .grid abbr { text-decoration: none; }
 .grid td { padding: 0; border: 1px solid var(--rule); }
@@ -239,34 +229,45 @@ a { color: inherit; text-underline-offset: 3px; }
 .grid tr > td:last-child { border-right: 0; }
 
 .cell {
-  position: relative; display: flex; flex-direction: column; justify-content: space-between;
-  width: 100%; height: clamp(68px, 9vw + 24px, 112px); padding: var(--space-2);
-  border: 0; background: transparent; text-align: left; cursor: pointer;
+  position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start;
+  width: 100%; height: clamp(68px, 9vw + 24px, 112px); padding: clamp(6px, 1vw, 12px);
+  border: 0; border-radius: 0; background: transparent; color: var(--ink); text-align: left; cursor: pointer;
 }
-.cell:hover { background: color-mix(in oklch, var(--hue) 16%, var(--surface)); }
-.cell:focus-visible { z-index: 1; }
+.cell:hover { background: color-mix(in oklch, var(--hue) 12%, var(--page)); }
+.cell:focus-visible { z-index: 1; outline-offset: -3px; border-radius: 0; }
 .num {
-  font: 300 clamp(1.9rem, 2.4vw + 1.1rem, 3.4rem) / 0.82 var(--font-display);
-  font-variation-settings: 'opsz' 72; font-variant-numeric: tabular-nums;
+  font: 500 clamp(1.5rem, 1.6vw + 1rem, 2.6rem) / 1 var(--font-display); letter-spacing: -0.03em;
+  font-variant-numeric: lining-nums tabular-nums;
 }
-.greg { color: var(--muted); font-size: var(--step--1); line-height: 1.2; white-space: nowrap; }
+.greg { color: var(--muted); font: 400 var(--ui-small) / 1.2 var(--font-ui); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .greg.is-new-month { color: var(--ink); font-weight: 700; }
-.marks { position: absolute; top: var(--space-2); right: var(--space-2); display: flex; gap: 3px; }
+.marks { position: absolute; top: clamp(6px, 1vw, 12px); right: clamp(6px, 1vw, 12px); display: flex; gap: 3px; color: var(--ink-soft); }
 
-[aria-selected='true'] > .cell { background: color-mix(in oklch, var(--hue) 22%, var(--surface)); box-shadow: inset 0 0 0 2px var(--ink); }
-.cell[aria-current='date'] { background: var(--ink); color: var(--paper); }
-.cell[aria-current='date'] .greg { color: var(--paper); }
-[aria-selected='true'] > .cell[aria-current='date'] { box-shadow: inset 0 0 0 3px var(--hue); }
+/* Too narrow for marks beside a two-digit numeral: they go under it */
+@media (max-width: 600px) {
+  .cell { height: 80px; }
+  .marks { position: static; order: 1; min-height: 12px; }
+  .greg { order: 2; font-size: 0.75rem; }
+}
+
+/* The selected day: ringed in ink, on its month's tint */
+[aria-selected='true'] > .cell { background: color-mix(in oklch, var(--hue) 20%, var(--page)); box-shadow: inset 0 0 0 2px var(--ink); }
+/* Today is the sun: its numeral on a vermilion disc */
+.cell[aria-current='date'] .num {
+  display: inline-grid; place-items: center; min-width: 1.4em; height: 1.4em; margin: -0.15em 0 0 -0.15em; padding: 0 0.2em;
+  border-radius: 999px; background: var(--button-fill); color: var(--button-ink); box-shadow: 0 0 0 4px var(--sun-halo);
+}
 
 /* Day panel --------------------------------------------------------------- */
 
-.day { padding-top: var(--space-3); border-top: 6px solid var(--ink); }
-.day-title { margin: 0; font: 700 var(--step-3) / 1.15 var(--font-text); }
-.day-greg { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; margin: var(--space-1) 0 var(--space-4); color: var(--muted); }
-.badge { padding: 1px 8px; border-radius: 999px; background: var(--ink); color: var(--paper); font-size: var(--step--1); }
-.facts { display: grid; gap: var(--space-3); margin: 0; }
+.side { display: grid; gap: var(--space-5); align-content: start; }
+.day { padding-top: var(--space-2); border-top: 2px solid var(--ink); }
+.day-title { margin: 0; font: 800 1.75rem / 1.1 var(--font-display); letter-spacing: -0.02em; }
+.day-greg { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; margin: var(--space-1) 0 var(--space-3); color: var(--muted); }
+.badge { padding: 1px 10px; border-radius: 999px; background: var(--button-fill); color: var(--button-ink); font: 600 var(--ui-small) / 1.5 var(--font-ui); }
+.facts { display: grid; gap: var(--space-2); margin: 0; }
 .facts div { padding-top: var(--space-2); border-top: 1px solid var(--rule); }
-.facts dt { color: var(--muted); font-size: var(--step--1); }
+.facts dt { color: var(--muted); font: 600 var(--ui-small) / 1.4 var(--font-ui); }
 .facts dd { margin: 2px 0 0; }
 .sheet-toggle { display: none; }
 
@@ -274,148 +275,155 @@ a { color: inherit; text-underline-offset: 3px; }
    in view while picking days; its details open upwards */
 @media (max-width: 979.98px) {
   html { scroll-padding-bottom: 120px; }
-  .page { padding-bottom: calc(var(--space-8) + 96px); }
+  .page { padding-bottom: 96px; }
   .day {
     position: fixed; inset: auto 0 0; z-index: 10; max-width: 44rem; margin-inline: auto;
     max-height: min(75dvh, 40rem); overflow-y: auto; overscroll-behavior: contain;
-    padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
-    border-top-width: 4px; border-radius: 12px 12px 0 0;
-    background: var(--surface); box-shadow: 0 -6px 24px rgb(0 0 0 / 0.18);
+    padding: var(--space-2) var(--gutter) calc(var(--space-2) + env(safe-area-inset-bottom));
+    border-top: 0; border-radius: 16px 16px 0 0;
+    background: var(--page-raised); box-shadow: 0 -1px 0 var(--rule), 0 -10px 30px rgb(0 0 0 / 0.16);
   }
   .day-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
-  .day .day-title { font-size: var(--step-2); }
+  .day .day-title { font-size: 1.375rem; }
   .day .day-greg { margin-bottom: 0; }
   .sheet-toggle {
     display: inline-flex; flex: none; align-items: center; gap: var(--space-1); min-height: 44px; padding: 0 var(--space-3);
-    border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer;
+    border: 0; border-radius: 999px; background: none; box-shadow: inset 0 0 0 1.5px var(--ink);
+    color: var(--ink); font: 600 var(--ui-size) / 1 var(--font-ui); cursor: pointer;
   }
-  .sheet-toggle svg { transform: rotate(-90deg); transition: transform 180ms ease-out; }
+  .sheet-toggle:hover { background: var(--rule); }
+  .sheet-toggle svg { transform: rotate(-90deg); transition: transform 180ms var(--ease-out); }
   .day.is-open .sheet-toggle svg { transform: rotate(90deg); }
   .day:not(.is-open) .day-details { display: none; }
-  .day.is-open .day-details { margin-top: var(--space-4); animation: sheet-open 180ms ease-out; }
+  .day.is-open .day-details { margin-top: var(--space-3); animation: sheet-open 180ms var(--ease-out); }
 }
 @keyframes sheet-open { from { opacity: 0; transform: translateY(12px); } }
-.actions { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-top: var(--space-5); }
-.status { color: var(--muted); font-size: var(--step--1); }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; margin-top: var(--space-4); }
 
 /* Go to a date ------------------------------------------------------------ */
 
-.side { display: grid; gap: var(--space-6); align-content: start; }
-.goto { padding-top: var(--space-3); border-top: 1px solid var(--rule); }
-.goto-title { margin: 0 0 var(--space-3); font: 700 var(--step-1) / 1.3 var(--font-text); }
-.goto-form { margin: 0 0 var(--space-4); }
-.goto-form label, .goto-form legend { display: block; margin-bottom: var(--space-1); color: var(--muted); font-size: var(--step--1); }
+.goto { padding-top: var(--space-2); border-top: 1px solid var(--ink); }
+.goto-title { margin: 0 0 var(--space-2); font: 700 1.125rem / 1.3 var(--font-display); }
+.goto-form { margin: 0 0 var(--space-3); }
+.goto-form label, .goto-form legend { display: block; margin-bottom: var(--space-1); padding: 0; font: 600 var(--ui-small) / 1.4 var(--font-ui); }
 .goto-form fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
-.goto-row { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+.goto-row { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-2); align-items: center; }
+/* The kit's form field: its edge is 3:1 against the page */
 .field {
-  min-height: 36px; padding: 4px 8px; border: 1px solid var(--rule-strong); border-radius: var(--radius);
-  background: var(--surface); color: var(--ink); font: inherit;
+  min-height: 40px; padding: 0.4rem 0.65rem; border: 1.5px solid var(--control-edge); border-radius: 8px;
+  background: var(--field); color: var(--ink); font: 400 1rem / 1.3 var(--font-ui);
 }
 .field:hover { border-color: var(--ink); }
 .field-day { width: 4.5em; }
 .field-year { width: 5.5em; }
 .field-month { flex: 1; min-width: 9em; }
-.goto-error { margin: 0; color: var(--ink); font-weight: 700; }
+.goto-error { margin: 0; color: var(--danger); font-weight: 700; }
 .goto-error:empty { display: none; }
 
 /* Year view --------------------------------------------------------------- */
 
-.table-scroll { overflow-x: auto; background: var(--surface); }
+.table-scroll { overflow-x: auto; }
 .almanac {
   width: 100%; min-width: 900px; border-collapse: collapse; table-layout: fixed;
-  font-size: var(--step--1); font-variant-numeric: tabular-nums;
+  font: 400 var(--ui-small) / 1.35 var(--font-ui); font-variant-numeric: lining-nums tabular-nums;
 }
 .almanac thead th {
-  padding: var(--space-2) 6px; border-top: 6px solid var(--hue); vertical-align: bottom;
-  font: 700 var(--step-0) / 1 var(--font-display); text-align: left;
+  padding: var(--space-1) 6px; border-top: 6px solid var(--hue); border-bottom: 1px solid var(--ink); vertical-align: bottom;
+  font: 700 1rem / 1.05 var(--font-display); letter-spacing: -0.01em; text-align: left;
 }
 .almanac thead th:first-child { width: 68px; border-top-color: transparent; }
 .almanac tbody th { padding: 2px 6px; color: var(--muted); font-weight: 400; text-align: left; white-space: nowrap; }
-.almanac .n { display: inline-block; min-width: 1.4em; color: var(--ink); font: 600 var(--step-0) / 1 var(--font-display); }
+.almanac .n { display: inline-block; min-width: 1.4em; color: var(--ink); font: 700 1rem / 1 var(--font-display); }
 .almanac td { padding: 3px 6px; border-left: 1px solid var(--rule); white-space: nowrap; cursor: pointer; }
-.almanac td:hover { background: var(--wash); }
-.almanac td.empty { cursor: default; background: var(--paper); }
+.almanac td:hover { background: var(--rule); }
+.almanac td.empty { cursor: default; background: none; }
 .almanac td.is-new-month { font-weight: 700; }
-.almanac td.is-today { background: var(--ink); color: var(--paper); }
+/* Today: the sun again */
+.almanac td.is-today { background: var(--button-fill); color: var(--button-ink); font-weight: 700; }
 .almanac td.has-festival::after { content: ' \2022'; color: var(--muted); }
-.almanac td.is-today.has-festival::after { color: var(--paper); }
+.almanac td.is-today.has-festival::after { color: var(--button-ink); }
 .almanac tr.week-end > * { border-bottom: 1px solid var(--rule-strong); }
 
-.year-notes { display: grid; gap: var(--space-6); margin-top: var(--space-6); }
+.year-notes { display: grid; gap: var(--space-5); margin-top: var(--space-5); }
 @media (min-width: 860px) { .year-notes { grid-template-columns: 1fr 2fr; } }
-.notes-title { margin: 0 0 var(--space-3); font: 700 var(--step-1) / 1.3 var(--font-text); }
+/* Section heads as the kit's: a rule in ink above a short bold title */
+.notes-title {
+  margin: 0 0 var(--space-2); padding-top: var(--space-2); border-top: 1px solid var(--ink);
+  font: 700 1.125rem / 1.3 var(--font-display);
+}
 .seasons, .legend { margin: 0; padding: 0; list-style: none; }
-.seasons li, .legend li { padding: var(--space-2) 0; border-top: 1px solid var(--rule); }
+.seasons li, .legend li { padding: var(--space-1) 0; border-bottom: 1px solid var(--rule); }
 .event-name { display: block; font-weight: 700; }
-.legend { columns: 2 240px; column-gap: var(--space-6); }
-.legend li { display: flex; gap: var(--space-3); break-inside: avoid; }
-.swatch { flex: none; width: 12px; height: 12px; margin-top: 6px; background: var(--hue); }
+.legend { columns: 2 240px; column-gap: var(--space-5); }
+.legend li { display: flex; gap: var(--space-2); break-inside: avoid; }
+.swatch { flex: none; width: 12px; height: 12px; margin-top: 5px; border-radius: 3px; background: var(--hue); }
 .legend-name { font-weight: 700; }
-.legend-gloss { color: var(--muted); font-style: italic; }
+.legend-gloss { color: var(--muted); font-family: var(--font-text); font-style: italic; }
 
 .apps-note { margin: 0 0 var(--space-3); color: var(--muted); }
-.apps-label { display: block; margin: var(--space-4) 0 var(--space-1); color: var(--muted); font-size: var(--step--1); }
+.apps-label { display: block; margin: var(--space-3) 0 var(--space-1); font: 600 var(--ui-small) / 1.4 var(--font-ui); }
 .apps-row { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
-a.button { display: inline-flex; align-items: center; color: inherit; text-decoration: none; }
-a.button.button-strong { color: var(--paper); }
-.feed-url { flex: 1; min-width: 14em; font-size: var(--step--1); }
+.feed-url { flex: 1; min-width: 14em; font-size: var(--ui-small); }
 
-/* Name packs -------------------------------------------------------------- */
+/* Menus and dialogs ------------------------------------------------------- */
 
 .names-menu {
-  position: fixed; inset: 72px var(--space-4) auto auto; margin: 0;
+  position: fixed; inset: 72px var(--space-3) auto auto; margin: 0;
   /* top and right are set from the button's position when the menu opens */
-  width: min(440px, calc(100vw - 2 * var(--space-4))); max-height: calc(100dvh - 96px); overflow: auto;
-  padding: var(--space-5); border: 1px solid var(--rule-strong); border-radius: 8px;
-  background: var(--surface); color: var(--ink); box-shadow: 0 16px 40px rgb(10 14 26 / 0.22);
+  width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 96px); overflow: auto;
+  padding: var(--space-4); border: 1px solid var(--rule); border-radius: 16px;
+  background: var(--page-raised); color: var(--ink); box-shadow: var(--shadow-pop);
 }
-.menu-title { margin: 0; font: 700 var(--step-2) / 1.2 var(--font-text); }
-.menu-note { margin: var(--space-1) 0 var(--space-4); color: var(--muted); }
-.pack-options { display: grid; gap: var(--space-4); }
+.menu-title { margin: 0; font: 800 1.5rem / 1.15 var(--font-display); letter-spacing: -0.02em; }
+.menu-note { margin: var(--space-1) 0 var(--space-3); color: var(--muted); }
+.pack-options { display: grid; gap: var(--space-3); }
 .pack-group { display: grid; gap: var(--space-2); margin: 0; padding: 0; border: 0; min-width: 0; }
-.pack-group legend { margin-bottom: var(--space-2); padding: 0; color: var(--muted); font-size: var(--step--1); font-weight: 700; }
+.pack-group legend { margin-bottom: var(--space-1); padding: 0; color: var(--muted); font: 600 var(--ui-small) / 1.4 var(--font-ui); }
 .pack-option {
-  display: grid; grid-template-columns: auto 1fr; gap: 2px var(--space-3);
-  padding: var(--space-3); border: 1px solid var(--rule); border-radius: var(--radius); cursor: pointer;
+  display: grid; grid-template-columns: auto 1fr; gap: 2px var(--space-2);
+  padding: var(--space-2) var(--space-3); border: 1px solid var(--rule); border-radius: 12px; cursor: pointer;
 }
 .pack-option:hover { border-color: var(--rule-strong); }
-.pack-option:has(input:checked) { border-color: var(--ink); background: var(--wash); }
-.pack-option input { grid-row: span 3; margin: 4px 0 0; accent-color: var(--ink); }
+.pack-option:has(input:checked) { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.pack-option input { grid-row: span 3; width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--button-fill); }
 .pack-title { font-weight: 700; }
-.pack-desc { color: var(--muted); font-size: var(--step--1); }
-.pack-sample { font: 700 var(--step-2) / 1.2 var(--font-display); }
+.pack-desc { color: var(--muted); font-size: var(--ui-small); }
+.pack-sample { font: 800 1.375rem / 1.2 var(--font-display); letter-spacing: -0.02em; }
 
 .about {
-  width: min(720px, calc(100vw - 2 * var(--space-4))); max-height: min(88dvh, 920px);
-  padding: 0; border: 0; border-radius: 8px; background: var(--surface); color: var(--ink);
+  width: min(720px, calc(100vw - 32px)); max-height: min(88dvh, 920px);
+  padding: 0; border: 0; border-radius: 16px; background: var(--page-raised); color: var(--ink); box-shadow: var(--shadow-pop);
 }
-.about::backdrop { background: rgb(10 14 26 / 0.6); }
+.about::backdrop { background: rgb(17 16 14 / 0.6); }
 .about-head {
   position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; align-items: flex-start;
-  gap: var(--space-4); padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--rule); background: var(--surface);
+  gap: var(--space-3); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--rule); background: var(--page-raised);
 }
-.about-head h2 { margin: 0; font: 700 var(--step-2) / 1.2 var(--font-text); }
-.about-era { margin: 2px 0 0; color: var(--muted); font-size: var(--step--1); }
-.about-body { padding: var(--space-4) var(--space-5) var(--space-6); }
-.about-origin { max-width: 62ch; }
-.about-months { margin: var(--space-5) 0; padding: 0; list-style: none; }
+.about-head h2 { margin: 0; font: 800 1.75rem / 1.1 var(--font-display); letter-spacing: -0.03em; }
+.about-era { margin: 2px 0 0; color: var(--muted); font-size: var(--ui-small); }
+.about-body { padding: var(--space-3) var(--space-4) var(--space-5); }
+.about-body > p { margin: 0 0 var(--space-3); }
+.about-origin { max-width: 62ch; font-family: var(--font-text); font-size: 1.0625rem; line-height: 1.6; }
+.about-months { margin: var(--space-4) 0; padding: 0; list-style: none; }
 .about-months li {
-  display: grid; grid-template-columns: 32px 1fr; gap: var(--space-4);
-  padding: var(--space-4) var(--space-3); border-top: 1px solid var(--rule);
+  display: grid; grid-template-columns: 32px 1fr; gap: var(--space-3);
+  padding: var(--space-3) var(--space-2); border-top: 1px solid var(--rule);
 }
-.about-months li[aria-current] { background: color-mix(in oklch, var(--hue) 18%, var(--surface)); }
-.about-months p { margin: 0 0 var(--space-2); max-width: 62ch; }
+.about-months li[aria-current] { background: color-mix(in oklch, var(--hue) 16%, var(--page-raised)); }
+.about-months p { margin: 0 0 var(--space-2); max-width: 62ch; font-family: var(--font-text); line-height: 1.6; }
 .about-num {
-  display: grid; place-items: center; width: 32px; height: 32px;
-  background: var(--hue); color: var(--on-hue); font-weight: 700;
+  display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+  background: var(--hue); color: var(--on-hue); font: 700 var(--ui-size) / 1 var(--font-ui);
 }
-.about-name { margin: 0; font: 800 var(--step-4) / 1 var(--font-display); font-variation-settings: 'opsz' 72; }
+.about-name { margin: 0; font: 800 2.25rem / 1 var(--font-display); letter-spacing: -0.035em; }
 .about-gloss { font-style: italic; }
-.about-note, .certainty { color: var(--muted); font-size: var(--step--1); }
-.about-festivals { margin: 0 0 var(--space-5); padding: 0; list-style: none; }
+.about-note { color: var(--muted); font-size: 0.9375rem; }
+/* Apparatus inside the Caslon paragraphs is set in Grotesk */
+.about-body .certainty { color: var(--muted); font: 400 var(--ui-small) / 1.4 var(--font-ui); }
+.about-festivals { margin: 0 0 var(--space-4); padding: 0; list-style: none; }
 .about-festivals li { padding: var(--space-3) 0; border-top: 1px solid var(--rule); }
-.about-festivals p { margin: 0 0 var(--space-2); max-width: 62ch; }
-.about-festival-name { margin: 0; font: 800 var(--step-3) / 1 var(--font-display); font-variation-settings: 'opsz' 72; }
+.about-festivals p { margin: 0 0 var(--space-2); max-width: 62ch; font-family: var(--font-text); line-height: 1.6; }
+.about-festival-name { margin: 0; font: 800 1.5rem / 1.1 var(--font-display); letter-spacing: -0.025em; }
 .about-when { font-weight: 700; }
 .festival { margin: 0 0 var(--space-2); }
 .festival-source, .about-next { color: var(--muted); }
@@ -423,63 +431,67 @@ a.button.button-strong { color: var(--paper); }
 /* Festivals and holidays ---------------------------------------------------- */
 
 .choice-group { display: grid; gap: var(--space-1); margin: 0; padding: 0; border: 0; min-width: 0; }
-.choice-group legend { margin-bottom: var(--space-2); padding: 0; color: var(--muted); font-size: var(--step--1); font-weight: 700; }
+.choice-group legend { margin-bottom: var(--space-1); padding: 0; color: var(--muted); font: 600 var(--ui-small) / 1.4 var(--font-ui); }
 .choice { display: flex; gap: var(--space-2); align-items: baseline; min-height: 32px; padding: var(--space-1) 0; cursor: pointer; }
-.choice input { flex: none; margin: 0; accent-color: var(--ink); }
-.choice-sample { display: block; color: var(--muted); font-size: var(--step--1); }
-.choice-note { margin: 0 0 var(--space-2); color: var(--muted); font-size: var(--step--1); }
+.choice input { flex: none; width: 18px; height: 18px; margin: 0; accent-color: var(--button-fill); transform: translateY(3px); }
+.choice-sample { display: block; color: var(--muted); font-size: var(--ui-small); }
+.choice-note { margin: 0 0 var(--space-1); color: var(--muted); font-size: var(--ui-small); }
 
 .festival-list { margin: 0; padding: 0; list-style: none; }
-.festival-list li { border-top: 1px solid var(--rule); }
+.festival-list li { border-bottom: 1px solid var(--rule); }
 .festival-link {
   display: flex; gap: var(--space-3); align-items: baseline; width: 100%; padding: var(--space-2) 0;
   border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
 }
 .festival-link:hover .festival-name { text-decoration: underline; text-underline-offset: 3px; }
 .festival-day {
-  min-width: 2ch; font: 300 var(--step-3) / 1 var(--font-display);
-  font-variation-settings: 'opsz' 72; font-variant-numeric: tabular-nums;
+  min-width: 2ch; font: 500 1.5rem / 1 var(--font-display); letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 .festival-name { font-weight: 700; }
-.festival-meta { display: block; color: var(--muted); font-size: var(--step--1); }
+.festival-meta { display: block; color: var(--muted); font-size: var(--ui-small); }
 
-.year-festivals { margin-top: var(--space-6); }
+.year-festivals { margin-top: var(--space-5); }
+/* Lining figures, not tabular: Schibsted Grotesk's tabular forms widen commas too */
 .festival-table { width: 100%; border-collapse: collapse; }
 .festival-table caption { text-align: left; }
-.festival-table th, .festival-table td { padding: var(--space-2) var(--space-3) var(--space-2) 0; border-top: 1px solid var(--rule); text-align: left; vertical-align: baseline; }
-.festival-table th { color: var(--muted); font-size: var(--step--1); }
+.festival-table th, .festival-table td { padding: var(--space-1) var(--space-3) var(--space-1) 0; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: baseline; }
+.festival-table thead th { font: 600 var(--ui-small) / 1.4 var(--font-ui); border-bottom-color: var(--rule-strong); }
 .festival-table .festival-link { display: inline; width: auto; padding: 0; }
+.about-body .about-say { font-family: var(--font-ui); }
 .about-say strong { font-weight: 700; letter-spacing: 0.02em; }
-.ipa { color: var(--muted); }
-.say-key { margin: var(--space-4) 0; padding: var(--space-3) var(--space-4); border: 1px solid var(--rule); border-radius: var(--radius); }
+.ipa { color: var(--muted); font-family: var(--font-ipa); }
+.say-key { margin: var(--space-3) 0; padding: var(--space-2) var(--space-3); border: 1px solid var(--rule); border-radius: 12px; }
 .say-key summary { cursor: pointer; font-weight: 700; }
-.say-key p { max-width: 62ch; }
-.say-key dl { display: grid; grid-template-columns: repeat(auto-fill, minmax(12em, 1fr)); gap: 2px var(--space-4); margin: 0 0 var(--space-3); }
+.say-key p { max-width: 62ch; margin: var(--space-2) 0; }
+.say-key dl { display: grid; grid-template-columns: repeat(auto-fill, minmax(12em, 1fr)); gap: 2px var(--space-3); margin: 0 0 var(--space-2); }
 .say-key dl div { display: flex; gap: var(--space-2); }
 .say-key dt { min-width: 4.5em; font-weight: 700; }
 .say-key dd { margin: 0; color: var(--muted); }
-.sources-title { margin: 0 0 var(--space-2); font-size: var(--step-1); }
+.sources-title { margin: 0 0 var(--space-2); font: 700 1.125rem / 1.3 var(--font-display); }
 .sources { margin: 0; padding-left: 1.2em; }
 
 /* About the calendar ------------------------------------------------------ */
 
-.about-calendar { max-width: 66ch; margin-top: var(--space-8); padding-top: var(--space-5); border-top: 1px solid var(--rule); color: var(--muted); }
-.about-calendar h2 { margin: 0 0 var(--space-2); color: var(--ink); font: 700 var(--step-1) / 1.3 var(--font-text); }
-.about-calendar p { margin: 0 0 var(--space-3); }
+.about-calendar { margin-top: var(--space-6); }
+.about-calendar h2 {
+  margin: 0 0 var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--ink);
+  font: 700 1rem / 1.3 var(--font-display);
+}
+.about-calendar p { max-width: var(--measure); margin: 0 0 1.1em; color: var(--ink-soft); font: 400 var(--step-0) / 1.7 var(--font-text); }
 
-/* Site footer and the legal pages ----------------------------------------- */
+/* The legal pages --------------------------------------------------------- */
 
-.site-footer { margin-top: var(--space-8); padding-top: var(--space-4); border-top: 1px solid var(--rule); color: var(--muted); font-size: var(--step--1); }
-.site-footer ul { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); margin: 0 0 var(--space-2); padding: 0; list-style: none; }
-.site-footer a { color: var(--ink); }
-.site-footer p { margin: 0; }
-
-.legal { max-width: 66ch; padding-top: var(--space-6); }
-.legal h1 { margin: 0; font: 800 var(--step-4) / 1.1 var(--font-display); letter-spacing: 0.01em; }
-.legal-updated { margin: var(--space-2) 0 var(--space-6); color: var(--muted); }
-.legal h2 { margin: var(--space-6) 0 var(--space-2); font: 700 var(--step-1) / 1.3 var(--font-text); }
-.legal p, .legal ul { margin: 0 0 var(--space-3); }
-.legal li + li { margin-top: var(--space-1); }
+.legal h1 {
+  max-width: 18ch; margin: var(--space-5) 0 0;
+  font: 800 clamp(2.4rem, 6vw, 4.6rem) / 1 var(--font-display); letter-spacing: -0.04em;
+}
+.legal .legal-updated { margin: var(--space-3) 0 var(--space-5); color: var(--muted); font: 400 var(--ui-size) / 1.4 var(--font-ui); }
+.legal h2 { max-width: var(--measure); margin: var(--space-5) 0 var(--space-2); font: 700 var(--step-1) / 1.25 var(--font-display); letter-spacing: -0.02em; }
+.legal p, .legal ul { max-width: var(--measure); margin: 0 0 1em; font: 400 var(--step-0) / 1.7 var(--font-text); }
+.legal ul { padding-left: 1.25em; }
+.legal li + li { margin-top: 0.35em; }
+.legal li::marker { color: var(--muted); }
 
 /* Motion and print -------------------------------------------------------- */
 
@@ -497,11 +509,13 @@ a.button.button-strong { color: var(--paper); }
      theme rules' specificity and comes later, so it wins */
   :root:is([data-theme], :not([data-theme='light'])) {
     color-scheme: light;
-    --paper: #fff; --surface: #fff; --wash: #fff; --ink: #000; --muted: #333; --rule: #bbb; --rule-strong: #666;
-    --hue-l: 0.72; --hue-c: 0.13;
+    --page: #fff; --page-raised: #fff; --field: #fff; --ink: #000; --ink-soft: #222; --muted: #333;
+    --rule: #bbb; --rule-strong: #666; --sun: #c4361a;
+    --hue-l: 0.72; --hue-c: 0.13; --on-hue: #000;
   }
   body { font-size: 9pt; }
-  .page { max-width: none; padding: 0; }
+  .page { padding: 0; }
+  .kit-column { width: auto; margin: 0; }
   .masthead, .today-line, .location-notice, .about-calendar, .site-footer, .steps, .skip-link, .strip, .side, .text-button, .hear { display: none !important; }
   .print-only { display: block; }
 
@@ -513,16 +527,17 @@ a.button.button-strong { color: var(--paper); }
   .grid { border-top-width: 3mm; }
   .grid th { padding: 1.5mm 2mm; font-size: 9pt; }
   .cell { height: 29mm; padding: 2mm; }
-  .num { font-size: 30pt; }
+  .num { font-size: 26pt; }
   .greg { font-size: 10pt; }
+  .marks { top: 2mm; right: 2mm; }
   .marks svg { width: 4mm; height: 4mm; }
   [aria-selected='true'] > .cell, .cell[aria-current='date'], [aria-selected='true'] > .cell[aria-current='date'] { background: none; color: inherit; box-shadow: none; }
-  .cell[aria-current='date'] .greg:not(.is-new-month) { color: var(--muted); }
-  .month-meaning { margin: 4mm 0 0; color: var(--muted); }
+  .cell[aria-current='date'] .num { min-width: 0; height: auto; margin: 0; padding: 0; background: none; color: inherit; box-shadow: none; }
+  .month-meaning { margin: 4mm 0 0; color: var(--muted); font-family: var(--font-text); }
   .month-main { display: block; }
   /* Three columns, one line each, so a busy month still fits the page */
   .month-festivals { margin-top: 3mm; font-size: 7.5pt; line-height: 1.25; }
-  .month-festivals .notes-title { margin-bottom: 1mm; font-size: 9pt; }
+  .month-festivals .notes-title { margin-bottom: 1mm; padding-top: 1mm; font-size: 9pt; }
   .festival-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5mm 5mm; }
   .festival-list li { border: 0; }
   .festival-link { gap: 1.5mm; padding: 0; }
@@ -539,10 +554,11 @@ a.button.button-strong { color: var(--paper); }
   .almanac .n { font-size: 8.5pt; }
   .seasons li, .legend li { padding: 0.5mm 0; }
   .event-name { display: inline; margin-right: 1mm; }
-  .notes-title { margin-bottom: 1mm; font-size: 9pt; }
+  .notes-title { margin-bottom: 1mm; padding-top: 1mm; font-size: 9pt; }
   .legend { columns: 3; column-gap: 4mm; }
   .swatch { width: 2.5mm; height: 2.5mm; margin-top: 0.8mm; }
   .almanac td.is-today { background: none; color: inherit; outline: 1.5px solid #000; }
+  .almanac td.is-today.has-festival::after { color: var(--muted); }
   .year-notes { grid-template-columns: 1fr 2fr; gap: 6mm; margin-top: 3mm; font-size: 7.5pt; }
   * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 }

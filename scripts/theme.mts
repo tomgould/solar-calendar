@@ -6,8 +6,13 @@ import type { Plugin } from 'vite';
 // Applies a saved theme before the first paint, so dark mode never flashes
 // white. It goes inline in every page's <head>, so the first paint waits for no
 // extra request. Edit it here: the build works out its hash.
+// The design kit's System / Light / Dark switch (public/kit/js/theme-switch.js)
+// keeps the choice under 'almanac-theme'. The app's older button kept it under
+// 'theme', so a choice saved there moves across once.
+export const THEME_KEY = 'almanac-theme';
+export const OLD_THEME_KEY = 'theme';
 export const THEME_SCRIPT =
-  "try{const t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch{}";
+  `try{const s=localStorage,o=s.getItem('${OLD_THEME_KEY}');if(o!==null){if(s.getItem('${THEME_KEY}')===null)s.setItem('${THEME_KEY}',o);s.removeItem('${OLD_THEME_KEY}')}const t=s.getItem('${THEME_KEY}');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch{}`;
 
 // The Content-Security-Policy allows the inline script by the sha256 hash of its
 // exact text, rather than allowing every inline script

@@ -7,20 +7,35 @@
   <meta name="description" content="The terms for using the solar calendar, its calendar feed and its badge.">
   <link rel="canonical" href="https://solar.dealmobile.co.uk/terms">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-  <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#161c2e" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#fbf7f0" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#11100e" media="(prefers-color-scheme: dark)">
   <!-- Applies a saved theme before the first paint: the build puts the script inline here (scripts/theme.mts) -->
   <script data-theme-script></script>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to the terms</a>
+  <a class="visually-hidden focusable skip-link" href="#main">Skip to the terms</a>
   <div class="page">
-    <header class="masthead">
-      <a class="wordmark" href="./">Solar calendar</a>
-      <a class="button" href="./">Back to the calendar</a>
+    <header class="kit-masthead masthead">
+      <div class="kit-column kit-masthead__bar">
+        <span class="brand"><a class="kit-wordmark" href="https://www.dealmobile.co.uk/">Tom Gould<span class="kit-wordmark__dot">.</span></a><a class="kit-app" href="./">Solar Calendar</a></span>
+        <nav class="kit-nav" aria-label="Calendar">
+          <ul class="kit-nav__list">
+            <li><a class="kit-nav__link" href="./">Back to the calendar</a></li>
+          </ul>
+        </nav>
+        <fieldset class="kit-theme-switch" data-theme-switch hidden>
+          <legend class="visually-hidden">Theme</legend>
+          <span class="kit-theme-switch__options">
+            <label><input type="radio" name="theme-top" value="system">System</label>
+            <label><input type="radio" name="theme-top" value="light">Light</label>
+            <label><input type="radio" name="theme-top" value="dark">Dark</label>
+          </span>
+        </fieldset>
+      </div>
     </header>
 
-    <main id="main" class="legal">
+    <main id="main" class="kit-column legal">
       <h1>Terms of use</h1>
       <p class="legal-updated">Last updated 18 October 2026</p>
 
@@ -56,19 +71,23 @@
       <p><a href="https://github.com/tomgould/solar-calendar/issues">Open an issue on GitHub</a>.</p>
     </main>
 
-    <footer class="site-footer">
-      <nav aria-label="About this site">
-        <ul>
-          <li><a href="./privacy">Privacy policy</a></li>
-          <li><a href="./terms">Terms of use</a></li>
-          <li><a href="./disclaimer">Disclaimer</a></li>
-          <li><a href="https://github.com/tomgould/solar-calendar">Source code on GitHub</a></li>
-          <li><a href="https://www.dealmobile.co.uk">More projects from Deal Mobile</a></li>
-        </ul>
-      </nav>
-      <p>Run by Deal Mobile. Free software under the GNU GPL version 3. No cookies.</p>
+    <footer class="kit-footer site-footer">
+      <div class="kit-column kit-footer__rows">
+        <nav aria-label="About this site">
+          <ul class="kit-footer__links">
+            <li><a href="./privacy">Privacy policy</a></li>
+            <li><a href="./terms">Terms of use</a></li>
+            <li><a href="./disclaimer">Disclaimer</a></li>
+            <li><a href="https://github.com/tomgould/solar-calendar">Source code on GitHub</a></li>
+            <li><a href="https://www.dealmobile.co.uk/projects/solar-calendar">About this project</a></li>
+            <li><a href="https://www.dealmobile.co.uk/">Tom Gould</a></li>
+          </ul>
+        </nav>
+        <p>Run by Deal Mobile. Free software under the GNU GPL version 3. No cookies. Set in Schibsted Grotesk and Libre Caslon.</p>
+      </div>
     </footer>
   </div>
   <script type="module" src="/src/styles.ts"></script>
+  <script src="/kit/js/theme-switch.js" defer></script>
 </body>
 </html>

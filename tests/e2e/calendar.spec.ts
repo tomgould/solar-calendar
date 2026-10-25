@@ -409,17 +409,32 @@ test('shows sunrise and sunset once a location is set', async ({ page, context }
   await expect(sun.getByRole('button', { name: 'Add your location' })).toBeFocused();
 });
 
-test('switches theme, offering the other mode', async ({ page }) => {
+test('switches theme between System, Light and Dark, and remembers it', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('./');
-  const button = page.locator('#theme-button');
-  await expect(button).toHaveAccessibleName('Dark mode');
-  await button.click();
+  const theme = page.getByRole('group', { name: 'Theme' });
+  await expect(theme.getByRole('radio', { name: 'System' })).toBeChecked();
+  await expect(page.locator('html')).not.toHaveAttribute('data-theme');
+  await theme.getByLabel('Dark').check();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  await expect(button).toHaveAccessibleName('Light mode');
-  await button.click();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await expect(button).toHaveAccessibleName('Dark mode');
+  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(17, 16, 14)');
+
+  // Kept for the next visit, and on the other pages
+  await page.goto('./privacy');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.getByRole('group', { name: 'Theme' }).getByRole('radio', { name: 'Dark' })).toBeChecked();
+  await page.getByRole('group', { name: 'Theme' }).getByLabel('System').check();
+  await expect(page.locator('html')).not.toHaveAttribute('data-theme');
+  expect(await page.evaluate(() => localStorage.getItem('almanac-theme'))).toBe('system');
+  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(251, 247, 240)');
+});
+
+test('keeps a theme chosen with the old theme button', async ({ page }) => {
+  await page.addInitScript(() => { if (!sessionStorage.getItem('seen')) { sessionStorage.setItem('seen', '1'); localStorage.setItem('theme', 'dark'); } });
+  await page.goto('./');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.getByRole('group', { name: 'Theme' }).getByRole('radio', { name: 'Dark' })).toBeChecked();
+  expect(await page.evaluate(() => [localStorage.getItem('theme'), localStorage.getItem('almanac-theme')])).toEqual([null, 'dark']);
 });
 
 test('prints the month or the year on one page', async ({ page }, testInfo) => {
@@ -507,19 +522,20 @@ test.describe('under the production Content-Security-Policy', () => {
 
   // The saved choice has to win over the system setting before anything paints,
   // so the inline script must run, under the policy, before <body> is parsed
-  for (const [saved, system] of [['dark', 'light'], ['light', 'dark']] as const) {
-    test(`applies a saved ${saved} theme before the first paint, on every page`, async ({ page }) => {
+  // almanac-theme is the design kit's switch; theme is the older button's, moved across on load
+  for (const [saved, system, key] of [['dark', 'light', 'almanac-theme'], ['light', 'dark', 'almanac-theme'], ['dark', 'light', 'theme']] as const) {
+    test(`applies a saved ${saved} theme (${key}) before the first paint, on every page`, async ({ page }) => {
       const blocked = await underPolicy(page);
       await page.emulateMedia({ colorScheme: system });
-      await page.addInitScript((theme) => {
-        localStorage.setItem('theme', theme);
+      await page.addInitScript(([theme, name]) => {
+        localStorage.setItem(name, theme);
         const seen = window as unknown as { themeAtBody?: string | null };
         new MutationObserver((_, observer) => {
           if (!document.body) return;
           seen.themeAtBody = document.documentElement.dataset.theme ?? null;
           observer.disconnect();
         }).observe(document, { childList: true, subtree: true });
-      }, saved);
+      }, [saved, key]);
       for (const path of ['./', './privacy', './terms', './disclaimer']) {
         await page.goto(path);
         expect(await page.evaluate(() => (window as unknown as { themeAtBody?: string | null }).themeAtBody), path).toBe(saved);
@@ -535,12 +551,11 @@ test.describe('when the fonts arrive late', () => {
   // The service worker would fetch the fonts itself, out of the route's reach
   test.use({ serviceWorkers: 'block' });
 
-  test('barely moves the page as Andika replaces its fallback', async ({ page }, testInfo) => {
+  test('barely moves the page as the kit’s typefaces replace their fallbacks', async ({ page }, testInfo) => {
     test.skip(!['chromium', 'phone'].includes(testInfo.project.name), 'Only Chromium reports layout shifts');
-    // A common phone width, and the desktop width that moved most before the
-    // fallbacks (0.69). At 412 px one line of the location notice fits Andika
-    // with 4 px to spare, and Chrome on Linux draws text at whole pixel sizes,
-    // so there the fallback still wraps it onto another line (about 0.13)
+    // A common phone width, and a desktop width. Chrome on Linux draws text at
+    // whole pixel sizes, so size-adjust lands a little off there, and a line
+    // that only just fits can still wrap differently
     await page.setViewportSize(testInfo.project.name === 'phone' ? { width: 390, height: 844 } : { width: 1024, height: 800 });
     await page.route(/\.woff2$/, async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -560,10 +575,13 @@ test.describe('when the fonts arrive late', () => {
     // Fonts asked for before the load event hold it up, so don't wait for it
     await page.goto('./?date=2026-10-17', { waitUntil: 'commit' });
     await expect(page.locator('#today-line')).toContainText('Today is');
-    // The reshaped Arial (Liberation Sans on Linux) stands in while Andika loads
-    await expect.poll(() => loaded('Andika Fallback Arial')).toBe(true);
-    expect(await loaded('Andika')).toBe(false);
-    await expect.poll(() => loaded('Andika'), { timeout: 10_000 }).toBe(true);
+    // The reshaped Arial and Times New Roman (Liberation Sans and Serif on Linux)
+    // stand in while Schibsted Grotesk and Libre Caslon load
+    await expect.poll(() => loaded('Schibsted Grotesk Fallback Arial')).toBe(true);
+    await expect.poll(() => loaded('Libre Caslon Text Fallback Times New Roman')).toBe(true);
+    expect(await loaded('Schibsted Grotesk')).toBe(false);
+    await expect.poll(() => loaded('Schibsted Grotesk'), { timeout: 10_000 }).toBe(true);
+    await expect.poll(() => loaded('Libre Caslon Text'), { timeout: 10_000 }).toBe(true);
     await page.waitForTimeout(500);
     expect(await page.evaluate(() => (window as unknown as { layoutShift: number }).layoutShift)).toBeLessThan(0.1);
   });
@@ -588,17 +606,21 @@ test('works offline after the first visit', async ({ page, context }, testInfo) 
 
 const LEGAL_PAGES = ['./privacy', './terms', './disclaimer'];
 
-test('links to the privacy policy, terms, disclaimer, source code and other projects from every page', async ({ page }) => {
+test('links to the privacy policy, terms, disclaimer, source code and the main site from every page', async ({ page }) => {
   await page.goto('./');
+  // The wordmark always leads back to the main site
+  await expect(page.locator('.masthead').getByRole('link', { name: 'Tom Gould.' })).toHaveAttribute('href', 'https://www.dealmobile.co.uk/');
   const footer = page.locator('.site-footer');
   await expect(footer.getByRole('link', { name: 'Source code on GitHub' })).toHaveAttribute('href', 'https://github.com/tomgould/solar-calendar');
-  await expect(footer.getByRole('link', { name: 'More projects from Deal Mobile' })).toHaveAttribute('href', 'https://www.dealmobile.co.uk');
+  await expect(footer.getByRole('link', { name: 'About this project' })).toHaveAttribute('href', 'https://www.dealmobile.co.uk/projects/solar-calendar');
+  await expect(footer.getByRole('link', { name: 'Tom Gould' })).toHaveAttribute('href', 'https://www.dealmobile.co.uk/');
   // Each page has the same footer, and a way back to the calendar
   for (const [link, heading] of [['Privacy policy', 'Privacy policy'], ['Terms of use', 'Terms of use'], ['Disclaimer', 'Disclaimer']]) {
     await footer.getByRole('link', { name: link }).click();
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(heading);
     await expect(page).toHaveTitle(`${heading}, Solar calendar`);
-    await expect(footer.getByRole('link')).toHaveCount(5);
+    await expect(footer.getByRole('link')).toHaveCount(6);
+    await expect(page.locator('.masthead').getByRole('link', { name: 'Tom Gould.' })).toHaveAttribute('href', 'https://www.dealmobile.co.uk/');
     await page.getByRole('link', { name: 'Back to the calendar' }).click();
     await expect(page.locator('#today-line')).toContainText('Today is');
   }

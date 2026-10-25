@@ -64,14 +64,15 @@ export default defineConfig({
       // inline script, and it doesn't hold up the first paint
       injectRegister: 'script-defer',
       manifest: {
-        name: 'Solar calendar',
-        short_name: 'Solar calendar',
+        name: 'Solar Calendar',
+        short_name: 'Solar Calendar',
         description: 'A calendar of 13 identical 28-day months, with the year starting at the spring equinox.',
         start_url: './',
         scope: './',
         display: 'standalone',
-        background_color: '#f6f7f9',
-        theme_color: '#1d2742',
+        // The design kit's paper
+        background_color: '#fbf7f0',
+        theme_color: '#fbf7f0',
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
@@ -80,8 +81,11 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
-        // social.png is only for link previews
-        globIgnores: ['**/*cyrillic*', '**/*vietnamese*', '**/social.png'],
+        // social.png is only for link previews. Of the design kit in kit/, the
+        // pages use only the theme switch script: its stylesheets and fonts are
+        // bundled into assets/, and the bundle never uses its Libre Caslon
+        // Display or Schibsted Grotesk italic
+        globIgnores: ['**/*cyrillic*', '**/*vietnamese*', '**/social.png', 'kit/css/**', 'kit/fonts/**', 'kit/images/**', '**/libre-caslon-display-*', '**/schibsted-grotesk-latin-wght-italic-*'],
         navigateFallback: 'index.html',
         // Files that aren't pages: open them in the browser and they still come from the server
         navigateFallbackDenylist: [/\/feed\.ics/, /\/today\.svg/, /\/robots\.txt/, /\/sitemap\.xml/],

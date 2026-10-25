@@ -1,7 +1,8 @@
-// Writes src/styles/fallbacks.css: local system fonts reshaped to Andika's
-// size and line metrics. Text set in them while Andika loads takes the same
-// space, so the swap to Andika moves nothing. Run it again after a Fontsource
-// update: npm run fonts:fallbacks (tests/unit/font-fallbacks.test.ts fails
+// Writes src/styles/fallbacks.css: local system fonts reshaped to the size and
+// line metrics of the design kit's typefaces, Schibsted Grotesk and Libre
+// Caslon Text. Text set in them while the real fonts load takes the same
+// space, so the swap moves nothing. Run it again after the kit or Fontsource
+// changes: npm run fonts:fallbacks (tests/unit/font-fallbacks.test.ts fails
 // until you do).
 import { readFileSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
@@ -31,38 +32,71 @@ export function measure(file: string): Metrics {
   return { unitsPerEm: font.unitsPerEm, ascent: font.ascent, descent: font.descent, lineGap: font.lineGap, xWidthAvg };
 }
 
-type Face = '400 normal' | '700 normal' | '400 italic';
+export type Face = '400 normal' | '700 normal' | '400 italic';
 
-// The system fonts used while Andika loads, measured with measure(). Arial's
-// come from Liberation Sans, which has the same metrics and is what Linux has
-// in its place. Roboto's come from Fontsource's Roboto 5.3.0, Google's Roboto,
-// which Android uses. Each face lists the full and PostScript names local() matches
-export const SYSTEM_FONTS: Record<string, { faces: Record<Face, { local: string[]; metrics: Metrics }> }> = {
+type SystemFont = Partial<Record<Face, { local: string[]; metrics: Metrics }>>;
+
+// The system fonts used while the real fonts load, measured with measure().
+// Each face lists the full and PostScript names local() matches.
+// - Arial's come from Liberation Sans, which has the same metrics and is what
+//   Linux has in its place; Times New Roman's likewise from Liberation Serif.
+// - Roboto's come from Fontsource's Roboto 5.3.0, Google's Roboto, which
+//   Android uses; Noto Serif is Android's serif.
+export const SYSTEM_FONTS: Record<string, SystemFont> = {
   Arial: {
-    faces: {
-      '400 normal': { local: ['Arial', 'ArialMT', 'Liberation Sans', 'LiberationSans'], metrics: { unitsPerEm: 2048, ascent: 1854, descent: -434, lineGap: 67, xWidthAvg: 903.5 } },
-      '700 normal': { local: ['Arial Bold', 'Arial-BoldMT', 'Liberation Sans Bold', 'LiberationSans-Bold'], metrics: { unitsPerEm: 2048, ascent: 1854, descent: -434, lineGap: 67, xWidthAvg: 976.8 } },
-      '400 italic': { local: ['Arial Italic', 'Arial-ItalicMT', 'Liberation Sans Italic', 'LiberationSans-Italic'], metrics: { unitsPerEm: 2048, ascent: 1854, descent: -434, lineGap: 67, xWidthAvg: 903.5 } },
-    },
+    '400 normal': { local: ['Arial', 'ArialMT', 'Liberation Sans', 'LiberationSans'], metrics: { unitsPerEm: 2048, ascent: 1854, descent: -434, lineGap: 67, xWidthAvg: 903.5 } },
+    '700 normal': { local: ['Arial Bold', 'Arial-BoldMT', 'Liberation Sans Bold', 'LiberationSans-Bold'], metrics: { unitsPerEm: 2048, ascent: 1854, descent: -434, lineGap: 67, xWidthAvg: 976.8 } },
   },
   Roboto: {
+    '400 normal': { local: ['Roboto', 'Roboto-Regular'], metrics: { unitsPerEm: 2048, ascent: 1900, descent: -500, lineGap: 0, xWidthAvg: 906.2 } },
+    '700 normal': { local: ['Roboto Bold', 'Roboto-Bold'], metrics: { unitsPerEm: 2048, ascent: 1900, descent: -500, lineGap: 0, xWidthAvg: 918.2 } },
+  },
+  'Times New Roman': {
+    '400 normal': { local: ['Times New Roman', 'TimesNewRomanPSMT', 'Liberation Serif', 'LiberationSerif'], metrics: { unitsPerEm: 2048, ascent: 1825, descent: -443, lineGap: 87, xWidthAvg: 818.7 } },
+    '700 normal': { local: ['Times New Roman Bold', 'TimesNewRomanPS-BoldMT', 'Liberation Serif Bold', 'LiberationSerif-Bold'], metrics: { unitsPerEm: 2048, ascent: 1825, descent: -443, lineGap: 87, xWidthAvg: 871 } },
+    '400 italic': { local: ['Times New Roman Italic', 'TimesNewRomanPS-ItalicMT', 'Liberation Serif Italic', 'LiberationSerif-Italic'], metrics: { unitsPerEm: 2048, ascent: 1825, descent: -443, lineGap: 87, xWidthAvg: 821.9 } },
+  },
+  'Noto Serif': {
+    '400 normal': { local: ['Noto Serif', 'NotoSerif', 'NotoSerif-Regular'], metrics: { unitsPerEm: 1000, ascent: 1069, descent: -293, lineGap: 0, xWidthAvg: 478.5 } },
+    '700 normal': { local: ['Noto Serif Bold', 'NotoSerif-Bold'], metrics: { unitsPerEm: 1000, ascent: 1069, descent: -293, lineGap: 0, xWidthAvg: 507.6 } },
+    '400 italic': { local: ['Noto Serif Italic', 'NotoSerif-Italic'], metrics: { unitsPerEm: 1000, ascent: 1069, descent: -293, lineGap: 0, xWidthAvg: 464.3 } },
+  },
+};
+
+const KIT_FONTS = 'public/kit/fonts';
+
+interface Typeface {
+  /** The system fonts reshaped to stand in for it */
+  systems: string[];
+  /** Each face the site uses: its metrics, and the Fontsource stylesheet whose ranges say which characters it covers */
+  faces: Partial<Record<Face, { metrics: () => Metrics; css: string }>>;
+}
+
+// The kit's two typefaces, measured from the kit's own files. They are the
+// Latin files; the Latin Extended ones (src/styles/fonts.css) come from
+// Fontsource, so the character ranges are Fontsource's too.
+export const TYPEFACES: Record<string, Typeface> = {
+  'Schibsted Grotesk': {
+    systems: ['Arial', 'Roboto'],
     faces: {
-      '400 normal': { local: ['Roboto', 'Roboto-Regular'], metrics: { unitsPerEm: 2048, ascent: 1900, descent: -500, lineGap: 0, xWidthAvg: 906.2 } },
-      '700 normal': { local: ['Roboto Bold', 'Roboto-Bold'], metrics: { unitsPerEm: 2048, ascent: 1900, descent: -500, lineGap: 0, xWidthAvg: 918.2 } },
-      '400 italic': { local: ['Roboto Italic', 'Roboto-Italic'], metrics: { unitsPerEm: 2048, ascent: 1900, descent: -500, lineGap: 0, xWidthAvg: 880.8 } },
+      // The variable font's default instance is its 400
+      '400 normal': { metrics: () => measure(`${KIT_FONTS}/schibsted-grotesk-latin-wght-normal.woff2`), css: '@fontsource-variable/schibsted-grotesk/wght.css' },
+      // fontkit can't set a WOFF2 font's weight axis, so the bold was measured
+      // once from Fontsource's static Schibsted Grotesk 700 (5.3.0), the same design
+      '700 normal': { metrics: () => ({ unitsPerEm: 2048, ascent: 2000, descent: -528, lineGap: 0, xWidthAvg: 993 }), css: '@fontsource-variable/schibsted-grotesk/wght.css' },
+    },
+  },
+  'Libre Caslon Text': {
+    systems: ['Times New Roman', 'Noto Serif'],
+    faces: {
+      '400 normal': { metrics: () => measure(`${KIT_FONTS}/libre-caslon-text-latin-400-normal.woff2`), css: '@fontsource/libre-caslon-text/400.css' },
+      '700 normal': { metrics: () => measure(`${KIT_FONTS}/libre-caslon-text-latin-700-normal.woff2`), css: '@fontsource/libre-caslon-text/700.css' },
+      '400 italic': { metrics: () => measure(`${KIT_FONTS}/libre-caslon-text-latin-400-italic.woff2`), css: '@fontsource/libre-caslon-text/400-italic.css' },
     },
   },
 };
 
-// The Andika faces the site loads, each with its Latin file and Fontsource stylesheet
-const ANDIKA = 'node_modules/@fontsource/andika';
-const ANDIKA_FACES: Record<Face, { file: string; css: string }> = {
-  '400 normal': { file: 'andika-latin-400-normal.woff2', css: '400.css' },
-  '700 normal': { file: 'andika-latin-700-normal.woff2', css: '700.css' },
-  '400 italic': { file: 'andika-latin-400-italic.woff2', css: '400-italic.css' },
-};
-
-export const fallbackFamily = (system: string) => `Andika Fallback ${system}`;
+export const fallbackFamily = (typeface: string, system: string) => `${typeface} Fallback ${system}`;
 
 /** size-adjust and the line metric overrides that make `fallback` take the space `font` does, as capsize and fontaine work them out. */
 export function overrides(font: Metrics, fallback: Metrics) {
@@ -74,32 +108,34 @@ export function overrides(font: Metrics, fallback: Metrics) {
 
 const percent = (value: number) => `${+(value * 100).toFixed(2)}%`;
 
-/** Every character range Andika covers in a face, so the fallback stands in for those and nothing else. */
-const unicodeRange = (css: string) => [...new Set([...readFileSync(`${ANDIKA}/${css}`, 'utf8').matchAll(/unicode-range: ([^;]+);/g)].flatMap((match) => match[1].split(',')))].join(',');
+/** Every character range a face covers, so the fallback stands in for those and nothing else. */
+export const unicodeRange = (css: string) => [...new Set([...readFileSync(`node_modules/${css}`, 'utf8').matchAll(/unicode-range: ([^;]+);/g)].flatMap((match) => match[1].split(',')))].join(',');
 
 export function fallbackCss(): string {
-  const rules = Object.entries(SYSTEM_FONTS).flatMap(([system, { faces }]) =>
-    (Object.keys(ANDIKA_FACES) as Face[]).map((face) => {
+  const rules = Object.entries(TYPEFACES).flatMap(([typeface, { systems, faces }]) =>
+    systems.flatMap((system) => (Object.keys(faces) as Face[]).map((face) => {
       const [weight, style] = face.split(' ');
-      const andika = ANDIKA_FACES[face];
-      const fit = overrides(measure(`${ANDIKA}/files/${andika.file}`), faces[face].metrics);
+      const real = faces[face]!;
+      const stand = SYSTEM_FONTS[system][face]!;
+      const fit = overrides(real.metrics(), stand.metrics);
       return [
         '@font-face {',
-        `  font-family: '${fallbackFamily(system)}';`,
+        `  font-family: '${fallbackFamily(typeface, system)}';`,
         `  font-style: ${style};`,
         `  font-weight: ${weight};`,
-        `  src: ${faces[face].local.map((name) => `local('${name}')`).join(', ')};`,
+        `  src: ${stand.local.map((name) => `local('${name}')`).join(', ')};`,
         `  size-adjust: ${percent(fit.sizeAdjust)};`,
         `  ascent-override: ${percent(fit.ascent)};`,
         `  descent-override: ${percent(fit.descent)};`,
         `  line-gap-override: ${percent(fit.lineGap)};`,
-        `  unicode-range: ${unicodeRange(andika.css)};`,
+        `  unicode-range: ${unicodeRange(real.css)};`,
         '}',
       ].join('\n');
-    }));
+    })));
   return `/* Generated by scripts/font-fallbacks.mts (npm run fonts:fallbacks); don't edit by hand.
-   Arial and Roboto reshaped to Andika's size and line metrics, so text set in
-   them while Andika loads takes the same space, and the swap moves nothing. */
+   Arial and Roboto reshaped to Schibsted Grotesk, and Times New Roman and Noto
+   Serif to Libre Caslon Text, in size and line metrics, so text set in them
+   while the real fonts load takes the same space, and the swap moves nothing. */
 ${rules.join('\n\n')}
 `;
 }
