@@ -296,6 +296,58 @@ test('converts between the calendars with Go to a date', async ({ page }) => {
   await expect(page.locator('#goto-solar-day')).toBeFocused();
 });
 
+test.describe('when the other packs arrive while a date is being typed', () => {
+  // The service worker would fetch the packs itself, out of the route's reach
+  test.use({ serviceWorkers: 'block' });
+
+  test('keeps what was typed, the focus and the caret', async ({ page }) => {
+    // Hold the Persian pack back, so the calendar's second render (once the
+    // other packs have loaded) comes while the solar date is half typed
+    let release!: () => void;
+    const held = new Promise<void>((resolve) => { release = resolve; });
+    await page.route(/\/persian-[^/]*\.js$/, async (route) => {
+      await held;
+      await route.continue();
+    });
+    await page.goto('./?date=2026-10-17&names=gregorian', { waitUntil: 'commit' });
+    const [day, month, year] = [page.locator('#goto-solar-day'), page.locator('#goto-solar-month'), page.locator('#goto-solar-year')];
+    await expect(day).toHaveValue('13');
+    await expect(page.locator('#month-festivals')).not.toContainText('Mehregan');
+
+    await day.fill('1');
+    await month.selectOption({ label: 'March' });
+    await year.click();
+    await year.selectText();
+    await page.keyboard.type('2027');
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.press('ArrowLeft');
+
+    release();
+    // Mehregan is a Persian festival: the second render has happened
+    await expect(page.locator('#month-festivals')).toContainText('Mehregan');
+    await expect(day).toHaveValue('1');
+    await expect(month.locator('option:checked')).toHaveText('March');
+    await expect(year).toHaveValue('2027');
+    await expect(year).toBeFocused();
+    // The caret stayed where it was, two from the end (a number field won't
+    // report it, so type there and take it out again)
+    await page.keyboard.type('1');
+    await expect(year).toHaveValue('20127');
+    await page.keyboard.press('Backspace');
+    await expect(year).toHaveValue('2027');
+    // The field nobody touched still follows the selected day
+    await expect(page.locator('#goto-gregorian-date')).toHaveValue('2026-10-17');
+
+    // What was typed still goes where it says
+    await page.keyboard.press('Enter');
+    await expect(page.locator(selectedCell)).toHaveAccessibleName(/^1 March 2027, Monday 22 March 2027/);
+    // and choosing another day fills the form with that day again
+    await page.locator('#grid-body .cell').nth(9).click();
+    await expect(day).toHaveValue('10');
+    await expect(year).toHaveValue('2027');
+  });
+});
+
 test('adds the calendar to Google and other calendar apps, or downloads a year', async ({ page }) => {
   await page.goto('./?date=2026-10-17&names=anglo-saxon');
   // From the month view, next to Print month
