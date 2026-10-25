@@ -6,15 +6,17 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
 
 [![Today in the solar calendar](https://solar.dealmobile.co.uk/today.svg?names=gregorian&tz=Europe/London)](https://solar.dealmobile.co.uk)
 
-![The month view in December, with Anglo-Saxon month names, England and Wales bank holidays, and the month's festivals listed under the grid](docs/screenshots/month.png)
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/month-dark.png"><img src="docs/screenshots/month.png" alt="The month view in December, with Anglo-Saxon month names, England and Wales bank holidays, and the month's festivals listed under the grid"></picture>
 
-| Year view, dark mode | Choosing festivals and holidays |
+| Year view | Choosing festivals and holidays |
 |---|---|
-| ![Every day of solar 2026 in one table, with Old Norse month names](docs/screenshots/year.png) | ![The Festivals menu, with Northern Ireland, Scotland and Ireland holidays and Old Norse and Persian festivals chosen](docs/screenshots/festivals.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/year-dark.png"><img src="docs/screenshots/year.png" alt="Every day of solar 2026 in one table, with Old Norse month names"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/festivals-dark.png"><img src="docs/screenshots/festivals.png" alt="The Festivals menu, with Northern Ireland, Scotland and Ireland holidays and Old Norse and Persian festivals chosen"></picture> |
 
 | On a phone | What a name means |
 |---|---|
-| ![The month view on a phone, with the selected day in a sheet along the bottom](docs/screenshots/phone.png) | ![The meaning dialog for the Persian names, with pronunciations](docs/screenshots/names.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/phone-dark.png"><img src="docs/screenshots/phone.png" alt="The month view on a phone, with the selected day in a sheet along the bottom"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/names-dark.png"><img src="docs/screenshots/names.png" alt="The meaning dialog for the Persian names, with pronunciations"></picture> |
+
+The screenshots follow your light or dark setting.
 
 ## How the calendar works
 
@@ -41,7 +43,8 @@ A calendar of 13 identical months. Every month has 28 days, exactly four weeks, 
 - A badge with today's solar date for your own page or README, like the one above: `https://solar.dealmobile.co.uk/today.svg`. Add `?names=anglo-saxon` for other month names, and `&tz=Europe/London` for the date in your time zone rather than UTC.
 - Works offline after the first visit, and can be installed as an app.
 - No cookies or accounts: choices and your location stay in your browser. See the [privacy policy](https://solar.dealmobile.co.uk/privacy), [terms of use](https://solar.dealmobile.co.uk/terms) and [disclaimer](https://solar.dealmobile.co.uk/disclaimer).
-- Dark mode, keyboard navigation, and a phone layout that keeps the selected day in a sheet along the bottom.
+- Light and dark themes (or follow the system), keyboard navigation, and a phone layout that keeps the selected day in a sheet along the bottom.
+- Styled with the design kit shared by the apps on [www.dealmobile.co.uk](https://www.dealmobile.co.uk/projects/solar-calendar): Schibsted Grotesk and Libre Caslon, self-hosted.
 
 ## Development
 

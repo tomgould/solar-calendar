@@ -31,7 +31,7 @@ Put each name in the slot closest to its historical season. Most traditions have
 - Certainty: `established`, `likely` or `uncertain` describes how sure scholars are of the meaning. When they disagree, choose `uncertain` and say so in the meaning.
 - `gloss`: two to four words, lower case except proper nouns, such as "winter full moon".
 - `meaning`: one to three plain sentences in British English.
-- Fonts: `name` is shown in the display font, Big Shoulders, which lacks a few letters such as `ǣ`. Use the nearest plain form in `name`, and put the exact spelling or script in `original`. For an original in another script, set `originalLang`, and `originalDir: "rtl"` for right-to-left scripts. Other scripts use system fonts.
+- Fonts: `name` is shown in the display font, Schibsted Grotesk, and in Libre Caslon in running text. Schibsted Grotesk draws `Ǣ` from `Æ` and a combining macron (`forDisplayFont`), but neither has `ǣ`. Use the nearest plain form in `name`, and put the exact spelling or script in `original`. For an original in another script, set `originalLang`, and `originalDir: "rtl"` for right-to-left scripts. Other scripts use system fonts.
 - Ids: an `id` appears in shared links and feed URLs, so don't rename a pack once it's published.
 
 ## Pronunciation
