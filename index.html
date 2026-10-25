@@ -6,7 +6,7 @@
   <title>Solar Calendar: 13 months of 28 days</title>
   <meta name="description" content="13 months of 28 days, each starting on a Monday. The year begins at the March equinox, with a leap week when needed. Add it to your calendar app with a feed.">
   <link rel="canonical" href="https://solar.dealmobile.co.uk/">
-  <!-- The preview shown when a link is shared; social.png is drawn by scripts/social-image.html -->
+  <!-- The preview shown when a link is shared; social.png is the design kit's share card (see CLAUDE.md) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Solar calendar">
   <meta property="og:title" content="Solar calendar">
@@ -15,7 +15,7 @@
   <meta property="og:image" content="https://solar.dealmobile.co.uk/social.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Solar calendar: a month of 28 days in four rows, Monday to Sunday, under a strip of 13 month colours">
+  <meta property="og:image:alt" content="Solar Calendar, a project by Tom Gould: 13 months of 28 days, each starting on a Monday, from the spring equinox">
   <meta name="twitter:card" content="summary_large_image">
   <!-- For search engines. A data block, never run, so the Content-Security-Policy needn't allow it.
        The Person is the author's, with the same @id as on www.dealmobile.co.uk -->
@@ -55,33 +55,42 @@
   </script>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
-  <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#161c2e" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#fbf7f0" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#11100e" media="(prefers-color-scheme: dark)">
   <!-- Applies a saved theme before the first paint: the build puts the script inline here (scripts/theme.mts) -->
   <script data-theme-script></script>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to the calendar</a>
+  <a class="visually-hidden focusable skip-link" href="#main">Skip to the calendar</a>
   <div class="page">
-    <header class="masthead">
-      <a class="wordmark" href="./">Solar calendar</a>
-      <div class="controls">
-        <button type="button" class="button" id="today-button">Today</button>
-        <div class="segmented" role="group" aria-label="View">
-          <button type="button" data-view="month" aria-pressed="true">Month</button>
-          <button type="button" data-view="year" aria-pressed="false">Year</button>
+    <!-- The design kit's masthead: the wordmark leads back to the main site, the
+         calendar's own controls are the pills, the theme switch is at the right -->
+    <header class="kit-masthead masthead">
+      <div class="kit-column kit-masthead__bar">
+        <span class="brand"><a class="kit-wordmark" href="https://www.dealmobile.co.uk/">Tom Gould<span class="kit-wordmark__dot">.</span></a><a class="kit-app" href="./">Solar Calendar</a></span>
+        <div class="kit-nav controls">
+          <button type="button" class="kit-nav__link" id="today-button">Today</button>
+          <div class="segmented" role="group" aria-label="View">
+            <button type="button" data-view="month" aria-pressed="true">Month</button>
+            <button type="button" data-view="year" aria-pressed="false">Year</button>
+          </div>
+          <button type="button" class="kit-nav__link" id="names-button" popovertarget="names-menu"><span class="narrow-only">Names</span><span class="wide-only">Month names: <span id="names-current"></span></span></button>
+          <button type="button" class="kit-nav__link festivals-button" id="festivals-button" popovertarget="festivals-menu" aria-label="Festivals">
+            <svg viewBox="0 0 12 12" width="14" height="14" aria-hidden="true" focusable="false"><path d="M6 .8 7.4 4.6 11.2 6 7.4 7.4 6 11.2 4.6 7.4.8 6 4.6 4.6z" fill="currentColor"/></svg>
+            <span class="wide-only" aria-hidden="true">Festivals</span>
+          </button>
         </div>
-        <button type="button" class="button" id="names-button" popovertarget="names-menu"><span class="narrow-only">Names</span><span class="wide-only">Month names: <span id="names-current"></span></span></button>
-        <button type="button" class="button festivals-button" id="festivals-button" popovertarget="festivals-menu" aria-label="Festivals">
-          <svg viewBox="0 0 12 12" width="14" height="14" aria-hidden="true" focusable="false"><path d="M6 .8 7.4 4.6 11.2 6 7.4 7.4 6 11.2 4.6 7.4.8 6 4.6 4.6z" fill="currentColor"/></svg>
-          <span class="wide-only" aria-hidden="true">Festivals</span>
-        </button>
+        <!-- System, Light or Dark: public/kit/js/theme-switch.js makes it work -->
+        <fieldset class="kit-theme-switch" data-theme-switch hidden>
+          <legend class="visually-hidden">Theme</legend>
+          <span class="kit-theme-switch__options">
+            <label><input type="radio" name="theme-top" value="system">System</label>
+            <label><input type="radio" name="theme-top" value="light">Light</label>
+            <label><input type="radio" name="theme-top" value="dark">Dark</label>
+          </span>
+        </fieldset>
       </div>
-      <!-- Shows the mode it switches to: moon and "Dark mode", or sun and "Light mode" -->
-      <button type="button" class="button theme-button" id="theme-button" aria-label="Dark mode">
-        <span class="theme-icon" aria-hidden="true"></span>
-        <span class="theme-label wide-only" aria-hidden="true">Dark mode</span>
-      </button>
     </header>
 
     <div id="names-menu" class="names-menu" popover role="dialog" aria-labelledby="names-menu-title">
@@ -98,7 +107,7 @@
       <p class="status" id="festivals-status" role="status"></p>
     </div>
 
-    <main id="main" class="is-loading">
+    <main id="main" class="kit-column is-loading">
       <p class="today-line" id="today-line"></p>
 
       <!-- Asks once; the browser's own permission prompt only comes from the button -->
@@ -218,17 +227,20 @@
       </footer>
     </main>
 
-    <footer class="site-footer">
-      <nav aria-label="About this site">
-        <ul>
-          <li><a href="./privacy">Privacy policy</a></li>
-          <li><a href="./terms">Terms of use</a></li>
-          <li><a href="./disclaimer">Disclaimer</a></li>
-          <li><a href="https://github.com/tomgould/solar-calendar">Source code on GitHub</a></li>
-          <li><a href="https://www.dealmobile.co.uk">More projects from Deal Mobile</a></li>
-        </ul>
-      </nav>
-      <p>Run by Deal Mobile. Free software under the GNU GPL version 3. No cookies.</p>
+    <footer class="kit-footer site-footer">
+      <div class="kit-column kit-footer__rows">
+        <nav aria-label="About this site">
+          <ul class="kit-footer__links">
+            <li><a href="./privacy">Privacy policy</a></li>
+            <li><a href="./terms">Terms of use</a></li>
+            <li><a href="./disclaimer">Disclaimer</a></li>
+            <li><a href="https://github.com/tomgould/solar-calendar">Source code on GitHub</a></li>
+            <li><a href="https://www.dealmobile.co.uk/projects/solar-calendar">About this project</a></li>
+            <li><a href="https://www.dealmobile.co.uk/">Tom Gould</a></li>
+          </ul>
+        </nav>
+        <p>Run by Deal Mobile. Free software under the GNU GPL version 3. No cookies. Set in Schibsted Grotesk and Libre Caslon.</p>
+      </div>
     </footer>
   </div>
 
@@ -279,7 +291,8 @@
       </div>
     </form>
   </dialog>
-  <noscript><p class="page">This calendar needs JavaScript to work out the dates.</p></noscript>
+  <noscript><p class="kit-column">This calendar needs JavaScript to work out the dates.</p></noscript>
   <script type="module" src="/src/main.ts"></script>
+  <script src="/kit/js/theme-switch.js" defer></script>
 </body>
 </html>

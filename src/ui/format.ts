@@ -26,7 +26,7 @@ export function gregorianDate(n: DayNumber): string {
   return `${day} ${GREGORIAN_MONTHS[month - 1]} ${year}`;
 }
 
-// Letters the display font (Big Shoulders) lacks as one glyph but has the parts
+// Letters the display font (Schibsted Grotesk) lacks as one glyph but has the parts
 // for. tests/unit/fonts.test.ts fails if a pack needs one that isn't listed.
 const BUILD_FROM_PARTS = /[Ǣǣ]/g; // Ǣ ǣ
 

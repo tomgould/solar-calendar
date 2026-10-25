@@ -22,18 +22,6 @@ export const EVENT_ICONS: Partial<Record<SkyEventKind, string>> = {
   'new-moon': svg('<circle cx="6" cy="6" r="4.2" fill="currentColor"/>'),
 };
 
-const sunRays = Array.from({ length: 8 }, (_, i) => {
-  const angle = (i * Math.PI) / 4;
-  const [x1, y1, x2, y2] = [8 + 5 * Math.cos(angle), 8 + 5 * Math.sin(angle), 8 + 7 * Math.cos(angle), 8 + 7 * Math.sin(angle)];
-  return `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>`;
-}).join('');
-
-/** Theme button icons: the moon offers dark mode, the sun offers light mode. */
-export const THEME_ICONS = {
-  dark: '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M13.6 10.3A6 6 0 0 1 5.7 2.4a6 6 0 1 0 7.9 7.9z" fill="currentColor"/></svg>',
-  light: `<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="3.2" fill="currentColor"/>${sunRays}</svg>`,
-};
-
 /** Marks a festival day in calendar cells: a four-pointed star. */
 export const FESTIVAL_ICON = svg('<path d="M6 .8 7.4 4.6 11.2 6 7.4 7.4 6 11.2 4.6 7.4.8 6 4.6 4.6z" fill="currentColor"/>');
 

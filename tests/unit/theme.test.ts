@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { THEME_MARKER, THEME_SCRIPT, THEME_SCRIPT_HASH, inlineThemeScript, withThemeScriptHash } from '../../scripts/theme.mjs';
+import { OLD_THEME_KEY, THEME_KEY, THEME_MARKER, THEME_SCRIPT, THEME_SCRIPT_HASH, inlineThemeScript, withThemeScriptHash } from '../../scripts/theme.mjs';
 
 // Every page the build makes: the calendar and the legal pages
 const pages = readdirSync('.').filter((file) => file.endsWith('.html'));
@@ -49,22 +49,34 @@ describe('the inline theme script', () => {
   });
 
   describe('when it runs', () => {
-    const run = (saved: string | null, failing = false) => {
+    const run = (saved: Record<string, string>, failing = false) => {
       const root = { dataset: {} as Record<string, string> };
-      const localStorage = { getItem: () => { if (failing) throw new Error('blocked'); return saved; } };
+      const items = new Map(Object.entries(saved));
+      const localStorage = {
+        getItem: (key: string) => { if (failing) throw new Error('blocked'); return items.get(key) ?? null; },
+        setItem: (key: string, value: string) => items.set(key, value),
+        removeItem: (key: string) => items.delete(key),
+      };
       new Function('localStorage', 'document', THEME_SCRIPT)(localStorage, { documentElement: root });
-      return root.dataset.theme;
+      return { theme: root.dataset.theme, saved: Object.fromEntries(items) };
     };
 
     it('applies a saved light or dark theme', () => {
-      expect(run('dark')).toBe('dark');
-      expect(run('light')).toBe('light');
+      expect(run({ [THEME_KEY]: 'dark' }).theme).toBe('dark');
+      expect(run({ [THEME_KEY]: 'light' }).theme).toBe('light');
+    });
+
+    it('moves a choice saved by the old theme button across to the switch, once', () => {
+      expect(run({ [OLD_THEME_KEY]: 'dark' })).toEqual({ theme: 'dark', saved: { [THEME_KEY]: 'dark' } });
+      // A choice made with the switch wins over a leftover one
+      expect(run({ [OLD_THEME_KEY]: 'dark', [THEME_KEY]: 'system' })).toEqual({ theme: undefined, saved: { [THEME_KEY]: 'system' } });
     });
 
     it('otherwise leaves the system setting in charge, even when storage is blocked', () => {
-      expect(run(null)).toBeUndefined();
-      expect(run('purple')).toBeUndefined();
-      expect(run('dark', true)).toBeUndefined();
+      expect(run({}).theme).toBeUndefined();
+      expect(run({ [THEME_KEY]: 'system' }).theme).toBeUndefined();
+      expect(run({ [THEME_KEY]: 'purple' }).theme).toBeUndefined();
+      expect(run({ [THEME_KEY]: 'dark' }, true).theme).toBeUndefined();
     });
   });
 });

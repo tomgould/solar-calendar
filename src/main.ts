@@ -13,7 +13,7 @@ import { renderDayPanel, sunText } from './ui/day-panel';
 import { GoToDate } from './ui/goto';
 import { renderFestivalsMenu, renderMonthFestivals, renderYearFestivals } from './ui/festivals';
 import { daysAway, escapeHtml, gregorianLong, solarLong } from './ui/format';
-import { THEME_ICONS, chevron } from './ui/icons';
+import { chevron } from './ui/icons';
 import { MonthView } from './ui/month-view';
 import { renderAboutDialog, renderNamesMenu } from './ui/names';
 import { listenForHear } from './ui/speech';
@@ -318,28 +318,6 @@ async function choosePack(id: string): Promise<void> {
   render();
 }
 
-function setUpTheme(): void {
-  const button = $<HTMLButtonElement>('#theme-button');
-  const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
-  const current = () => document.documentElement.dataset.theme ?? (systemDark.matches ? 'dark' : 'light');
-  // The button offers the other mode: moon and "Dark mode" in light, sun and "Light mode" in dark
-  const update = () => {
-    const offer = current() === 'dark' ? 'light' : 'dark';
-    const label = offer === 'dark' ? 'Dark mode' : 'Light mode';
-    button.setAttribute('aria-label', label);
-    button.querySelector('.theme-label')!.textContent = label;
-    button.querySelector('.theme-icon')!.innerHTML = THEME_ICONS[offer];
-  };
-  button.addEventListener('click', () => {
-    const next = current() === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next;
-    storage.set('theme', next);
-    update();
-  });
-  systemDark.addEventListener('change', update);
-  update();
-}
-
 function setUpLocation(): void {
   const dialog = $<HTMLDialogElement>('#location-dialog');
   const lat = $<HTMLInputElement>('#location-lat');
@@ -493,7 +471,6 @@ function wire(): void {
       $('#feed-status').textContent = 'Press Ctrl+C or Cmd+C to copy the selected link';
     }
   });
-  setUpTheme();
 
   // Anchor a menu under its button, kept inside the viewport
   const anchorMenu = (menu: HTMLElement, button: HTMLElement) => {
