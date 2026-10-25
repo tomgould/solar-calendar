@@ -1,0 +1,13 @@
+/* Loaded only without JavaScript (a <noscript> in each page's <head>). The
+   calendar can't be worked out and its controls and theme switch do nothing,
+   so they go, with the space the hidden calendar would keep; the message says
+   why, and the footer's links still work. */
+.controls, [data-theme-switch], #main.is-loading { display: none !important; }
+.is-loading ~ .site-footer { visibility: visible !important; }
+.noscript {
+  margin-block: var(--space-5);
+  /* The column's width, with the line kept to a reading length */
+  padding-inline-end: max(0px, 100% - 40rem);
+  color: var(--ink-soft);
+  font: 400 1.25rem / 1.45 var(--font-text);
+}

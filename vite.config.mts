@@ -1,4 +1,5 @@
-import { resolve } from 'node:path';
+import { readFile, writeFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import type { Connect, Plugin } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -11,6 +12,20 @@ type Fetch = (request: Request) => Response | Promise<Response>;
 
 // The calendar, and the privacy, terms and disclaimer pages
 const pages = { main: 'index.html', privacy: 'privacy.html', terms: 'terms.html', disclaimer: 'disclaimer.html' };
+
+// The page Cloudflare serves for a missing path. It can be at any depth, such
+// as /a/b/c, so its links and assets must be absolute, not the './' the rest
+// of the build uses. It stays out of the sitemap
+const notFound = (): Plugin => ({
+  name: 'solar-calendar-404',
+  apply: 'build',
+  // After every plugin has added its tags, the PWA's manifest link among them
+  async writeBundle({ dir }) {
+    if (!dir) return;
+    const file = join(dir, '404.html');
+    await writeFile(file, (await readFile(file, 'utf8')).replace(/(href|src)="\.\//g, '$1="/'));
+  },
+});
 
 const serveWorker = (load: () => Promise<Fetch>): Connect.NextHandleFunction => async (req, res, next) => {
   const path = req.url;
@@ -45,11 +60,12 @@ export default defineConfig({
     // Every browser the app supports has modulepreload, so skip the polyfill's chunk
     modulePreload: { polyfill: false },
     rollupOptions: {
-      input: pages,
+      input: { ...pages, notFound: '404.html' },
     },
   },
   plugins: [
     worker(),
+    notFound(),
     // The theme script, inline in every page, and its hash in the built _headers
     themeScript(),
     // Cloudflare Web Analytics, on a deploy build only (see scripts/beacon.mts)

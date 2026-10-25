@@ -8,7 +8,9 @@
   "main": "dist-worker/worker.js",
   "assets": {
     "directory": "./dist",
-    "run_worker_first": ["/feed.ics", "/today.svg"]
+    "run_worker_first": ["/feed.ics", "/today.svg"],
+    // A missing path gets 404.html, in the calendar's own style, with a 404 status
+    "not_found_handling": "404-page"
   },
   // Keeps the feed Worker's logs and errors, under Workers & Pages, solar-calendar,
   // Logs in the Cloudflare dashboard. The custom domain is set up there too, not here
