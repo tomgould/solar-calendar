@@ -19,6 +19,12 @@ export class GoToDate {
   private readonly year: HTMLInputElement;
   private readonly error: HTMLElement;
   private pack: NamePack | null = null;
+  /** The day the fields were last filled with */
+  private shown: DayNumber | null = null;
+  /** Fields changed since then, and not yet submitted */
+  private readonly edited = new Set<HTMLElement>();
+  /** The pack and number of months the month list was built for */
+  private monthsFor = '';
 
   constructor(private readonly root: HTMLElement, range: [DayNumber, DayNumber], select: (day: DayNumber) => void) {
     this.gregorian = root.querySelector('#goto-gregorian-date')!;
@@ -58,19 +64,29 @@ export class GoToDate {
 
     // The leap week is only offered in years that have one
     this.year.addEventListener('change', () => this.fillMonths(Number(this.year.value)));
+    // The calendar draws again when packs or the moon arrive, so remember what
+    // has been typed, and leave it alone until the selected day changes
+    for (const field of [this.gregorian, this.day, this.month, this.year]) {
+      field.addEventListener('input', () => this.edited.add(field));
+    }
   }
 
   render({ selected, pack }: GoToDateState): void {
     this.pack = pack;
+    // A newly selected day replaces whatever was typed; the same day drawn
+    // again doesn't
+    if (selected !== this.shown) this.edited.clear();
+    this.shown = selected;
     const date = toSolar(selected);
-    // Fill in every field except the one being typed in
+    // Fill in every field except one being typed in or changed
+    const keep = (field: HTMLElement) => field === document.activeElement || this.edited.has(field);
     const set = (field: HTMLInputElement, value: string) => {
-      if (field !== document.activeElement) field.value = value;
+      if (!keep(field)) field.value = value;
     };
     set(this.gregorian, toIsoDate(selected));
     set(this.year, String(date.year));
     set(this.day, String(date.day));
-    this.fillMonths(Number(this.year.value), this.month === document.activeElement ? undefined : date.month);
+    this.fillMonths(Number(this.year.value), keep(this.month) ? undefined : date.month);
   }
 
   private fillMonths(year: number, wanted = Number(this.month.value) || 1): void {
@@ -79,11 +95,18 @@ export class GoToDate {
     // A leap week chosen for a year without one becomes the last month, not silently month 1
     const chosen = Math.min(wanted, count);
     const pack = this.pack;
-    this.month.innerHTML = Array.from({ length: count }, (_, i) => {
-      const month = i + 1;
-      return `<option value="${month}"${month === chosen ? ' selected' : ''}>${escapeHtml(monthName(pack, month))}</option>`;
-    }).join('');
-    this.month.lang = pack.lang;
+    // Rebuild the list only when its names or length change, so an open or
+    // focused list isn't replaced under the reader
+    const key = `${pack.id} ${count}`;
+    if (key !== this.monthsFor) {
+      this.monthsFor = key;
+      this.month.innerHTML = Array.from({ length: count }, (_, i) => {
+        const month = i + 1;
+        return `<option value="${month}">${escapeHtml(monthName(pack, month))}</option>`;
+      }).join('');
+      this.month.lang = pack.lang;
+    }
+    this.month.value = String(chosen);
   }
 
   /** Shows or clears the error; marks and focuses the field at fault. */
