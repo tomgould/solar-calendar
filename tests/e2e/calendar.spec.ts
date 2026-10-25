@@ -740,7 +740,17 @@ test('fits every width from 320 px to 1920, a phone on its side, and 200% and 40
       await expect(page.locator('h1')).toBeVisible();
       const where = `${path} at ${width} by ${height}`;
       expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth), where).toBeLessThanOrEqual(0);
-      // The masthead's links and controls stay on screen
+      // On phones the masthead is two rows: the name and the theme switch, then the pills
+      if (width <= 430) {
+        const rows = await page.locator('.brand, .kit-theme-switch, .kit-nav').evaluateAll((elements) =>
+          new Set(elements.map((element) => Math.round(element.getBoundingClientRect().top / 24))).size);
+        expect(rows, where).toBe(2);
+      }
+      // The masthead's links and controls stay on screen, at least 24 px each
+      for (const size of await page.locator('.masthead a, .masthead button, .masthead label').evaluateAll((elements) =>
+        elements.filter((element) => element.getClientRects().length > 0).map((element) => Math.min(element.getBoundingClientRect().width, element.getBoundingClientRect().height)))) {
+        expect(size, where).toBeGreaterThanOrEqual(24);
+      }
       for (const box of await page.locator('.masthead a, .masthead button, .masthead label').evaluateAll((elements) =>
         elements.filter((element) => element.getClientRects().length > 0).map((element) => element.getBoundingClientRect().right))) {
         expect(box, where).toBeLessThanOrEqual(width);
