@@ -1,0 +1,264 @@
+/*
+ * Base: the reset, the body text and prose. Libre Caslon carries the
+ * reading; Schibsted Grotesk is for everything around it (navigation,
+ * labels, data, forms).
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* A jump to a heading lands below the masthead, which stays at the top. */
+  scroll-padding-top: var(--space-5);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: var(--step-0);
+  line-height: 1.7;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.15;
+  text-wrap: balance;
+  color: var(--ink);
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--link);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: var(--radius);
+}
+
+::selection {
+  background: var(--sun-halo);
+  color: var(--ink);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.visually-hidden.focusable:focus {
+  position: static !important;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  clip-path: none;
+}
+
+.skip-link,
+.skip-link:hover {
+  color: var(--page);
+}
+
+.skip-link {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--gutter);
+  z-index: 10;
+  padding: var(--space-1) var(--space-2);
+  background: var(--ink);
+  color: var(--page);
+  font-family: var(--font-ui);
+  font-size: var(--ui-size);
+}
+
+/* The apparatus face. */
+.ui {
+  font-family: var(--font-ui);
+  font-size: var(--ui-size);
+  line-height: 1.45;
+  font-variant-numeric: lining-nums proportional-nums;
+  letter-spacing: 0.003em;
+}
+
+/* Prose: what a body field holds. */
+.prose {
+  max-width: var(--measure);
+}
+
+.prose > * + * {
+  margin-top: 1.1em;
+}
+
+.prose h2 {
+  margin-top: 2.2em;
+  font-size: var(--step-1);
+  font-style: italic;
+  line-height: 1.25;
+}
+
+.prose h3 {
+  margin-top: 1.9em;
+  font-family: var(--font-ui);
+  font-size: 1.0625rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.prose h2 + *,
+.prose h3 + * {
+  margin-top: 0.55em;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.25em;
+}
+
+.prose li + li {
+  margin-top: 0.35em;
+}
+
+.prose li::marker {
+  color: var(--muted);
+}
+
+.prose blockquote {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--rule-strong);
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.prose code {
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 0.82em;
+  padding: 0.08em 0.3em;
+  border-radius: var(--radius);
+  background: var(--page-raised);
+  border: 1px solid var(--rule);
+  /* A long package or file name breaks rather than widening a narrow page. */
+  overflow-wrap: anywhere;
+}
+
+.prose pre {
+  overflow-x: auto;
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  background: var(--page-raised);
+  border: 1px solid var(--rule);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.prose pre code {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 1em;
+}
+
+.prose hr {
+  border: 0;
+  height: 1px;
+  background: var(--rule);
+  margin: 2.5em 0;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: var(--ui-size);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.prose th,
+.prose td {
+  padding: 0.5em 0.75em 0.5em 0;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule);
+}
+
+.prose th {
+  font-weight: 600;
+  border-bottom-color: var(--rule-strong);
+}
+
+.prose figure {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.prose figcaption {
+  margin-top: var(--space-1);
+  font-family: var(--font-ui);
+  font-size: var(--ui-small);
+  color: var(--muted);
+}
+
+.prose img {
+  border-radius: var(--radius);
+}
+
+/* The first paragraph of a long read sits a little larger. */
+.prose--lead > p:first-child {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+@media screen and (max-width: 40em) {
+  body {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+}
+
+.print-only {
+  display: none;
+}

@@ -1,0 +1,364 @@
+/*
+ * Tom Gould design kit: components.
+ *
+ * What every app shares with www.dealmobile.co.uk: the masthead (the wordmark
+ * that leads back to the main site, the app's own pill navigation, the theme
+ * switch), headings, buttons, form fields, tables, status chips and the
+ * footer. Load after tokens.css and base.css. An app adds its own CSS after
+ * this and uses the tokens, never raw colours.
+ */
+
+body {
+  font-feature-settings: "kern", "liga";
+}
+
+/* The page column. */
+.kit-column {
+  width: min(100% - 2 * var(--gutter), var(--page-max));
+  margin-inline: auto;
+}
+
+/* Masthead: the wordmark, the app's navigation as pills, the theme switch. */
+.kit-masthead {
+  padding-top: var(--space-3);
+  background: var(--page);
+}
+
+.kit-masthead--sticky {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  box-shadow: 0 1px 0 var(--rule);
+}
+
+.kit-masthead__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-5);
+  padding-bottom: var(--space-2);
+}
+
+.kit-wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -0.015em;
+  line-height: 1;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.kit-wordmark:hover {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.kit-wordmark__dot {
+  color: var(--sun);
+}
+
+/* The app's name beside the wordmark: "Tom Gould. / Solar Calendar". */
+.kit-app {
+  margin-left: var(--space-2);
+  padding-left: var(--space-2);
+  border-left: 1px solid var(--rule-strong);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.kit-nav {
+  margin-left: auto;
+}
+
+.kit-nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kit-nav__link {
+  display: inline-block;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.kit-nav__link:hover {
+  background: var(--rule);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.kit-nav__link[aria-current],
+.kit-nav__link.is-active,
+.kit-nav__link[aria-current]:hover {
+  background: var(--ink);
+  color: var(--page);
+}
+
+@media screen and (max-width: 62em) {
+  .kit-nav {
+    order: 1;
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+
+  .kit-theme-switch {
+    margin-left: auto;
+  }
+}
+
+/* The theme switch: System, Light or Dark (js/theme-switch.js). */
+.kit-theme-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: var(--font-ui);
+  font-size: var(--ui-small);
+}
+
+.kit-theme-switch legend {
+  float: left;
+  margin-right: var(--space-2);
+  padding: 0;
+}
+
+.kit-theme-switch__options {
+  display: inline-flex;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  padding: 2px;
+}
+
+.kit-theme-switch label {
+  position: relative;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--ink-soft);
+}
+
+.kit-theme-switch input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.kit-theme-switch label:has(input:checked) {
+  background: var(--ink);
+  color: var(--page);
+}
+
+.kit-theme-switch label:has(input:focus-visible) {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* It keeps its place until the script has made it work, so nothing moves. */
+.kit-theme-switch[hidden] {
+  display: inline-flex;
+  visibility: hidden;
+}
+
+/* A page head: a big heavy title and a standfirst in Caslon. */
+.kit-title {
+  margin: var(--space-5) 0 0;
+  max-width: 18ch;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.kit-title em {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--sun);
+}
+
+.kit-standfirst {
+  max-width: 40rem;
+  margin: var(--space-3) 0 0;
+  font-size: var(--step-1);
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+
+.kit-section-title {
+  margin: var(--space-6) 0 var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--ink);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* Buttons are pills in the accent. */
+.kit-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.8rem 1.4rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--button-fill);
+  color: var(--button-ink);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.kit-button:hover {
+  color: var(--button-ink);
+  filter: brightness(1.08);
+  text-decoration: none;
+}
+
+.kit-button--quiet {
+  background: none;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+
+.kit-button--quiet:hover {
+  color: var(--ink);
+  filter: none;
+  background: var(--rule);
+}
+
+.kit-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Cards and panels. */
+.kit-card {
+  padding: var(--space-3);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--page-raised);
+}
+
+/* A chip: a status, a tag, a count. */
+.kit-chip {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-size: var(--ui-small);
+  color: var(--ink-soft);
+}
+
+/* Form fields. Edges are 3:1 against the page (WCAG 1.4.11). */
+.kit-field {
+  display: block;
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  border: 1.5px solid var(--control-edge);
+  border-radius: 8px;
+  background: var(--field);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.kit-label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-ui);
+  font-size: var(--ui-size);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.kit-hint {
+  margin-top: var(--space-1);
+  font-family: var(--font-ui);
+  font-size: var(--ui-small);
+  color: var(--muted);
+}
+
+/* Data tables. */
+.kit-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: var(--ui-size);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.kit-table th,
+.kit-table td {
+  padding: 0.55em 0.75em 0.55em 0;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule);
+}
+
+.kit-table th {
+  font-weight: 600;
+  border-bottom-color: var(--rule-strong);
+}
+
+/* Footer: the way back to the main site, the switch, the typefaces. */
+.kit-footer {
+  margin-top: var(--space-6);
+  padding-block: var(--space-5) var(--space-6);
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--ui-small);
+  line-height: 1.6;
+}
+
+.kit-footer a {
+  color: var(--ink-soft);
+}
+
+.kit-footer__rows {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.kit-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
