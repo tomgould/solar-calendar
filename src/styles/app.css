@@ -121,6 +121,9 @@ svg { display: inline-block; flex: none; }
 
 .brand { display: inline-flex; align-items: baseline; white-space: nowrap; }
 a.kit-app { color: var(--ink-soft); text-decoration: none; }
+/* Both links stay 24 px targets, stacked or side by side */
+/* (inline-block, not flex, so the wordmark's dot stays part of its name) */
+.brand .kit-wordmark, .brand .kit-app { display: inline-block; line-height: 24px; }
 a.kit-app:hover { color: var(--ink); text-decoration: underline; }
 
 .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; }
@@ -148,6 +151,36 @@ button.kit-nav__link[aria-expanded='true'] { background: var(--rule); }
   .wide-only { display: none; }
   .narrow-only { display: inline; }
   .kit-nav__link, .segmented button { padding-inline: 0.75rem; }
+}
+
+/* Phones, to 430 px: two rows. The wordmark over the app's name, with the
+   theme switch beside them; the calendar's pills below, scrolling sideways
+   only if a large text size leaves them no room */
+@media (max-width: 430px) {
+  .kit-masthead__bar { gap: var(--space-2); }
+  .brand { flex-direction: column; align-items: flex-start; }
+  .brand .kit-app { margin-left: 0; padding-left: 0; border-left: 0; font-size: 0.9375rem; }
+  .kit-theme-switch { margin-left: auto; }
+  .controls {
+    order: 1; flex-basis: 100%; flex-wrap: nowrap; gap: 2px;
+    margin: -4px; padding: 4px; overflow-x: auto; scrollbar-width: none;
+  }
+  .controls > * { flex: none; }
+  .kit-nav__link, .segmented button { padding-inline: 0.6rem; font-size: 0.9375rem; }
+}
+
+/* Below 360 px the switch's words don't fit beside the name: each choice
+   becomes an icon, still a 28 px target, and keeps its word for screen readers */
+@media (max-width: 359.98px) {
+  .kit-nav__link, .segmented button { padding-inline: 0.5rem; font-size: 0.875rem; }
+  .kit-theme-switch label { justify-content: center; width: 30px; padding: 0; font-size: 0; }
+  .kit-theme-switch label::before {
+    content: ''; width: 16px; height: 16px; background: currentColor;
+    mask: var(--theme-icon) center / 16px no-repeat;
+  }
+  .kit-theme-switch label:has(input[value='system']) { --theme-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.2' fill='none' stroke='%23000' stroke-width='1.6'/%3E%3Cpath d='M8 1.8a6.2 6.2 0 0 1 0 12.4z'/%3E%3C/svg%3E"); }
+  .kit-theme-switch label:has(input[value='light']) { --theme-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='3.2'/%3E%3Cpath d='M8 .8v2.4M8 12.8v2.4M.8 8h2.4M12.8 8h2.4M2.9 2.9l1.7 1.7M11.4 11.4l1.7 1.7M2.9 13.1l1.7-1.7M11.4 4.6l1.7-1.7' stroke='%23000' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); }
+  .kit-theme-switch label:has(input[value='dark']) { --theme-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M13.6 10.3A6 6 0 0 1 5.7 2.4a6 6 0 1 0 7.9 7.9z'/%3E%3C/svg%3E"); }
 }
 
 /* The first view ---------------------------------------------------------- */
@@ -532,6 +565,9 @@ button.kit-nav__link[aria-expanded='true'] { background: var(--rule); }
     forced-color-adjust: none; background: Highlight; color: HighlightText;
   }
   .strip .bar, .swatch, .about-num { forced-color-adjust: none; }
+  /* The narrow switch's icons are masks over a background */
+  .kit-theme-switch label::before { forced-color-adjust: none; background: CanvasText; }
+  .kit-theme-switch label:has(input:checked)::before { background: HighlightText; }
   .strip button[aria-current='true'] .bar { outline: 2px solid CanvasText; }
   .names-menu, .about, .location-notice, .day { border: 1px solid CanvasText; }
 }
