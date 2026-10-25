@@ -1,0 +1,178 @@
+/*
+ * Tom Gould design kit: tokens.
+ *
+ * Warm paper (or near-black) and ink with one vermilion accent. The light
+ * theme is cream with near-black ink; the dark theme is near black with cream
+ * ink. --sun is the accent as a fill, --link carries it as text. Components
+ * use these names only and never branch on the theme. Copied from the
+ * www.dealmobile.co.uk theme (Almanac); change it there first, then run
+ * tools/sync-from-www.sh.
+ */
+
+@font-face {
+  font-family: "Libre Caslon Display";
+  src: url("../fonts/libre-caslon-display-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Libre Caslon Text";
+  src: url("../fonts/libre-caslon-text-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Libre Caslon Text";
+  src: url("../fonts/libre-caslon-text-latin-400-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Libre Caslon Text";
+  src: url("../fonts/libre-caslon-text-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("../fonts/schibsted-grotesk-latin-wght-normal.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("../fonts/schibsted-grotesk-latin-wght-italic.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+
+  /* Day */
+  --page: #fbf7f0;
+  --page-raised: #ffffff;
+  --ink: #14110d;
+  --ink-soft: #2d2820;
+  --muted: #6a6152;
+  --rule: #e2d9c7;
+  --rule-strong: #b9ad96;
+  /* A form field's edge, 3:1 against the page and the field (WCAG 1.4.11). */
+  --control-edge: #7a6e5a;
+  --link: #b8300f;
+  --link-hover: #8f2208;
+  --sun: #e2431d;
+  --button-fill: #c4361a;
+  --button-ink: #ffffff;
+  --sun-halo: rgb(226 67 29 / 0.2);
+  --past: #b9ad96;
+  --field: #ffffff;
+  --danger: #a3261b;
+  --ok: #1f6b3a;
+
+  /* Type */
+  --font-display: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-accent: "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --font-text: "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --font-ui: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* A perfect fourth from 18px. */
+  --step--1: 0.84375rem;
+  --step-0: 1.125rem;
+  --step-1: 1.5rem;
+  --step-2: 2rem;
+  --step-3: 2.666rem;
+  --step-4: 3.555rem;
+  --ui-size: 0.9375rem;
+  --ui-small: 0.8125rem;
+
+  /* The page column: a margin track for dates and facts, then the text. */
+  --page-max: 76rem;
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --margin-track: 12.5rem;
+  --track-gap: clamp(1.5rem, 3.5vw, 3.5rem);
+  --measure: 37rem;
+
+  --space-1: 0.375rem;
+  --space-2: 0.75rem;
+  --space-3: 1.125rem;
+  --space-4: 1.75rem;
+  --space-5: 2.75rem;
+  --space-6: 4.5rem;
+  --space-7: 7rem;
+
+  --radius: 3px;
+  --focus-ring: #b8300f;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Night, chosen or from the system. Keep the two blocks the same. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #11100e;
+  --page-raised: #1b1916;
+  --ink: #f1ece2;
+  --ink-soft: #d6cfc0;
+  --muted: #a39b8a;
+  --rule: #2d2a25;
+  --rule-strong: #4a453d;
+  --control-edge: #8a826f;
+  --link: #ff8a68;
+  --link-hover: #ffb29a;
+  --sun: #ff6a43;
+  --button-fill: #ff6a43;
+  --button-ink: #11100e;
+  --sun-halo: rgb(255 106 67 / 0.22);
+  --focus-ring: #ff8a68;
+  --past: #4a453d;
+  --field: #1b1916;
+  --danger: #f08a7e;
+  --ok: #7fcf9b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #11100e;
+    --page-raised: #1b1916;
+    --ink: #f1ece2;
+    --ink-soft: #d6cfc0;
+    --muted: #a39b8a;
+    --rule: #2d2a25;
+    --rule-strong: #4a453d;
+    --control-edge: #8a826f;
+    --link: #ff8a68;
+    --link-hover: #ffb29a;
+    --sun: #ff6a43;
+  --button-fill: #ff6a43;
+  --button-ink: #11100e;
+    --sun-halo: rgb(255 106 67 / 0.22);
+    --focus-ring: #ff8a68;
+    --past: #4a453d;
+    --field: #1b1916;
+    --danger: #f08a7e;
+    --ok: #7fcf9b;
+  }
+}
+
+/* Which of a pair of theme-specific images shows. */
+:root {
+  --show-light: block;
+  --show-dark: none;
+}
+:root[data-theme="dark"] {
+  --show-light: none;
+  --show-dark: block;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --show-light: none;
+    --show-dark: block;
+  }
+}
