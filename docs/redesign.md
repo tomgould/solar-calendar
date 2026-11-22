@@ -451,7 +451,7 @@ Requested: UK bank holidays plus Easter, and festival dates shown plainly when a
 - Year view: a "Festivals and holidays in solar 2026" list under the table. It's on screen only, so the year still prints on one page.
 - "About this name": each festival's next date next to its rule.
 - Day panel: bank holidays get their own row, like festivals.
-- Feed and download: holidays are included when chosen (`/feed.ics?names=…&holidays=uk-england-wales`).
+- Feed and download: holidays are included when chosen (`/feed.ics?names=...&holidays=uk-england-wales`).
 
 **4. Keeping them up to date.** Rules produce every year automatically, so only one-offs (jubilees, coronations, funerals, moved days) ever need adding. The government announces those months ahead.
 - Snapshot test: `tests/fixtures/gov-uk-bank-holidays.json` is a copy of https://www.gov.uk/bank-holidays.json (Open Government Licence; currently 2019 to 2028 for all three regions). A unit test checks the rules produce exactly those dates. The tests never touch the network.

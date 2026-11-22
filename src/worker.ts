@@ -14,7 +14,7 @@ import { type NamePack, validatePack } from './names/schema';
  *   the requested name pack, with any other packs' festivals
  *   (?festivals=persian,roman) and bank holidays
  *   (?holidays=uk-scotland,uk-northern-ireland) asked for
- * - /today.svg: a badge with today's solar date (?names=…), in UTC or in a
+ * - /today.svg: a badge with today's solar date (?names=...), in UTC or in a
  *   time zone (?tz=Europe/London)
  */
 
