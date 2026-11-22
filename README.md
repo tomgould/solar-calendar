@@ -78,7 +78,7 @@ Add one JSON file to `src/names/packs/`, starting from `_template.json`. The app
 - `src/sky/`: moon phases, using astronomy-engine, which loads only when needed.
 - `src/ui/`: the month view, year view, day panel and name pack menus.
 - `tests/unit/` and `tests/e2e/`: Vitest and Playwright.
-- `docs/redesign.md`: the review of the original app, the decisions behind this version, and the plan.
+- `docs/redesign.md`: the decisions behind this version, and the plan.
 
 ## Licence
 

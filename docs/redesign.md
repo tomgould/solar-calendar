@@ -1,67 +1,19 @@
 # Solar calendar redesign
 
-## 1. Review of the current app (17 Oct 2026)
-
-Evidence came from reading the code, screenshots at 1440px and 390px in light and dark, and a node check against Jean Meeus's equinox and solstice algorithm (*Astronomical Algorithms*, ch. 27). That algorithm matches published 2024 and 2025 times to within a minute.
-
-### Accuracy
-
-These matter most, because a calendar that is sometimes a day or a week out is worse than no calendar.
-
-| Problem | Evidence | Effect |
-|---|---|---|
-| The year model doesn't add up | Every year starts on a Monday, so years are 364 or 371 days (165 and 35 times over 1900 to 2100), never 365 or 366 | Leap Day can never appear. "Year Day" lands on day 1 of the next year (the 2026 page says "Year Day: March 22", which is 1 March 2027). In 371-day years, six days have no solar date. Until today's fix they crashed the page. |
-| Off by one day west of UTC | The Gregorian page builds UTC dates and the processor reads them back with local `getFullYear()`/`getDate()` | In New York, 23 Mar 2026 (solar New Year) shows as "Sol 28, 2025", and every cell is one day out |
-| Equinox data is wrong in a third of years | The JSON disagrees with Meeus (UTC date) in 67 of 201 years, and is usually a day early | In 9 years (1905, 1911, 1922, 1933, 1939, 1950, 1967, 1995, 2085) the whole solar year starts a week out. Entries before 1600 are all placeholders ("03-21"). |
-| Solstices and autumn equinox are fixed dates | Hard-coded as 21 Jun, 22 Sep and 21 Dec | Wrong date in 83, 115 and 97 of 201 years respectively |
-| Silent fallback | If the JSON fetch fails (offline, or opened from `file://`), approximate dates are used with no warning | Wrong dates that look right |
-| PHP port disagrees with the JS | `RealTime.php` calls both the equinox date and days past 364 "Equinox Day" | Two answers to the same question |
-| History of the same class of bug | The PDFs repeat 30 Mar 2025 and skip 26 Oct 2025 (UK clock changes) | Date maths on `Date` objects keeps biting. Use plain day numbers. |
-
-### Design and UX
-
-- Generic look. A blue-to-purple gradient bar, identical rounded cards and emoji icons. Nothing in it says "sun" or "13 identical months".
-- Chrome before content. The header, nav, "Year End Days" panel and four event cards push the calendar into the bottom half on desktop. At 390px it starts most of a screen down.
-- The main question is hard to answer. "What's today's solar date?" has no direct answer. The solar page opens on month 1, not today's month.
-- The calendar's best feature is hidden. Every month is identical (the 1st is always a Monday, the 28th always a Sunday), but nothing shows or explains that, and there's no year-at-a-glance view.
-- Confusing names. Solar months reuse Gregorian names but are offset by about three weeks (solar October is 5 Oct to 1 Nov 2026).
-- Debug-style text. "March / (1/13)", "Month(s) 7-8/13", and "SOLAR:" repeated in all 31 Gregorian cells. Month names truncate on mobile ("Septembe"), and there's an empty grey band where a sixth week row would be.
-- Dark mode flashes white on load and ignores the OS setting.
-
-### Accessibility (WCAG 2.2 AA)
-
-- Day cells and event cards are clickable `div`s, so there's no keyboard access, no grid or table semantics, and no `aria-current` for today.
-- Contrast fails in many places: secondary text 4.2 to 4.45:1, tertiary text 2.1 to 3.0:1, white on accent buttons 2.5 to 3.3:1, today's number 2.7 to 3.1:1, event titles 2.2 to 2.5:1, cell borders 1.3:1.
-- The year input has no visible focus ring (the `rgba(var(--hex))` rule is invalid). Tooltips are hover-only, some labels are emoji-only, and `prefers-reduced-motion` is ignored.
-
-### Code
-
-- Two pages with about ten near-copied functions, globals, and inline `onclick`.
-- CSS is duplicated between `calendar-styles.css` and inline `<style>` blocks, with no spacing or type scale.
-- Date logic mixes UTC and local `Date` methods.
-- Tests only check that pages load. No conversion logic is tested, and the e2e config points at a host that has to be set up by hand.
-- Performance isn't a real problem at this size. Two thirds of the 163 KB payload is the equinox JSON, though, and every month is rendered up front and then hidden. The gains to chase are accuracy and payload, not render speed.
-
-### Worth keeping
-
-- The concept: 13 months of 28 days, Monday starts, the year anchored to the spring equinox, and Gregorian dates alongside.
-- Linking between the two calendars, and dark mode.
-- Print. The PDFs show a printed year was part of the original idea.
-
-## 2. Decisions (17 Oct 2026)
+## 1. Decisions (17 Oct 2026)
 
 | Topic | Decision |
 |---|---|
 | Year model | **Leap week.** Year N starts on the first Monday on or after the March equinox of year N, taking the equinox's date in UTC. Normal years are 13 x 28 = 364 days. A 371-day year ends with a 7-day leap week. That's 35 of the 200 years from 1900 to 2100, about 1 in 6. |
-| Month names | **Switchable name packs.** All eleven sets in section 4 ship, including the Gregorian names. People pick a pack, can switch any time, and see what each month's name means. The default for new visitors is the Gregorian names pack (confirmed 17 Oct 2026; renamed from "Original names" the same day). |
-| Design | **Perennial grid.** See section 3. |
+| Month names | **Switchable name packs.** All eleven sets in section 3 ship, including the Gregorian names. People pick a pack, can switch any time, and see what each month's name means. The default for new visitors is the Gregorian names pack (confirmed 17 Oct 2026; renamed from "Original names" the same day). |
+| Design | **Perennial grid.** See section 2. |
 | Extras | All four: print-ready year, ICS calendar feed, sun and moon data, offline PWA |
 | Stack | TypeScript, Vite, no UI framework, static output (confirmed) |
 | Equinox day | Taken in UTC (confirmed) |
-| Hosting | Cloudflare, on your personal account (confirmed). Code stays on GitHub at `tomgould/solar-calendar`, with a small Worker for the ICS feed. See section 6. |
+| Hosting | Cloudflare, on your personal account (confirmed). Code stays on GitHub at `tomgould/solar-calendar`, with a small Worker for the ICS feed. See section 5. |
 | The original app | Removed on 17 Oct 2026, ahead of phase 5 and at your request: the old pages, CSS, JS, equinox JSON, `RealTime.php`, PDFs and old tests. Git history keeps them. |
 
-## 3. Design direction: perennial grid
+## 2. Design direction: perennial grid
 
 **Subject:** a calendar whose 13 months are identical, anchored to the spring equinox. **Audience:** curious people and calendar enthusiasts, and anyone who prints a year or subscribes to a feed. **Primary job:** say what today is in the solar calendar, and map any day between the two calendars.
 
@@ -134,9 +86,9 @@ Gregorian date of the year at once. It prints well on one A4 landscape page.
 - Boldness goes in one place, the fixed numerals. Everything else stays quiet.
 - One motion moment: when you change month, the numerals stay still while the Gregorian labels and the month hue cross-fade. That shows the perennial idea, and it's turned off under reduced motion.
 
-## 4. Month name sets
+## 3. Month name sets
 
-All of these ship as switchable **name packs** (section 5). There are eleven:
+All of these ship as switchable **name packs** (section 4). There are eleven:
 
 - Gregorian names: the names the calendar has always used, and the default.
 - Seven from history: Anglo-Saxon, Old Norse, Roman, Gaulish, Persian, Egyptian (ancient) and Coptic.
@@ -303,7 +255,7 @@ Neither had a regular 13-month calendar.
 
 In the invented sets, the leap week is called "Leap week".
 
-## 5. Technical plan
+## 4. Technical plan
 
 ### Architecture
 
@@ -379,7 +331,7 @@ Each month has:
 - The default pack is in the main bundle. The others load when picked, which keeps the performance budget.
 - The display-font subset is built automatically from the Latin-script characters in all packs, so a new pack never shows missing glyphs. Original forms in other scripts, such as Persian or Coptic, use system fonts.
 
-### Tests that guard the review's findings
+### Tests that guard the calendar's rules
 
 - Round-trip every day from 1600 to 2400 between Gregorian and solar.
 - Invariants:
@@ -389,7 +341,7 @@ Each month has:
   - No day is left without a solar date.
 - Equinox and solstice instants for 1900 to 2100 checked against a published table (USNO or IMCCE) to within 2 minutes. Years where the equinox falls within 5 minutes of UTC midnight are listed explicitly.
 - Every name pack has 13 months, each with a name, gloss and meaning, plus a leap-week name and at least one source. An e2e test switches packs and checks that labels, the URL and the saved choice all update.
-- e2e runs under several browser time zones (`timezoneId`: London, New York, Tokyo, Kiritimati), so the off-by-one-day bug can't come back.
+- e2e runs under several browser time zones (`timezoneId`: London, New York, Tokyo, Kiritimati), so every view shows the same date in every time zone.
 - Performance budget: core JS under 25 KB gzipped, display font subset, no layout shift, and only the visible view rendered.
 
 ### Phases (one PR each, on a `redesign` branch)
@@ -406,7 +358,7 @@ Each month has:
 4. Extras. Status: done on 17 Oct 2026. Sunrise and sunset; the ICS download and a `/feed.ics` Worker, tested locally against the built bundle; and the offline PWA. The feed goes live with the first deploy. Sun and moon data (location is opt-in and stored only in the browser), ICS download per year plus a subscribable feed, and the offline PWA.
 5. Launch. Deploy to Cloudflare. The cleanup planned for this phase was done early: the original app was removed, and the README and `CLAUDE.md` were rewritten, on 17 Oct 2026.
 
-## 6. Hosting
+## 5. Hosting
 
 The site is static files plus one dynamic URL: the ICS feed, which calendar apps fetch again every few hours.
 
