@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solar Calendar: 13 months of 28 days</title>
+  <meta name="description" content="13 months of 28 days, each starting on a Monday. The year begins at the March equinox, with a leap week when needed. Add it to your calendar app with a feed.">
+  <link rel="canonical" href="https://solar.dealmobile.co.uk/">
+  <!-- The preview shown when a link is shared; social.png is the design kit's share card (see CLAUDE.md) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Solar calendar">
+  <meta property="og:title" content="Solar calendar">
+  <meta property="og:description" content="13 months of 28 days. Every month starts on a Monday, and the year starts at the spring equinox.">
+  <meta property="og:url" content="https://solar.dealmobile.co.uk/">
+  <meta property="og:image" content="https://solar.dealmobile.co.uk/social.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Solar Calendar, a project by Tom Gould: 13 months of 28 days, each starting on a Monday, from the spring equinox">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- For search engines. A data block, never run, so the Content-Security-Policy needn't allow it.
+       The Person is the author's, with the same @id as on www.dealmobile.co.uk -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://solar.dealmobile.co.uk/#app",
+        "name": "Solar Calendar",
+        "url": "https://solar.dealmobile.co.uk/",
+        "description": "13 months of 28 days, each starting on a Monday. The year begins at the March equinox, with a leap week when needed. Add it to your calendar app with a feed.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "inLanguage": "en-GB",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+        "publisher": { "@id": "https://www.dealmobile.co.uk/#person" }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://solar.dealmobile.co.uk/#website",
+        "name": "Solar Calendar",
+        "url": "https://solar.dealmobile.co.uk/",
+        "inLanguage": "en-GB",
+        "publisher": { "@id": "https://www.dealmobile.co.uk/#person" }
+      },
+      {
+        "@type": "Person",
+        "@id": "https://www.dealmobile.co.uk/#person",
+        "name": "Tom Gould",
+        "url": "https://www.dealmobile.co.uk/"
+      }
+    ]
+  }
+  </script>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#fbf7f0" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#11100e" media="(prefers-color-scheme: dark)">
+  <!-- Applies a saved theme before the first paint: the build puts the script inline here (scripts/theme.mts) -->
+  <script data-theme-script></script>
+  <!-- Without JavaScript, hides what can't work (public/noscript.css) -->
+  <noscript><link rel="stylesheet" href="/noscript.css"></noscript>
+</head>
+<body>
+  <a class="visually-hidden focusable skip-link" href="#main">Skip to the calendar</a>
+  <div class="page">
+    <!-- The design kit's masthead: the wordmark leads back to the main site, the
+         calendar's own controls are the pills, the theme switch is at the right -->
+    <header class="kit-masthead masthead">
+      <div class="kit-column kit-masthead__bar">
+        <span class="brand"><a class="kit-wordmark" href="https://www.dealmobile.co.uk/">Tom Gould<span class="kit-wordmark__dot">.</span></a><a class="kit-app" href="./">Solar Calendar</a></span>
+        <div class="kit-nav controls">
+          <button type="button" class="kit-nav__link" id="today-button">Today</button>
+          <div class="segmented" role="group" aria-label="View">
+            <button type="button" data-view="month" aria-pressed="true">Month</button>
+            <button type="button" data-view="year" aria-pressed="false">Year</button>
+          </div>
+          <button type="button" class="kit-nav__link" id="names-button" popovertarget="names-menu"><span class="narrow-only">Names</span><span class="wide-only">Month names: <span id="names-current"></span></span></button>
+          <button type="button" class="kit-nav__link festivals-button" id="festivals-button" popovertarget="festivals-menu" aria-label="Festivals">
+            <svg viewBox="0 0 12 12" width="14" height="14" aria-hidden="true" focusable="false"><path d="M6 .8 7.4 4.6 11.2 6 7.4 7.4 6 11.2 4.6 7.4.8 6 4.6 4.6z" fill="currentColor"/></svg>
+            <span class="wide-only" aria-hidden="true">Festivals</span>
+          </button>
+        </div>
+        <!-- System, Light or Dark: public/kit/js/theme-switch.js makes it work -->
+        <fieldset class="kit-theme-switch" data-theme-switch hidden>
+          <legend class="visually-hidden">Theme</legend>
+          <span class="kit-theme-switch__options">
+            <label><input type="radio" name="theme-top" value="system">System</label>
+            <label><input type="radio" name="theme-top" value="light">Light</label>
+            <label><input type="radio" name="theme-top" value="dark">Dark</label>
+          </span>
+        </fieldset>
+      </div>
+    </header>
+    <noscript><p class="kit-column noscript">This calendar needs JavaScript to work out the dates. The privacy policy, terms and disclaimer below work without it.</p></noscript>
+
+    <div id="names-menu" class="names-menu" popover role="dialog" aria-labelledby="names-menu-title">
+      <h2 id="names-menu-title" class="menu-title">Month names</h2>
+      <p class="menu-note">Choose what the months are called. The days stay the same.</p>
+      <div id="names-options" class="pack-options"></div>
+      <p class="status" id="names-status" role="status"></p>
+    </div>
+
+    <div id="festivals-menu" class="names-menu" popover role="dialog" aria-labelledby="festivals-menu-title">
+      <h2 id="festivals-menu-title" class="menu-title">Festivals and holidays</h2>
+      <p class="menu-note">Marked in the calendar with a star, or a flag for a day off, and listed under each month.</p>
+      <div id="festivals-options" class="pack-options"></div>
+      <p class="status" id="festivals-status" role="status"></p>
+    </div>
+
+    <main id="main" class="kit-column is-loading">
+      <p class="today-line" id="today-line"></p>
+
+      <!-- Asks once; the browser's own permission prompt only comes from the button -->
+      <section class="location-notice" id="location-notice" aria-labelledby="location-notice-title" hidden>
+        <h2 id="location-notice-title" class="notice-title">Sunrise and sunset where you are</h2>
+        <p>To show sunrise, sunset and hours of daylight, the calendar needs to know roughly where you are. Your location stays in this browser and is never sent anywhere. You can change or forget it at any time under Sunrise and sunset. <a href="./privacy">Privacy policy</a></p>
+        <div class="apps-row">
+          <button type="button" class="button button-strong" id="notice-use-location">Use my location</button>
+          <button type="button" class="button" id="notice-dismiss">No thanks</button>
+        </div>
+        <p class="status" id="notice-status" role="status"></p>
+      </section>
+
+      <section id="month-view" class="month" aria-labelledby="month-title">
+        <nav class="strip" aria-label="Months of this year"><ol id="month-strip"></ol></nav>
+        <div class="month-head">
+          <div>
+            <h1 id="month-title" class="month-name"><span id="month-name"></span> <span class="month-year" id="month-year"></span></h1>
+            <p class="month-meta">
+              <span id="month-gloss" class="gloss"></span>
+              <span id="month-say" class="say" hidden></span>
+              <span id="month-place"></span>
+              <button type="button" class="text-button" id="about-name">About this name</button>
+            </p>
+          </div>
+          <div class="steps">
+            <button type="button" class="step" id="prev-month" aria-label="Previous month"></button>
+            <button type="button" class="step" id="next-month" aria-label="Next month"></button>
+            <button type="button" class="button" id="print-month">Print month</button>
+            <button type="button" class="button button-strong calendar-button" data-add-to-calendar><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><rect x="1.5" y="2.5" width="13" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M1.5 6h13M5 1v3M11 1v3M8 8.2v4.6M5.7 10.5h4.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg> Add to calendar</button>
+          </div>
+        </div>
+        <div class="month-body">
+          <div class="month-main">
+            <table class="grid" role="grid" aria-labelledby="month-title">
+              <thead><tr id="grid-head"></tr></thead>
+              <tbody id="grid-body"></tbody>
+            </table>
+            <section class="month-festivals" id="month-festivals" aria-labelledby="month-festivals-title" hidden>
+              <h2 id="month-festivals-title" class="notes-title">Festivals and holidays this month</h2>
+              <ul class="festival-list"></ul>
+            </section>
+          </div>
+          <div class="side">
+            <aside class="day" id="day-panel" aria-label="Selected day"></aside>
+            <section class="goto" id="goto" aria-labelledby="goto-title">
+              <h2 id="goto-title" class="goto-title">Go to a date</h2>
+              <form id="goto-gregorian" class="goto-form" novalidate>
+                <label for="goto-gregorian-date">Gregorian date</label>
+                <div class="goto-row">
+                  <input type="date" id="goto-gregorian-date" class="field" required aria-describedby="goto-error">
+                  <button type="submit" class="button">Go</button>
+                </div>
+              </form>
+              <form id="goto-solar" class="goto-form" novalidate>
+                <fieldset>
+                  <legend>Solar date</legend>
+                  <div class="goto-row">
+                    <label class="visually-hidden" for="goto-solar-day">Day</label>
+                    <input type="number" id="goto-solar-day" class="field field-day" min="1" max="28" inputmode="numeric" required aria-describedby="goto-error">
+                    <label class="visually-hidden" for="goto-solar-month">Month</label>
+                    <select id="goto-solar-month" class="field field-month" aria-describedby="goto-error"></select>
+                    <label class="visually-hidden" for="goto-solar-year">Year</label>
+                    <input type="number" id="goto-solar-year" class="field field-year" inputmode="numeric" required aria-describedby="goto-error">
+                    <button type="submit" class="button">Go</button>
+                  </div>
+                </fieldset>
+              </form>
+              <p class="goto-error" id="goto-error" role="alert"></p>
+            </section>
+          </div>
+        </div>
+        <p class="print-only month-meaning" id="month-meaning"></p>
+      </section>
+
+      <section id="year-view" class="year" aria-labelledby="year-title" hidden>
+        <div class="year-head">
+          <div>
+            <!-- An h1 while the year is on screen: render() swaps the two views' heading levels -->
+            <h2 id="year-title" class="year-name"></h2>
+            <p id="year-span" class="year-meta"></p>
+          </div>
+          <div class="steps">
+            <button type="button" class="step" id="prev-year" aria-label="Previous year"></button>
+            <button type="button" class="step" id="next-year" aria-label="Next year"></button>
+            <button type="button" class="button" id="print-year">Print year</button>
+            <button type="button" class="button button-strong calendar-button" data-add-to-calendar><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><rect x="1.5" y="2.5" width="13" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M1.5 6h13M5 1v3M11 1v3M8 8.2v4.6M5.7 10.5h4.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg> Add to calendar</button>
+          </div>
+        </div>
+        <div class="table-scroll" role="region" aria-labelledby="year-title" tabindex="0">
+          <table class="almanac" id="almanac"></table>
+        </div>
+        <div class="year-notes">
+          <section aria-labelledby="seasons-title">
+            <h2 id="seasons-title" class="notes-title">Equinoxes and solstices</h2>
+            <ul id="year-seasons" class="seasons"></ul>
+          </section>
+          <section aria-labelledby="legend-title">
+            <h2 id="legend-title" class="notes-title">The months</h2>
+            <ol id="year-legend" class="legend"></ol>
+          </section>
+        </div>
+        <div class="table-scroll year-festivals" id="year-festivals" role="region" aria-label="Festivals and holidays this year" tabindex="0" hidden>
+          <table class="festival-table">
+            <caption class="notes-title"></caption>
+            <thead><tr><th scope="col">Solar date</th><th scope="col">Gregorian date</th><th scope="col">Festival or holiday</th><th scope="col">Kind</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="about-calendar">
+        <h2>How this calendar works</h2>
+        <p>Every month has 28 days, exactly four weeks, so the 1st is always a Monday and the 28th is always a Sunday. Thirteen months make 364 days.</p>
+        <p>The year starts on the first Monday on or after the March equinox, so it stays with the seasons. Usually the next start is 364 days later. About one year in six it is 371 days later, and the extra seven days become a leap week at the end of the year.</p>
+        <p>Equinoxes and solstices are calculated to within about a minute. The start of the year uses the date of the equinox in UTC, so the calendar is the same everywhere.</p>
+      </footer>
+    </main>
+
+    <footer class="kit-footer site-footer">
+      <div class="kit-column kit-footer__rows">
+        <nav aria-label="About this site">
+          <ul class="kit-footer__links">
+            <li><a href="./privacy">Privacy policy</a></li>
+            <li><a href="./terms">Terms of use</a></li>
+            <li><a href="./disclaimer">Disclaimer</a></li>
+            <li><a href="https://github.com/tomgould/solar-calendar">Source code on GitHub</a></li>
+            <li><a href="https://www.dealmobile.co.uk/projects/solar-calendar">About this project</a></li>
+            <li><a href="https://www.dealmobile.co.uk/">Tom Gould</a></li>
+          </ul>
+        </nav>
+        <p>Run by Deal Mobile. Free software under the GNU GPL version 3. No cookies. Set in Schibsted Grotesk and Libre Caslon.</p>
+      </div>
+    </footer>
+  </div>
+
+  <dialog id="about-dialog" class="about" aria-labelledby="about-title"></dialog>
+  <dialog id="calendar-dialog" class="about" aria-labelledby="calendar-dialog-title">
+    <div class="about-head">
+      <h2 id="calendar-dialog-title">Add to your calendar</h2>
+      <button type="button" class="button" data-close>Close</button>
+    </div>
+    <div class="about-body">
+      <p class="about-origin">Subscribe, and your calendar app shows each day’s solar date, with the festivals and bank holidays you’ve chosen and the equinoxes and solstices. It keeps itself up to date.</p>
+      <div class="apps-row">
+        <a class="button button-strong" id="add-google" href="https://calendar.google.com/" target="_blank" rel="noopener">Add to Google Calendar<span class="visually-hidden"> (opens in a new tab)</span></a>
+        <a class="button" id="open-feed" href="./feed.ics">Apple Calendar or Outlook</a>
+      </div>
+      <label for="feed-url" class="apps-label">Or copy the link into any other calendar app</label>
+      <div class="apps-row">
+        <input type="text" class="field feed-url" id="feed-url" readonly>
+        <button type="button" class="button" id="copy-feed">Copy link</button>
+      </div>
+      <p class="status" id="feed-status" role="status"></p>
+      <p class="apps-note">The link keeps the month names, festivals and holidays chosen now. To change them later, add a new link and remove the old one. Google Calendar checks for changes about once a day.</p>
+      <h3 class="sources-title">Just one year</h3>
+      <p><button type="button" class="button" id="download-ics">Download this year</button></p>
+    </div>
+  </dialog>
+
+  <dialog id="location-dialog" class="about" aria-labelledby="location-title">
+    <form id="location-form" novalidate>
+      <div class="about-head">
+        <h2 id="location-title">Your location</h2>
+        <button type="button" class="button" data-close>Close</button>
+      </div>
+      <div class="about-body">
+        <p class="about-origin">Sunrise and sunset depend on where you are. Times are shown in that place’s own time zone. Your location stays in this browser and is never sent anywhere.</p>
+        <p><button type="button" class="button" id="use-my-location">Use my location</button></p>
+        <div class="goto-row">
+          <label for="location-lat">Latitude</label>
+          <input type="number" id="location-lat" class="field" step="any" min="-90" max="90" inputmode="decimal">
+          <label for="location-lon">Longitude</label>
+          <input type="number" id="location-lon" class="field" step="any" min="-180" max="180" inputmode="decimal">
+        </div>
+        <p class="status" id="location-status" role="status"></p>
+        <div class="apps-row">
+          <button type="submit" class="button">Save</button>
+          <button type="button" class="button" id="clear-location">Forget my location</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+  <script type="module" src="/src/main.ts"></script>
+  <script src="/kit/js/theme-switch.js" defer></script>
+  <script src="/registerSW.js" defer></script>
+</body>
+</html>

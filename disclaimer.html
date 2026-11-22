@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Disclaimer, Solar calendar</title>
+  <meta name="description" content="How accurate the solar calendar’s dates, holidays, festivals and times are, and what to check before relying on them.">
+  <link rel="canonical" href="https://solar.dealmobile.co.uk/disclaimer">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#fbf7f0" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#11100e" media="(prefers-color-scheme: dark)">
+  <!-- Applies a saved theme before the first paint: the build puts the script inline here (scripts/theme.mts) -->
+  <script data-theme-script></script>
+  <!-- Without JavaScript, hides what can't work (public/noscript.css) -->
+  <noscript><link rel="stylesheet" href="/noscript.css"></noscript>
+</head>
+<body>
+  <a class="visually-hidden focusable skip-link" href="#main">Skip to the disclaimer</a>
+  <div class="page">
+    <header class="kit-masthead masthead">
+      <div class="kit-column kit-masthead__bar">
+        <span class="brand"><a class="kit-wordmark" href="https://www.dealmobile.co.uk/">Tom Gould<span class="kit-wordmark__dot">.</span></a><a class="kit-app" href="./">Solar Calendar</a></span>
+        <nav class="kit-nav" aria-label="Calendar">
+          <ul class="kit-nav__list">
+            <li><a class="kit-nav__link" href="./">Back to the calendar</a></li>
+          </ul>
+        </nav>
+        <fieldset class="kit-theme-switch" data-theme-switch hidden>
+          <legend class="visually-hidden">Theme</legend>
+          <span class="kit-theme-switch__options">
+            <label><input type="radio" name="theme-top" value="system">System</label>
+            <label><input type="radio" name="theme-top" value="light">Light</label>
+            <label><input type="radio" name="theme-top" value="dark">Dark</label>
+          </span>
+        </fieldset>
+      </div>
+    </header>
+
+    <main id="main" class="kit-column legal">
+      <h1>Disclaimer</h1>
+      <p class="legal-updated">Last updated 18 October 2026</p>
+
+      <p>The solar calendar is a project for interest and learning. It isn’t an official calendar, and no country or organisation uses it.</p>
+
+      <h2>Dates and times</h2>
+      <ul>
+        <li>Equinoxes and solstices are calculated with Jean Meeus’s methods, to within about a minute of the true time.</li>
+        <li>Sunrise and sunset are for the location given, rounded to about a kilometre, and assume a level horizon. Hills, buildings and the weather can move them by a few minutes.</li>
+        <li>Moon phases come from the astronomy-engine library.</li>
+      </ul>
+
+      <h2>Public holidays</h2>
+      <p>Holidays are worked out from rules and checked against official lists: GOV.UK’s for the UK, the US Office of Personnel Management’s, and Nager.Date’s for Ireland. Governments can add or move a holiday at short notice, and the calendar may not have caught up.</p>
+      <p>Before relying on a date for work, pay, travel or a deadline, check the official source:</p>
+      <ul>
+        <li>UK: <a href="https://www.gov.uk/bank-holidays">GOV.UK bank holidays</a></li>
+        <li>Ireland: <a href="https://www.citizensinformation.ie/en/employment/employment-rights-and-conditions/leave-and-holidays/public-holidays/">Citizens Information, public holidays</a></li>
+        <li>United States: <a href="https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/">OPM federal holidays</a></li>
+      </ul>
+      <p>US federal holidays are the days off for federal employees; states, schools and employers may keep different ones. In Ireland, an employer can give another day off, an extra day of leave or an extra day’s pay instead of the holiday itself.</p>
+
+      <h2>Festivals and month names</h2>
+      <p>The festivals, and the meanings of the month names, come from historical sources, many of them incomplete. Each set of names says how sure scholars are and gives its sources, but scholars disagree, and some dates are reconstructions. Communities can set religious festivals, such as Nowruz or the Coptic feasts, differently from the rules used here: for observance, follow your own community or religious authority. Pronunciations are approximate.</p>
+
+      <h2>Not advice</h2>
+      <p>Nothing on the site is legal, financial, professional or religious advice.</p>
+
+      <h2>Found a mistake?</h2>
+      <p>Please <a href="https://github.com/tomgould/solar-calendar/issues">open an issue on GitHub</a>.</p>
+    </main>
+
+    <footer class="kit-footer site-footer">
+      <div class="kit-column kit-footer__rows">
+        <nav aria-label="About this site">
+          <ul class="kit-footer__links">
+            <li><a href="./privacy">Privacy policy</a></li>
+            <li><a href="./terms">Terms of use</a></li>
+            <li><a href="./disclaimer">Disclaimer</a></li>
+            <li><a href="https://github.com/tomgould/solar-calendar">Source code on GitHub</a></li>
+            <li><a href="https://www.dealmobile.co.uk/projects/solar-calendar">About this project</a></li>
+            <li><a href="https://www.dealmobile.co.uk/">Tom Gould</a></li>
+          </ul>
+        </nav>
+        <p>Run by Deal Mobile. Free software under the GNU GPL version 3. No cookies. Set in Schibsted Grotesk and Libre Caslon.</p>
+      </div>
+    </footer>
+  </div>
+  <script type="module" src="/src/styles.ts"></script>
+  <script src="/kit/js/theme-switch.js" defer></script>
+  <script src="/registerSW.js" defer></script>
+</body>
+</html>

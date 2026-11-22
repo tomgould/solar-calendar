@@ -1,0 +1,166 @@
+{
+  "id": "anglo-saxon",
+  "kind": "historical",
+  "title": "Anglo-Saxon",
+  "description": "Old English month names, recorded by Bede in AD 725",
+  "culture": "Anglo-Saxon England",
+  "era": "8th century",
+  "lang": "ang",
+  "origin": "Bede listed the English month names in The Reckoning of Time (De temporum ratione, chapter 15) in AD 725. The English months followed the moon, so these placements are approximate. In years that needed a 13th month, the English added a third Litha month in midsummer and called the year Thrilithi.",
+  "pronunciation": "Old English as scholars reconstruct it from its spelling and later sound changes; no one heard it, so the vowels and the exact sound of some consonants are well argued but not certain. Þ is th: voiced (dh) between vowels, as in Līþa, and unvoiced (th) at the end of a word, as in -mōnaþ. Ǣ is a long æ, as in cat but held, and ch in Þrimilce is the usual reading of c before e. Long vowels are held longer, double consonants are said long, and the stress falls on the first syllable of each word.",
+  "leapWeek": {
+    "name": "Leap week",
+    "gloss": "the extra week",
+    "meaning": "The Anglo-Saxons kept their year in step by adding a whole month, a third Litha. This calendar adds a week instead, at the end of the year, about one year in six."
+  },
+  "months": [
+    {
+      "name": "Ēosturmōnaþ",
+      "gloss": "Eostre's month",
+      "meaning": "Bede says this month was named after Eostre, a goddess once honoured with feasts at this time of year, and that her name passed to the Easter festival. Some scholars doubt the goddess, but the link to Easter is certain.",
+      "certainty": "likely",
+      "say": "AY-oh-stur-moh-nahth",
+      "ipa": "ˈeːostʊrˌmoːnɑθ"
+    },
+    {
+      "name": "Þrimilce",
+      "gloss": "three milkings",
+      "meaning": "Bede's Thrimilchi: the month when cows were milked three times a day.",
+      "certainty": "established",
+      "say": "THRI-mil-cheh",
+      "ipa": "ˈθrimiltʃe"
+    },
+    {
+      "name": "Ǣrra Līþa",
+      "gloss": "before Litha",
+      "meaning": "The first of the Litha months. Bede says Litha means gentle or navigable, because the calm summer breezes made the sea easy to sail.",
+      "certainty": "likely",
+      "say": "A-rah LEE-dhah",
+      "ipa": "ˈæːrːɑ ˈliːðɑ"
+    },
+    {
+      "name": "Līþa",
+      "gloss": "Litha, midsummer",
+      "meaning": "In years that needed a 13th month, the English added a third Litha in midsummer, so that, in Bede's words, three months together bore the name Litha. He doesn't give the middle month a name of its own, so here it is plain Litha.",
+      "certainty": "likely",
+      "notes": "The 13th month: Bede's third Litha.",
+      "say": "LEE-dhah",
+      "ipa": "ˈliːðɑ"
+    },
+    {
+      "name": "Æftera Līþa",
+      "gloss": "after Litha",
+      "meaning": "The Litha month after midsummer. Bede wrote Litha for both months; the before and after forms come from later Old English sources.",
+      "certainty": "established",
+      "say": "AF-teh-rah LEE-dhah",
+      "ipa": "ˈæftɛrɑ ˈliːðɑ"
+    },
+    {
+      "name": "Weodmōnaþ",
+      "gloss": "weed month",
+      "meaning": "Bede's Weodmonath, the month of tares or weeds, when wild plants grow thickest.",
+      "certainty": "established",
+      "say": "WEH-od-moh-nahth",
+      "ipa": "ˈweodˌmoːnɑθ"
+    },
+    {
+      "name": "Hāligmōnaþ",
+      "gloss": "holy month",
+      "meaning": "Bede's Halegmonath, the month of sacred rites, probably offerings for the harvest.",
+      "certainty": "likely",
+      "say": "HAH-li-ghmoh-nahth",
+      "ipa": "ˈhɑːlɪɣˌmoːnɑθ"
+    },
+    {
+      "name": "Winterfylleþ",
+      "gloss": "winter full moon",
+      "meaning": "Bede says the English counted winter as starting at this month's full moon, which gave it its name.",
+      "certainty": "established",
+      "say": "WIN-ter-fil-leth",
+      "ipa": "ˈwintɛrˌfylːɛθ"
+    },
+    {
+      "name": "Blōtmōnaþ",
+      "gloss": "sacrifice month",
+      "meaning": "Bede's Blodmonath, the month of offerings, when cattle that couldn't be kept through winter were slaughtered and dedicated to the gods.",
+      "certainty": "established",
+      "say": "BLOHT-moh-nahth",
+      "ipa": "ˈbloːtˌmoːnɑθ"
+    },
+    {
+      "name": "Ǣrra Gēola",
+      "gloss": "before Yule",
+      "meaning": "The month before Yule, the midwinter feast. Bede says the name Giuli comes from the turning of the sun, when the days begin to lengthen again.",
+      "certainty": "likely",
+      "say": "A-rah YAY-oh-lah",
+      "ipa": "ˈæːrːɑ ˈjeːolɑ"
+    },
+    {
+      "name": "Æftera Gēola",
+      "gloss": "after Yule",
+      "meaning": "The month after Yule. Bede used the one name, Giuli, for both December and January.",
+      "certainty": "established",
+      "say": "AF-teh-rah YAY-oh-lah",
+      "ipa": "ˈæftɛrɑ ˈjeːolɑ"
+    },
+    {
+      "name": "Solmōnaþ",
+      "gloss": "cake month",
+      "meaning": "Bede says this was the month of cakes, which the English offered to their gods.",
+      "certainty": "likely",
+      "say": "SOL-moh-nahth",
+      "ipa": "ˈsolˌmoːnɑθ"
+    },
+    {
+      "name": "Hrēþmōnaþ",
+      "gloss": "Hretha's month",
+      "meaning": "Bede says it was named after Hretha, a goddess who received offerings in this month. Nothing else is known about her.",
+      "certainty": "uncertain",
+      "say": "HRAYTH-moh-nahth",
+      "ipa": "ˈhreːθˌmoːnɑθ"
+    }
+  ],
+  "festivals": [
+    {
+      "name": "Mōdraniht",
+      "gloss": "mothers' night",
+      "meaning": "Bede, writing in 725, says the English year began on 25 December and that the night before was called Modranecht, 'mothers' night', probably because of rites held then. He does not describe the rites. Here it falls on 24 December.",
+      "when": {
+        "gregorian": "12-24"
+      },
+      "certainty": "likely"
+    },
+    {
+      "name": "Gēola",
+      "gloss": "midwinter feast",
+      "meaning": "Bede names the months around midwinter Giuli, and Yule is the feast the name points to, though he does not describe it. Here it is dated to the December solstice, a modern choice, since Bede ties the year's start to 25 December.",
+      "when": {
+        "event": "december-solstice"
+      },
+      "certainty": "uncertain"
+    },
+    {
+      "name": "Līþa",
+      "gloss": "midsummer season",
+      "meaning": "Bede gives Litha as the name of both the June and July months, which he glosses as 'gentle' or 'navigable' for the calm winds and seas. He describes no festival. Here the season is marked at the June solstice by modern convention.",
+      "when": {
+        "event": "june-solstice"
+      },
+      "certainty": "uncertain"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Germanic calendar (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Germanic_calendar"
+    },
+    {
+      "title": "Bede on Yule (Roger Pearse)",
+      "url": "https://roger-pearse.com/weblog/2012/01/20/bede-on-yule"
+    },
+    {
+      "title": "Old English phonology (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Old_English_phonology"
+    }
+  ]
+}

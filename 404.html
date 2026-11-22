@@ -1,0 +1,68 @@
+<!doctype html>
+<!-- Served by Cloudflare for any missing path (not_found_handling in wrangler.jsonc).
+     The build makes its links absolute, since it can be at any depth -->
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page not found, Solar calendar</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#fbf7f0" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#11100e" media="(prefers-color-scheme: dark)">
+  <!-- Applies a saved theme before the first paint: the build puts the script inline here (scripts/theme.mts) -->
+  <script data-theme-script></script>
+  <!-- Without JavaScript, hides what can't work (public/noscript.css) -->
+  <noscript><link rel="stylesheet" href="/noscript.css"></noscript>
+</head>
+<body>
+  <a class="visually-hidden focusable skip-link" href="#main">Skip to the content</a>
+  <div class="page">
+    <header class="kit-masthead masthead">
+      <div class="kit-column kit-masthead__bar">
+        <span class="brand"><a class="kit-wordmark" href="https://www.dealmobile.co.uk/">Tom Gould<span class="kit-wordmark__dot">.</span></a><a class="kit-app" href="./">Solar Calendar</a></span>
+        <nav class="kit-nav" aria-label="Calendar">
+          <ul class="kit-nav__list">
+            <li><a class="kit-nav__link" href="./">Back to the calendar</a></li>
+          </ul>
+        </nav>
+        <fieldset class="kit-theme-switch" data-theme-switch hidden>
+          <legend class="visually-hidden">Theme</legend>
+          <span class="kit-theme-switch__options">
+            <label><input type="radio" name="theme-top" value="system">System</label>
+            <label><input type="radio" name="theme-top" value="light">Light</label>
+            <label><input type="radio" name="theme-top" value="dark">Dark</label>
+          </span>
+        </fieldset>
+      </div>
+    </header>
+
+    <main id="main" class="kit-column legal not-found">
+      <h1>Page not found</h1>
+      <p>There’s nothing at this address. It may have moved, or the link may have a typing mistake in it.</p>
+      <p><a class="button button-strong" href="./">Open the calendar</a></p>
+    </main>
+
+    <footer class="kit-footer site-footer">
+      <div class="kit-column kit-footer__rows">
+        <nav aria-label="About this site">
+          <ul class="kit-footer__links">
+            <li><a href="./privacy">Privacy policy</a></li>
+            <li><a href="./terms">Terms of use</a></li>
+            <li><a href="./disclaimer">Disclaimer</a></li>
+            <li><a href="https://github.com/tomgould/solar-calendar">Source code on GitHub</a></li>
+            <li><a href="https://www.dealmobile.co.uk/projects/solar-calendar">About this project</a></li>
+            <li><a href="https://www.dealmobile.co.uk/">Tom Gould</a></li>
+          </ul>
+        </nav>
+        <p>Run by Deal Mobile. Free software under the GNU GPL version 3. No cookies. Set in Schibsted Grotesk and Libre Caslon.</p>
+      </div>
+    </footer>
+  </div>
+  <script type="module" src="/src/styles.ts"></script>
+  <script src="/kit/js/theme-switch.js" defer></script>
+  <script src="/registerSW.js" defer></script>
+</body>
+</html>
